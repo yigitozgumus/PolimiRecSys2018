@@ -1,12 +1,11 @@
 class BaseModel(object):
-    def __init(self,config):
-        self.config = config
+    def __init(self):
         self.train_data = None
         self.track_data = None
         self.target = None
     
-    def fit(self,URM_train):
+    def fit(self):
          raise NotImplementedError
 
-    def recommend(self,playlist_id,at=10):
+    def recommend(self):
          raise NotImplementedError

@@ -1,5 +1,0 @@
-
-
-def exportSubmission():
-        pass
-

@@ -1,7 +1,10 @@
 import json
 from bunch import Bunch
 import os
+import pandas as pd
 
+def import_data_file(data_file):
+    return pd.read_csv(data_file)
 
 def get_config_from_json(json_file):
     """
