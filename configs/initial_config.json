@@ -1,0 +1,5 @@
+{
+  "data_files": ["data/raw/train.csv",
+                "data/raw/tracks.csv",
+                "data/raw/target_playlists.csv"]
+}
