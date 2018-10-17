@@ -9,6 +9,7 @@ class TopPopRecommender(object):
         self.popularItems = None
 
     def fit(self):
+        print("Training is started")
         item_popularity = (self.urm_train > 0).sum(axis=0)
         item_popularity = np.array(item_popularity).squeeze()
 
