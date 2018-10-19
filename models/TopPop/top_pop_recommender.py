@@ -4,7 +4,7 @@ from base.RecommenderUtils import check_matrix
 from base.BaseRecommender import RecommenderSystem
 
 
-class TopPopRecommender(RecommenderSystem):
+class TopPopRecommender(object):
 
     def __init__(self, URM_train):
         super(RecommenderSystem, self).__init__()

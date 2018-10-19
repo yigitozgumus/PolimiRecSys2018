@@ -83,7 +83,7 @@ class RecommenderSystem(object):
             cumRecall += metric.recall(is_relevant, relevant_items)
             cumMap += metric.map(is_relevant, relevant_items)
 
-            if num_eval % 10000 == 0 or num_eval == len(usersToEvaluate) - 1:
+            if num_eval % 100 == 0 or num_eval == len(usersToEvaluate) - 1:
                 print("Processed {} ( {:.2f}% ) in {:.2f} seconds. Users per second: {:.0f}".format(
                     num_eval,
                     100.0 * float(num_eval + 1) / len(usersToEvaluate),

@@ -115,7 +115,6 @@ class PlaylistDataReader(object):
             sps.save_npz(dataSubfolder + "URM_train.npz", self.URM_train)
             sps.save_npz(dataSubfolder + "URM_test.npz", self.URM_test)
             sps.save_npz(dataSubfolder + "URM_validation.npz", self.URM_validation)
-
         print("PlaylistDataReader: Data loading is complete\n")
 
     def get_URM_train(self):

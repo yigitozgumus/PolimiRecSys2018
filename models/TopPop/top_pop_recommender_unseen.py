@@ -1,6 +1,7 @@
 import numpy as np
+from base.BaseRecommender import RecommenderSystem
 from base.RecommenderUtils import check_matrix
-class TopPopRecommenderUnseen(object):
+class TopPopRecommenderUnseen(RecommenderSystem):
 
     def __init__(self,URM_train):
         self.urm_train = URM_train
