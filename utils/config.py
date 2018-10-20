@@ -2,6 +2,7 @@ import json
 from bunch import Bunch
 import os
 import pandas as pd
+from subprocess import call
 
 def import_data_file(data_file):
     return pd.read_csv(data_file)
@@ -27,3 +28,9 @@ def process_config(json_file):
     # config.summary_dir = os.path.join("../experiments", config.exp_name, "summary/")
     # config.checkpoint_dir = os.path.join("../experiments", config.exp_name, "checkpoint/")
     return config
+
+
+# define clear function
+def clear():
+    # check and make call for specific operating system
+    _ = call('clear' if os.name == 'posix' else 'cls')
