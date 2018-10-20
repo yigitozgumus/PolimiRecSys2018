@@ -1,3 +1,4 @@
 .idea
 Lecture Notebooks
 __pycache__/
+.ipynb_checkpoints
