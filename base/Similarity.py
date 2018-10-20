@@ -9,7 +9,7 @@ from base.RecommenderUtils import check_matrix
 
 class Similarity(object):
 
-    def __init__(self,dataMatrix, neighbourhood=100, shrink = True, normalize = True, mode = None,batchSize = 100,verbose=False):
+    def __init__(self,dataMatrix, neighbourhood=100, shrink = 100, mode = None,batchSize = 100,verbose=False):
         """
 
         :param dataMatrix:
@@ -23,12 +23,12 @@ class Similarity(object):
         self.neighbourhood = neighbourhood
         self.shrink = shrink
         self.verbose = verbose
-        self.normalize = normalize
         self.batchSize = batchSize
         self.n_columns = dataMatrix.shape[1]
         self.n_rows = dataMatrix.shape[0]
         self.adjustedCosine = False
         self.pearsonCorrelation = False
+        self.method = mode
 
 
         self.dataMatrix = dataMatrix.copy()
@@ -41,7 +41,7 @@ class Similarity(object):
             pass
 
         if self.neighbourhood == 0:
-            self.full_weights = np.zeros((self.n_columns,self.n_columns))
+            self.full_weights = np.zeros((self.n_rows,self.n_rows))
 
     def normalizeData_meanReduce(self,blockSize=1000,mode="user"):
         if mode == "normal":
@@ -77,19 +77,21 @@ class Similarity(object):
         values = []
         rows = []
         cols = []
+        if self.verbose:
+            print("Computation of User User Similarity matrix with {} mode is started.".format((self.method)))
         # Timer initializations
         start_time = time.time()
         start_time_print_batch = start_time
         processedItems = 0
 
-        if self.adjustedCosine:
-            self.normalizeData_meanReduce()
         if self.pearsonCorrelation:
-            self.normalizeData_meanReduce(mode='user')
+            self.normalizeData_meanReduce()
+        if self.adjustedCosine:
+            self.normalizeData_meanReduce(mode="item")
         
-        self.dataMatrix = check_matrix(self.dataMatrix, 'csr')
-        sumOfSquared = np.array(self.dataMatrix.power(2).sum(axis=1)).ravel()
-        sumOfSquared = np.sqrt(sumOfSquared)
+        # self.dataMatrix = check_matrix(self.dataMatrix, 'csr')
+        # sumOfSquared = np.array(self.dataMatrix.power(2).sum(axis=1)).ravel()
+        # sumOfSquared = np.sqrt(sumOfSquared)
 
         for rowIndex in range(self.n_rows):
             processedItems +=1
@@ -113,11 +115,7 @@ class Similarity(object):
             # Compute item similarities
             this_row_weights = self.dataMatrix.dot(item_data)
             this_row_weights[rowIndex] = 0.0
-            if self.normalize:
-                denominator = sumOfSquared[rowIndex] * sumOfSquared + self.shrink + 1e-6
-                this_row_weights = np.multiply(this_row_weights, 1 / denominator)
-                # If no normalization or tanimoto is selected, apply only shrink
-            elif self.shrink != 0:
+            if self.shrink != 0:
                 this_row_weights = this_row_weights / self.shrink
 
             if self.neighbourhood == 0:
@@ -137,6 +135,8 @@ class Similarity(object):
                 values.extend(this_row_weights[top_k_idx])
                 rows.extend(np.ones(self.neighbourhood) * rowIndex)
                 cols.extend(top_k_idx)
+        if self.verbose:
+            print("Computation is completend in {} minutes".format((time.time() - start_time)/60))
 
         if self.neighbourhood== 0:
             return self.full_weights
@@ -154,6 +154,8 @@ class Similarity(object):
         values = []
         rows = []
         cols = []
+        if self.verbose:
+            print("Computation of Item Item Similarity matrix with {} mode is started.".format((self.method)))
         # Timer initializations
         start_time = time.time()
         start_time_print_batch = start_time
@@ -161,8 +163,6 @@ class Similarity(object):
 
         if self.adjustedCosine:
             self.normalizeData_meanReduce(mode='item')
-        if self.pearsonCorrelation:
-            self.normalizeData_meanReduce()
 
         self.dataMatrix = check_matrix(self.dataMatrix, 'csc')
         sumOfSquared = np.array(self.dataMatrix.power(2).sum(axis=0)).ravel()
@@ -189,14 +189,9 @@ class Similarity(object):
             item_data = item_data.toarray().squeeze()
             # Compute item similarities
             this_column_weights = self.dataMatrix.T.dot(item_data)
-            this_column_weights[rowIndex] = 0.0
-            if self.normalize:
-                denominator = sumOfSquared[columnIndex] * \
-                    sumOfSquared + self.shrink + 1e-6
-                this_column_weights = np.multiply(
-                    this_column_weights, 1 / denominator)
-                # If no normalization or tanimoto is selected, apply only shrink
-            elif self.shrink != 0:
+            this_column_weights[columnIndex] = 0.0
+            
+            if self.shrink != 0:
                 this_column_weights = this_column_weights / self.shrink
 
             if self.neighbourhood == 0:
@@ -218,6 +213,9 @@ class Similarity(object):
                 values.extend(this_column_weights[top_k_idx])
                 rows.extend(np.ones(self.neighbourhood) * columnIndex)
                 cols.extend(top_k_idx)
+        if self.verbose:
+            print("Computation is completend in {} minutes".format((time.time() - start_time)/60))
+
 
         if self.neighbourhood == 0:
             return self.full_weights
