@@ -45,14 +45,16 @@ class PlaylistDataReader(object):
 
     def __init__(self, splitTrainTest=False,
                  splitTrainTestValidation=[0.8, 0.1, 0.1],
-                 loadPredefinedTrainTest=True):
+                 loadPredefinedTrainTest=True,
+                 verbose=False):
         super(PlaylistDataReader, self).__init__()
+        self.verbose = verbose
 
         if sum(splitTrainTestValidation) != 1.0 or len(splitTrainTestValidation) != 3:
             raise ValueError("PlaylistDaraReader: splitTrainTestValidation" \
                              " must be a probability distribution over Train, Test and Validation")
 
-        print("PlaylistDataReader: Data is loading. . . \n")
+        print("PlaylistDataReader: Data is loading. . .")
 
         dataSubfolder = "./data/"
         train_path = "./data/train.csv"
@@ -79,7 +81,13 @@ class PlaylistDataReader(object):
                 print("PlaylistDataReader: URM_train or URM_test or URM_validation not.Found. Building new ones\n")
                 splitTrainTest = True
                 # TODO
-                self.URM_all = loadCSVintoSparse(train_path)
+                #self.URM_all = loadCSVintoSparse(train_path)
+                self.trainData['popularity'] = 1.0
+
+                interaction = np.array(self.trainData['popularity'])
+                rows = np.array(self.trainData['playlist_id'])
+                cols = np.array(self.trainData['track_id'])
+                self.URM_all = sps.csr_matrix((interaction, (rows, cols)))
 
         if splitTrainTest:
             self.URM_all = self.URM_all.tocoo()
@@ -111,11 +119,12 @@ class PlaylistDataReader(object):
 
             del self.URM_all
 
-            print("Movielens10MReader: saving URM_train and URM_test\n")
+            print("PlaylistDataReader: saving URM_train and URM_test")
             sps.save_npz(dataSubfolder + "URM_train.npz", self.URM_train)
             sps.save_npz(dataSubfolder + "URM_test.npz", self.URM_test)
             sps.save_npz(dataSubfolder + "URM_validation.npz", self.URM_validation)
-        print("PlaylistDataReader: Data loading is complete\n")
+
+        print("PlaylistDataReader: Data loading is complete")
 
     def get_URM_train(self):
         return self.URM_train
