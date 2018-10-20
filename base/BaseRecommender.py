@@ -19,7 +19,6 @@ class RecommenderSystem(object):
         self.URM_train = None
         self.URM_test = None
         self.sparse_weights = True
-        self.normalize = False
         # Filter topPop and Custom Items TODO
 
     def fit(self):
@@ -32,13 +31,13 @@ class RecommenderSystem(object):
 
 
     def get_user_relevant_items(self, playlist_id):
-        return self.URM_test.indices[self.URM_test.indptr[playlist_id]:self.URM_test.indptr[playlist_id + 1]]
+        return self.URM_test[playlist_id].indices
 
 
 
     def evaluateRecommendations(self,
                                 URM_test,
-                                at=10,
+                                at=5,
                                 minRatingsPerUser=1,
                                 exclude_seen=True,
                                 mode="sequential"):  # FilterTopPop Implementation TODO
@@ -78,7 +77,7 @@ class RecommenderSystem(object):
             recommended_items = self.recommend(playlist_id=test_user,
                                                exclude_seen=self.exclude_seen,
                                                n=self.at)
-            is_relevant = np.isin(recommended_items, relevant_items, assume_unique=True)
+            is_relevant = np.in1d(recommended_items, relevant_items, assume_unique=True)
             cumPrecision += metric.precision(is_relevant)
             cumRecall += metric.recall(is_relevant, relevant_items)
             cumMap += metric.map(is_relevant, relevant_items)
