@@ -11,8 +11,8 @@ class Logger(object):
         self.time = asctime()
 
     def export_submissions(self, model_bundle):
-        for model in model_bundle:
-            fileName = "submissions/submission-" + self.time + ".csv"
+        for index,model in enumerate(model_bundle):
+            fileName = "submissions/submission-"+str(index)+"-" + self.time + ".csv"
             self.submission_list.append((fileName, model))
             f = open(fileName,"w+")
             f.write("playlist_id,track_ids\n")
@@ -28,7 +28,7 @@ class Logger(object):
         f.close()
 
     def log_experiment(self):
-        f = open("Logs", "a")
+        f = open("Logs.txt", "a")
         for submission in self.submission_list:
             f.write("\n" + submission[0] + ", " + str(submission[1]))
         f.close()
