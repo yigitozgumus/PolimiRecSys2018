@@ -1,23 +1,36 @@
 #from TopPop.top_pop_recommender import TopPopRecommender
-from base.Similarity import Similarity
-from project.project import RecommenderSystem
+
 # from utils.config import process_config
-from models.TopPop.top_pop_recommender import TopPopRecommender
+
 from models.KNN.User_KNN_CFRecommender import UserKNNCFRecommender
 from data.PlaylistDataReader import PlaylistDataReader
-from utils.export import export_submission
-
+from utils.export import Logger
+from utils.config import clear
 
 def main():
+    clear()
+
     # Load the data
     dataReader = PlaylistDataReader()
+    l = Logger(dataReader.targetData)
+
     # Prepare the models
-    recsys = UserKNNCFRecommender(dataReader.URM_train)
-    recsys.fit(shrink=100)
+    recsys = []
+    recsys.append(UserKNNCFRecommender(dataReader.URM_train,verbose=True,similarity_mode="pearson"))
+
+    # Train the models
+    for model in recsys:
+        model.fit()
+
     # make prediction
-    recsys.evaluateRecommendations(dataReader.URM_test,at=10,exclude_seen=True)
-    # export the best one
-    export_submission(dataReader.targetData, recsys)
+    for model in recsys:
+        model.evaluateRecommendations(dataReader.URM_test,at=10,exclude_seen=True)
+
+
+    # export the predictions
+    l.export_submissions(recsys)
+    l.log_experiment()
+
 
 
 
