@@ -47,7 +47,7 @@ class UserKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
 
     #         # compute the scores using the dot product
     #         if self.sparse_weights:
-    #             user_profile = self.URM_train[user_id]
+    #             user_profile = self.URM_train[playlist_id]
     #             scores = user_profile.dot(self.W_sparse).toarray().ravel()
     #         #scores = self.W_sparse[playlist_id].dot(self.URM_train).toarray().ravel()
     #         # print(scores)

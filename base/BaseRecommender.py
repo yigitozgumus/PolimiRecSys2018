@@ -24,7 +24,7 @@ class RecommenderSystem(object):
         pass
 
     def _filter_seen_on_scores(self, playlist_id, scores):
-        seen = self.URM_train.indices[self.URM_test.indptr[playlist_id]:self.URM_test.indptr[playlist_id + 1]]
+        seen = self.URM_train.indices[self.URM_train.indptr[playlist_id]:self.URM_train.indptr[playlist_id + 1]]
         scores[seen] = -np.inf
         return scores
 
