@@ -54,7 +54,8 @@ class PlaylistDataReader(object):
             raise ValueError("PlaylistDaraReader: splitTrainTestValidation" \
                              " must be a probability distribution over Train, Test and Validation")
 
-        print("PlaylistDataReader: Data is loading. . .")
+        if verbose:
+            print("PlaylistDataReader: Data is loading. . .")
 
         dataSubfolder = "./data/"
         train_path = "./data/train.csv"
@@ -82,7 +83,7 @@ class PlaylistDataReader(object):
                 splitTrainTest = True
                 # TODO
                 #self.URM_all = loadCSVintoSparse(train_path)
-                self.trainData['popularity'] = 1.0
+                self.trainData['popularity'] = 1
 
                 interaction = np.array(self.trainData['popularity'])
                 rows = np.array(self.trainData['playlist_id'])
@@ -124,7 +125,8 @@ class PlaylistDataReader(object):
             sps.save_npz(dataSubfolder + "URM_test.npz", self.URM_test)
             sps.save_npz(dataSubfolder + "URM_validation.npz", self.URM_validation)
 
-        print("PlaylistDataReader: Data loading is complete")
+        if verbose:
+            print("PlaylistDataReader: Data loading is complete")
 
     def get_URM_train(self):
         return self.URM_train

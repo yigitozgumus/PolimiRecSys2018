@@ -1,4 +1,29 @@
-submissions/submission-Sat Oct 20 11:04:05 2018.csv, User User KNN Collaborative Filter Class with parameters: sparse_weights= True, verbose= True, similarity= pearson
-submissions/submission-Sat Oct 20 11:08:45 2018.csv, User User KNN Collaborative Filter Class with parameters: sparse_weights= True, verbose= True, similarity= pearson
-submissions/submission-Sat Oct 20 11:15:00 2018.csv, User User KNN Collaborative Filter Class with parameters: sparse_weights= True, verbose= True, similarity= pearson
-submissions/submission-Sat Oct 20 11:20:04 2018.csv, User User KNN Collaborative Filter Class with parameters: sparse_weights= True, verbose= True, similarity= pearson
+submissions/submission-Sat Oct 20 11:04:05 2018.csv, User User KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= True, similarity= pearson
+submissions/submission-Sat Oct 20 11:08:45 2018.csv, User User KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= True, similarity= pearson
+submissions/submission-Sat Oct 20 11:15:00 2018.csv, User User KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= True, similarity= pearson
+submissions/submission-Sat Oct 20 11:20:04 2018.csv, User User KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= True, similarity= pearson
+submissions/submission-0-Sat Oct 20 13:18:21 2018.csv, User-User KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= True, similarity= cosine
+submissions/submission-1-Sat Oct 20 13:18:21 2018.csv, Item-Item KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= True, similarity= cosine
+submissions/submission-2-Sat Oct 20 13:18:21 2018.csv, User-User KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= True, similarity= pearson
+submissions/submission-3-Sat Oct 20 13:18:21 2018.csv, Item-Item KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= True, similarity= adjusted
+submissions/submission-0-Sat Oct 20 16:04:53 2018.csv, User-User KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= False, similarity= cosine
+submissions/submission-1-Sat Oct 20 16:04:53 2018.csv, User-User KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= False, similarity= pearson
+submissions/submission-2-Sat Oct 20 16:04:53 2018.csv, Item-Item KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= False, similarity= cosine
+submissions/submission-3-Sat Oct 20 16:04:53 2018.csv, Item-Item KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= False, similarity= adjusted
+submissions/submission-0-Sat Oct 20 19:08:57 2018.csv, User-User KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= False, similarity= pearson
+submissions/submission-0-Sat Oct 20 20:16:55 2018.csv, User-User KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= False, similarity= pearson
+submissions/submission-0-Sun Oct 21 06:32:37 2018.csv, User-User KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= False, similarity= pearson
+submissions/submission-0-Sun Oct 21 08:23:31 2018.csv, User-User KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= False, similarity= pearson
+submissions/submission-0-Sun Oct 21 13:41:05 2018.csv, User-User KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= False, similarity= pearson
+submissions/submission-0-Sun Oct 21 18:21:10 2018.csv, User-User KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= False, similarity= pearson
+submissions/submission-0-Sun Oct 21 18:46:41 2018.csv, User-User KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= False, similarity= pearson
+submissions/submission-0-Sun Oct 21 18:54:33 2018.csv, User-User KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= False, similarity= pearson
+submissions/submission-0-Sun Oct 21 19:14:26 2018.csv, User-User KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= False, similarity= pearson
+submissions/submission-0-Sun Oct 21 19:21:49 2018.csv, User-User KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= False, similarity= pearson
+submissions/submission-0-Sun Oct 21 19:26:15 2018.csv, User-User KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= False, similarity= pearson
+submissions/submission-0-Sun Oct 21 19:31:30 2018.csv, User-User KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= False, similarity= pearson
+submissions/submission-0-Sun Oct 21 19:38:21 2018.csv, User-User KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= False, similarity= pearson
+submissions/submission-0-Sun Oct 21 19:43:31 2018.csv, User-User KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= False, similarity= pearson
+submissions/submission-0-Sun Oct 21 19:50:48 2018.csv, User-User KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= False, similarity= pearson
+submissions/submission-0-Sun Oct 21 19:58:08 2018.csv, User-User KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= False, similarity= pearson
+submissions/submission-0-Sun Oct 21 20:13:50 2018.csv, User-User KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= False, similarity= pearson

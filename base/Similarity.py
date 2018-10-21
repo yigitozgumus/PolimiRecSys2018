@@ -9,7 +9,7 @@ from base.RecommenderUtils import check_matrix
 
 class Similarity(object):
 
-    def __init__(self,dataMatrix, neighbourhood=100, shrink = 100, mode = None,batchSize = 100,verbose=False):
+    def __init__(self,dataMatrix, neighbourhood=100, shrink = 0, mode = None,batchSize = 100,verbose=False):
         """
 
         :param dataMatrix:
@@ -65,9 +65,9 @@ class Similarity(object):
         end_   = 0
         while end_ < self.dataMatrix.shape[1 - mode_]:
             end_ = min(self.dataMatrix.shape[1-mode_], end_ + blockSize)
-            self.dataMatrix.data[self.dataMatrix.indptr[start_]:self.dataMatrix.indptr[end_]] -= 1
-            self.dataMatrix.data[self.dataMatrix.indptr[start_]:self.dataMatrix.indptr[end_]] += \
-            np.repeat(vectorAverage[start_:end_],interactionsPerVector[start_:end_])
+        #    self.dataMatrix.data[self.dataMatrix.indptr[start_]:self.dataMatrix.indptr[end_]] -= 1
+            self.dataMatrix.data[self.dataMatrix.indptr[start_]:self.dataMatrix.indptr[end_]] -= \
+          (1/  np.repeat(vectorAverage[start_:end_],interactionsPerVector[start_:end_]))
             start_ += blockSize
         if self.verbose:
             print("Normalization of data is completed in {} seconds".format(time.time() - start_time))
