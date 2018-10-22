@@ -5,7 +5,7 @@
  		"model_name": "user_knn_cf",
         "sparse_weights": true,
         "verbose": false,
-        "similarity_mode": "adjusted"
+        "similarity_mode": "pearson"
  		
  	}
  ]

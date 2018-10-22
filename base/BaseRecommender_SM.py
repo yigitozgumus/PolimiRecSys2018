@@ -16,9 +16,11 @@ class RecommenderSystem_SM(object):
 
         # compute the scores using the dot product
         if self.sparse_weights:
-            user_profile = self.URM_train[playlist_id]
-            scores = user_profile.dot(self.W_sparse).toarray().ravel()
-            #scores = self.W_sparse[playlist_id].dot(self.URM_train).toarray().ravel()
+            #user_profile = self.URM_train[playlist_id]
+            #scores = user_profile.T.dot(self.W_sparse).toarray().ravel()
+            #print(self.W_sparse[playlist_id].shape)
+            #print(self.URM_train.shape)
+            scores = self.W_sparse[playlist_id].dot(self.URM_train).toarray().ravel()
             # print(scores)
         else:
             # scores = self.URM_train.T.dot(self.W[playlist_id])

@@ -15,8 +15,7 @@ class RecommenderSystem(object):
         super(RecommenderSystem, self).__init__()
         self.URM_train = None
         self.URM_test = None
-        self.sparse_weights = True
-        self.normalize = False
+
         # Filter topPop and Custom Items TODO
 
     def fit(self):

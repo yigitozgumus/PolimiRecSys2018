@@ -32,3 +32,4 @@ submissions/sub-0-Sun Oct 21 20:35:38 2018.csv, User-User KNN Collaborative Filt
 submissions/sub-0-Sun Oct 21 20:51:55 2018.csv, User-User KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= False, similarity= pearson
 submissions/sub-0-Mon_Oct_22_11:31:32_2018.csv, User-User KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= False, similarity= pearson
 submissions/sub-0-Mon_Oct_22_11:35:58_2018.csv, User-User KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= False, similarity= pearson
+submissions/sub-0-Mon_Oct_22_23:25:47_2018.csv, User-User KNN Collaborative Filtering with parameters: sparse_weights= True, verbose= False, similarity= pearson

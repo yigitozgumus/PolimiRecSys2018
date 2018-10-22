@@ -25,7 +25,7 @@ class ItemKNNCFRecommender(RecommenderSystem,RecommenderSystem_SM):
     def fit(self,k=50,shrink=100):
         self.k = k
         self.shrink = shrink
-        self.similarity = Similarity(self.URM_train,
+        self.similarity = Similarity(self.URM_train.T,
                                      shrink=shrink,
                                      #verbose=self.verbose,
                                      neighbourhood=k,

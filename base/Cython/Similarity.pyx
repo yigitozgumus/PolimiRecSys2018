@@ -31,8 +31,8 @@ cdef class Similarity:
     cdef int[:] item_to_user_rows, item_to_user_col_ptr
     cdef double[:] user_to_item_data, item_to_user_data
     cdef double[:] sumOfSquared
-    cdef int shrink, normalize, adjusted_cosine, pearson_correlation, tanimoto_coefficient
-
+    cdef int shrink, normalize, adjusted_cosine, pearson_correlation, tanimoto_coefficient, verbose
+    cdef int mode
     cdef double[:,:] W_dense
 
     def __init__(self, URM, neighbourhood = 100,verbose=True, shrink=0, normalize = True,
@@ -50,10 +50,13 @@ cdef class Similarity:
         self.tanimoto_coefficient = False
 
         if mode == "adjusted":
+            self.mode = 1
             self.adjusted_cosine = True
         elif mode == "pearson":
+            self.mode = 2
             self.pearson_correlation = True
         elif mode == "jaccard" or mode == "tanimoto":
+            self.mode = 3
             self.tanimoto_coefficient = True
             # Tanimoto has a specific kind of normalization
             self.normalize = False
@@ -278,7 +281,7 @@ cdef class Similarity:
 
     def compute_similarity(self):
         if self.verbose:
-            print("Computation of User User Similarity matrix with {} mode is started.".format((self.method)))
+            print("Computation of User User Similarity matrix with {} mode is started.".format((self.mode)))
 
         cdef int itemIndex, innerItemIndex
         cdef long long topKItemIndex

@@ -1241,6 +1241,8 @@ struct __pyx_obj_10Similarity_Similarity {
   int adjusted_cosine;
   int pearson_correlation;
   int tanimoto_coefficient;
+  int verbose;
+  int mode;
   __Pyx_memviewslice W_dense;
 };
 
@@ -1548,15 +1550,6 @@ static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize
 static PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j);
 static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i,
                                                      int is_list, int wraparound, int boundscheck);
-
-/* PyObjectSetAttrStr.proto */
-#if CYTHON_USE_TYPE_SLOTS
-#define __Pyx_PyObject_DelAttrStr(o,n) __Pyx_PyObject_SetAttrStr(o, n, NULL)
-static CYTHON_INLINE int __Pyx_PyObject_SetAttrStr(PyObject* obj, PyObject* attr_name, PyObject* value);
-#else
-#define __Pyx_PyObject_DelAttrStr(o,n)   PyObject_DelAttr(o,n)
-#define __Pyx_PyObject_SetAttrStr(o,n,v) PyObject_SetAttr(o,n,v)
-#endif
 
 /* IncludeStringH.proto */
 #include <string.h>
@@ -2464,7 +2457,6 @@ static const char __pyx_k_encode[] = "encode";
 static const char __pyx_k_format[] = "format";
 static const char __pyx_k_import[] = "__import__";
 static const char __pyx_k_indptr[] = "indptr";
-static const char __pyx_k_method[] = "method";
 static const char __pyx_k_name_2[] = "__name__";
 static const char __pyx_k_pickle[] = "pickle";
 static const char __pyx_k_reduce[] = "__reduce__";
@@ -2545,7 +2537,7 @@ static const char __pyx_k_Computation_of_User_User_Similar[] = "Computation of U
 static const char __pyx_k_Cosine_Similarity_value_for_para[] = "Cosine_Similarity: value for paramether 'mode' not recognized. Allowed values are: 'cosine', 'pearson', 'adjusted', 'jaccard', 'tanimoto'. Passed value was '{}'";
 static const char __pyx_k_Empty_shape_tuple_for_cython_arr[] = "Empty shape tuple for cython.array";
 static const char __pyx_k_Format_string_allocated_too_shor[] = "Format string allocated too short, see comment in numpy.pxd";
-static const char __pyx_k_Incompatible_checksums_s_vs_0x97[] = "Incompatible checksums (%s vs 0x97207f4 = (TopK, W_dense, adjusted_cosine, item_to_user_col_ptr, item_to_user_data, item_to_user_rows, n_items, n_users, normalize, pearson_correlation, shrink, sumOfSquared, tanimoto_coefficient, user_to_item_cols, user_to_item_data, user_to_item_row_ptr))";
+static const char __pyx_k_Incompatible_checksums_s_vs_0x25[] = "Incompatible checksums (%s vs 0x25ef4b8 = (TopK, W_dense, adjusted_cosine, item_to_user_col_ptr, item_to_user_data, item_to_user_rows, mode, n_items, n_users, normalize, pearson_correlation, shrink, sumOfSquared, tanimoto_coefficient, user_to_item_cols, user_to_item_data, user_to_item_row_ptr, verbose))";
 static const char __pyx_k_Incompatible_checksums_s_vs_0xb0[] = "Incompatible checksums (%s vs 0xb068931 = (name))";
 static const char __pyx_k_Indirect_dimensions_not_supporte[] = "Indirect dimensions not supported";
 static const char __pyx_k_Invalid_mode_expected_c_or_fortr[] = "Invalid mode, expected 'c' or 'fortran', got %s";
@@ -2573,7 +2565,7 @@ static PyObject *__pyx_kp_s_Empty_shape_tuple_for_cython_arr;
 static PyObject *__pyx_kp_u_Format_string_allocated_too_shor;
 static PyObject *__pyx_kp_u_Format_string_allocated_too_shor_2;
 static PyObject *__pyx_n_s_ImportError;
-static PyObject *__pyx_kp_s_Incompatible_checksums_s_vs_0x97;
+static PyObject *__pyx_kp_s_Incompatible_checksums_s_vs_0x25;
 static PyObject *__pyx_kp_s_Incompatible_checksums_s_vs_0xb0;
 static PyObject *__pyx_n_s_IndexError;
 static PyObject *__pyx_kp_s_Indirect_dimensions_not_supporte;
@@ -2644,7 +2636,6 @@ static PyObject *__pyx_kp_s_itemsize_0_for_cython_array;
 static PyObject *__pyx_n_u_jaccard;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_memview;
-static PyObject *__pyx_n_s_method;
 static PyObject *__pyx_n_s_mode;
 static PyObject *__pyx_n_s_name;
 static PyObject *__pyx_n_s_name_2;
@@ -2771,7 +2762,7 @@ static PyObject *__pyx_int_1;
 static PyObject *__pyx_int_2;
 static PyObject *__pyx_int_60;
 static PyObject *__pyx_int_100;
-static PyObject *__pyx_int_158468084;
+static PyObject *__pyx_int_39777464;
 static PyObject *__pyx_int_184977713;
 static PyObject *__pyx_int_neg_1;
 static PyObject *__pyx_tuple_;
@@ -3052,7 +3043,8 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
  *         self.adjusted_cosine = False
  *         self.pearson_correlation = False
  */
-  if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_verbose, __pyx_v_verbose) < 0) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_verbose); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_v_self->verbose = __pyx_t_5;
 
   /* "Similarity.pyx":48
  *         self.normalize = normalize
@@ -3085,8 +3077,8 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
  *         self.tanimoto_coefficient = False
  * 
  *         if mode == "adjusted":             # <<<<<<<<<<<<<<
+ *             self.mode = 1
  *             self.adjusted_cosine = True
- *         elif mode == "pearson":
  */
   __pyx_t_6 = (__Pyx_PyUnicode_Equals(__pyx_v_mode, __pyx_n_u_adjusted, Py_EQ)); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 52, __pyx_L1_error)
   if (__pyx_t_6) {
@@ -3094,9 +3086,18 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
     /* "Similarity.pyx":53
  * 
  *         if mode == "adjusted":
+ *             self.mode = 1             # <<<<<<<<<<<<<<
+ *             self.adjusted_cosine = True
+ *         elif mode == "pearson":
+ */
+    __pyx_v_self->mode = 1;
+
+    /* "Similarity.pyx":54
+ *         if mode == "adjusted":
+ *             self.mode = 1
  *             self.adjusted_cosine = True             # <<<<<<<<<<<<<<
  *         elif mode == "pearson":
- *             self.pearson_correlation = True
+ *             self.mode = 2
  */
     __pyx_v_self->adjusted_cosine = 1;
 
@@ -3104,69 +3105,87 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
  *         self.tanimoto_coefficient = False
  * 
  *         if mode == "adjusted":             # <<<<<<<<<<<<<<
+ *             self.mode = 1
  *             self.adjusted_cosine = True
- *         elif mode == "pearson":
  */
     goto __pyx_L3;
   }
 
-  /* "Similarity.pyx":54
- *         if mode == "adjusted":
+  /* "Similarity.pyx":55
+ *             self.mode = 1
  *             self.adjusted_cosine = True
  *         elif mode == "pearson":             # <<<<<<<<<<<<<<
+ *             self.mode = 2
+ *             self.pearson_correlation = True
+ */
+  __pyx_t_6 = (__Pyx_PyUnicode_Equals(__pyx_v_mode, __pyx_n_u_pearson, Py_EQ)); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 55, __pyx_L1_error)
+  if (__pyx_t_6) {
+
+    /* "Similarity.pyx":56
+ *             self.adjusted_cosine = True
+ *         elif mode == "pearson":
+ *             self.mode = 2             # <<<<<<<<<<<<<<
  *             self.pearson_correlation = True
  *         elif mode == "jaccard" or mode == "tanimoto":
  */
-  __pyx_t_6 = (__Pyx_PyUnicode_Equals(__pyx_v_mode, __pyx_n_u_pearson, Py_EQ)); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 54, __pyx_L1_error)
-  if (__pyx_t_6) {
+    __pyx_v_self->mode = 2;
 
-    /* "Similarity.pyx":55
- *             self.adjusted_cosine = True
+    /* "Similarity.pyx":57
  *         elif mode == "pearson":
+ *             self.mode = 2
  *             self.pearson_correlation = True             # <<<<<<<<<<<<<<
  *         elif mode == "jaccard" or mode == "tanimoto":
- *             self.tanimoto_coefficient = True
+ *             self.mode = 3
  */
     __pyx_v_self->pearson_correlation = 1;
 
-    /* "Similarity.pyx":54
- *         if mode == "adjusted":
+    /* "Similarity.pyx":55
+ *             self.mode = 1
  *             self.adjusted_cosine = True
  *         elif mode == "pearson":             # <<<<<<<<<<<<<<
+ *             self.mode = 2
  *             self.pearson_correlation = True
- *         elif mode == "jaccard" or mode == "tanimoto":
  */
     goto __pyx_L3;
   }
 
-  /* "Similarity.pyx":56
- *         elif mode == "pearson":
+  /* "Similarity.pyx":58
+ *             self.mode = 2
  *             self.pearson_correlation = True
  *         elif mode == "jaccard" or mode == "tanimoto":             # <<<<<<<<<<<<<<
+ *             self.mode = 3
  *             self.tanimoto_coefficient = True
- *             # Tanimoto has a specific kind of normalization
  */
-  __pyx_t_7 = (__Pyx_PyUnicode_Equals(__pyx_v_mode, __pyx_n_u_jaccard, Py_EQ)); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __pyx_t_7 = (__Pyx_PyUnicode_Equals(__pyx_v_mode, __pyx_n_u_jaccard, Py_EQ)); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 58, __pyx_L1_error)
   if (!__pyx_t_7) {
   } else {
     __pyx_t_6 = __pyx_t_7;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_7 = (__Pyx_PyUnicode_Equals(__pyx_v_mode, __pyx_n_u_tanimoto, Py_EQ)); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __pyx_t_7 = (__Pyx_PyUnicode_Equals(__pyx_v_mode, __pyx_n_u_tanimoto, Py_EQ)); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 58, __pyx_L1_error)
   __pyx_t_6 = __pyx_t_7;
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_6) {
 
-    /* "Similarity.pyx":57
+    /* "Similarity.pyx":59
  *             self.pearson_correlation = True
  *         elif mode == "jaccard" or mode == "tanimoto":
+ *             self.mode = 3             # <<<<<<<<<<<<<<
+ *             self.tanimoto_coefficient = True
+ *             # Tanimoto has a specific kind of normalization
+ */
+    __pyx_v_self->mode = 3;
+
+    /* "Similarity.pyx":60
+ *         elif mode == "jaccard" or mode == "tanimoto":
+ *             self.mode = 3
  *             self.tanimoto_coefficient = True             # <<<<<<<<<<<<<<
  *             # Tanimoto has a specific kind of normalization
  *             self.normalize = False
  */
     __pyx_v_self->tanimoto_coefficient = 1;
 
-    /* "Similarity.pyx":59
+    /* "Similarity.pyx":62
  *             self.tanimoto_coefficient = True
  *             # Tanimoto has a specific kind of normalization
  *             self.normalize = False             # <<<<<<<<<<<<<<
@@ -3175,29 +3194,29 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
  */
     __pyx_v_self->normalize = 0;
 
-    /* "Similarity.pyx":56
- *         elif mode == "pearson":
+    /* "Similarity.pyx":58
+ *             self.mode = 2
  *             self.pearson_correlation = True
  *         elif mode == "jaccard" or mode == "tanimoto":             # <<<<<<<<<<<<<<
+ *             self.mode = 3
  *             self.tanimoto_coefficient = True
- *             # Tanimoto has a specific kind of normalization
  */
     goto __pyx_L3;
   }
 
-  /* "Similarity.pyx":61
+  /* "Similarity.pyx":64
  *             self.normalize = False
  * 
  *         elif mode == "cosine":             # <<<<<<<<<<<<<<
  *             pass
  *         else:
  */
-  __pyx_t_6 = (__Pyx_PyUnicode_Equals(__pyx_v_mode, __pyx_n_u_cosine, Py_EQ)); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 61, __pyx_L1_error)
+  __pyx_t_6 = (__Pyx_PyUnicode_Equals(__pyx_v_mode, __pyx_n_u_cosine, Py_EQ)); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 64, __pyx_L1_error)
   if (likely(__pyx_t_6)) {
     goto __pyx_L3;
   }
 
-  /* "Similarity.pyx":64
+  /* "Similarity.pyx":67
  *             pass
  *         else:
  *             raise ValueError("Cosine_Similarity: value for paramether 'mode' not recognized."             # <<<<<<<<<<<<<<
@@ -3206,14 +3225,14 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
  */
   /*else*/ {
 
-    /* "Similarity.pyx":66
+    /* "Similarity.pyx":69
  *             raise ValueError("Cosine_Similarity: value for paramether 'mode' not recognized."
  *                              " Allowed values are: 'cosine', 'pearson', 'adjusted', 'jaccard', 'tanimoto'."
  *                              " Passed value was '{}'".format(mode))             # <<<<<<<<<<<<<<
  * 
  * 
  */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_u_Cosine_Similarity_value_for_para, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 66, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_u_Cosine_Similarity_value_for_para, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 69, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_3 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -3227,27 +3246,27 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
     }
     __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_3, __pyx_v_mode) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_mode);
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 66, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "Similarity.pyx":64
+    /* "Similarity.pyx":67
  *             pass
  *         else:
  *             raise ValueError("Cosine_Similarity: value for paramether 'mode' not recognized."             # <<<<<<<<<<<<<<
  *                              " Allowed values are: 'cosine', 'pearson', 'adjusted', 'jaccard', 'tanimoto'."
  *                              " Passed value was '{}'".format(mode))
  */
-    __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 64, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 67, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __PYX_ERR(0, 64, __pyx_L1_error)
+    __PYX_ERR(0, 67, __pyx_L1_error)
   }
   __pyx_L3:;
 
-  /* "Similarity.pyx":69
+  /* "Similarity.pyx":72
  * 
  * 
  *         self.TopK = min(neighbourhood, self.n_items)             # <<<<<<<<<<<<<<
@@ -3257,14 +3276,14 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
   __pyx_t_4 = __pyx_v_self->n_items;
   __Pyx_INCREF(__pyx_v_neighbourhood);
   __pyx_t_2 = __pyx_v_neighbourhood;
-  __pyx_t_3 = __Pyx_PyInt_From_long(__pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_long(__pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 72, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_8 = PyObject_RichCompare(__pyx_t_3, __pyx_t_2, Py_LT); __Pyx_XGOTREF(__pyx_t_8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __pyx_t_8 = PyObject_RichCompare(__pyx_t_3, __pyx_t_2, Py_LT); __Pyx_XGOTREF(__pyx_t_8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 72, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 72, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   if (__pyx_t_6) {
-    __pyx_t_8 = __Pyx_PyInt_From_long(__pyx_t_4); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 69, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyInt_From_long(__pyx_t_4); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 72, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __pyx_t_1 = __pyx_t_8;
     __pyx_t_8 = 0;
@@ -3273,18 +3292,18 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
     __pyx_t_1 = __pyx_t_2;
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 69, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 72, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->TopK = __pyx_t_5;
 
-  /* "Similarity.pyx":72
+  /* "Similarity.pyx":75
  * 
  *         # Copy data to avoid altering the original object
  *         URM = URM.copy()             # <<<<<<<<<<<<<<
  * 
  *         if self.adjusted_cosine:
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_copy); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 72, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_copy); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 75, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_8 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -3298,13 +3317,13 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
   }
   __pyx_t_1 = (__pyx_t_8) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_8) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 72, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 75, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF_SET(__pyx_v_URM, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "Similarity.pyx":74
+  /* "Similarity.pyx":77
  *         URM = URM.copy()
  * 
  *         if self.adjusted_cosine:             # <<<<<<<<<<<<<<
@@ -3314,19 +3333,19 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
   __pyx_t_6 = (__pyx_v_self->adjusted_cosine != 0);
   if (__pyx_t_6) {
 
-    /* "Similarity.pyx":75
+    /* "Similarity.pyx":78
  * 
  *         if self.adjusted_cosine:
  *             URM = self.applyAdjustedCosine(URM)             # <<<<<<<<<<<<<<
  *         elif self.pearson_correlation:
  *             URM = self.applyPearsonCorrelation(URM)
  */
-    __pyx_t_1 = ((struct __pyx_vtabstruct_10Similarity_Similarity *)__pyx_v_self->__pyx_vtab)->applyAdjustedCosine(__pyx_v_self, __pyx_v_URM); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 75, __pyx_L1_error)
+    __pyx_t_1 = ((struct __pyx_vtabstruct_10Similarity_Similarity *)__pyx_v_self->__pyx_vtab)->applyAdjustedCosine(__pyx_v_self, __pyx_v_URM); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 78, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF_SET(__pyx_v_URM, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "Similarity.pyx":74
+    /* "Similarity.pyx":77
  *         URM = URM.copy()
  * 
  *         if self.adjusted_cosine:             # <<<<<<<<<<<<<<
@@ -3336,7 +3355,7 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
     goto __pyx_L6;
   }
 
-  /* "Similarity.pyx":76
+  /* "Similarity.pyx":79
  *         if self.adjusted_cosine:
  *             URM = self.applyAdjustedCosine(URM)
  *         elif self.pearson_correlation:             # <<<<<<<<<<<<<<
@@ -3346,19 +3365,19 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
   __pyx_t_6 = (__pyx_v_self->pearson_correlation != 0);
   if (__pyx_t_6) {
 
-    /* "Similarity.pyx":77
+    /* "Similarity.pyx":80
  *             URM = self.applyAdjustedCosine(URM)
  *         elif self.pearson_correlation:
  *             URM = self.applyPearsonCorrelation(URM)             # <<<<<<<<<<<<<<
  *         elif self.tanimoto_coefficient:
  *             URM = self.useOnlyBooleanInteractions(URM)
  */
-    __pyx_t_1 = ((struct __pyx_vtabstruct_10Similarity_Similarity *)__pyx_v_self->__pyx_vtab)->applyPearsonCorrelation(__pyx_v_self, __pyx_v_URM); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 77, __pyx_L1_error)
+    __pyx_t_1 = ((struct __pyx_vtabstruct_10Similarity_Similarity *)__pyx_v_self->__pyx_vtab)->applyPearsonCorrelation(__pyx_v_self, __pyx_v_URM); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 80, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF_SET(__pyx_v_URM, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "Similarity.pyx":76
+    /* "Similarity.pyx":79
  *         if self.adjusted_cosine:
  *             URM = self.applyAdjustedCosine(URM)
  *         elif self.pearson_correlation:             # <<<<<<<<<<<<<<
@@ -3368,7 +3387,7 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
     goto __pyx_L6;
   }
 
-  /* "Similarity.pyx":78
+  /* "Similarity.pyx":81
  *         elif self.pearson_correlation:
  *             URM = self.applyPearsonCorrelation(URM)
  *         elif self.tanimoto_coefficient:             # <<<<<<<<<<<<<<
@@ -3378,19 +3397,19 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
   __pyx_t_6 = (__pyx_v_self->tanimoto_coefficient != 0);
   if (__pyx_t_6) {
 
-    /* "Similarity.pyx":79
+    /* "Similarity.pyx":82
  *             URM = self.applyPearsonCorrelation(URM)
  *         elif self.tanimoto_coefficient:
  *             URM = self.useOnlyBooleanInteractions(URM)             # <<<<<<<<<<<<<<
  * 
  * 
  */
-    __pyx_t_1 = ((struct __pyx_vtabstruct_10Similarity_Similarity *)__pyx_v_self->__pyx_vtab)->useOnlyBooleanInteractions(__pyx_v_self, __pyx_v_URM); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 79, __pyx_L1_error)
+    __pyx_t_1 = ((struct __pyx_vtabstruct_10Similarity_Similarity *)__pyx_v_self->__pyx_vtab)->useOnlyBooleanInteractions(__pyx_v_self, __pyx_v_URM); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF_SET(__pyx_v_URM, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "Similarity.pyx":78
+    /* "Similarity.pyx":81
  *         elif self.pearson_correlation:
  *             URM = self.applyPearsonCorrelation(URM)
  *         elif self.tanimoto_coefficient:             # <<<<<<<<<<<<<<
@@ -3400,14 +3419,14 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
   }
   __pyx_L6:;
 
-  /* "Similarity.pyx":82
+  /* "Similarity.pyx":85
  * 
  * 
  *         URM = check_matrix(URM, 'csr')             # <<<<<<<<<<<<<<
  * 
  *         self.user_to_item_row_ptr = URM.indptr
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_check_matrix); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_check_matrix); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 85, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_8 = NULL;
   __pyx_t_5 = 0;
@@ -3424,7 +3443,7 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_8, __pyx_v_URM, __pyx_n_u_csr};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 85, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
@@ -3432,13 +3451,13 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_8, __pyx_v_URM, __pyx_n_u_csr};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 85, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
   #endif
   {
-    __pyx_t_3 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 82, __pyx_L1_error)
+    __pyx_t_3 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 85, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     if (__pyx_t_8) {
       __Pyx_GIVEREF(__pyx_t_8); PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_8); __pyx_t_8 = NULL;
@@ -3449,7 +3468,7 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
     __Pyx_INCREF(__pyx_n_u_csr);
     __Pyx_GIVEREF(__pyx_n_u_csr);
     PyTuple_SET_ITEM(__pyx_t_3, 1+__pyx_t_5, __pyx_n_u_csr);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 85, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   }
@@ -3457,86 +3476,86 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
   __Pyx_DECREF_SET(__pyx_v_URM, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "Similarity.pyx":84
+  /* "Similarity.pyx":87
  *         URM = check_matrix(URM, 'csr')
  * 
  *         self.user_to_item_row_ptr = URM.indptr             # <<<<<<<<<<<<<<
  *         self.user_to_item_cols = URM.indices
  *         self.user_to_item_data = np.array(URM.data, dtype=np.float64)
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_indptr); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_indptr); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_v_self->user_to_item_row_ptr, 0);
   __pyx_v_self->user_to_item_row_ptr = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
 
-  /* "Similarity.pyx":85
+  /* "Similarity.pyx":88
  * 
  *         self.user_to_item_row_ptr = URM.indptr
  *         self.user_to_item_cols = URM.indices             # <<<<<<<<<<<<<<
  *         self.user_to_item_data = np.array(URM.data, dtype=np.float64)
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_indices); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 85, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_indices); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 85, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_v_self->user_to_item_cols, 0);
   __pyx_v_self->user_to_item_cols = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
 
-  /* "Similarity.pyx":86
+  /* "Similarity.pyx":89
  *         self.user_to_item_row_ptr = URM.indptr
  *         self.user_to_item_cols = URM.indices
  *         self.user_to_item_data = np.array(URM.data, dtype=np.float64)             # <<<<<<<<<<<<<<
  * 
  *         URM = check_matrix(URM, 'csc')
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 86, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_array); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 86, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_array); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_data); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 86, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_data); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 86, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 86, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_np); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 86, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_np); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_float64); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 86, __pyx_L1_error)
+  __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_float64); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, __pyx_t_10) < 0) __PYX_ERR(0, 86, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, __pyx_t_10) < 0) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-  __pyx_t_10 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 86, __pyx_L1_error)
+  __pyx_t_10 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_11 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_10, PyBUF_WRITABLE); if (unlikely(!__pyx_t_11.memview)) __PYX_ERR(0, 86, __pyx_L1_error)
+  __pyx_t_11 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_10, PyBUF_WRITABLE); if (unlikely(!__pyx_t_11.memview)) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_v_self->user_to_item_data, 0);
   __pyx_v_self->user_to_item_data = __pyx_t_11;
   __pyx_t_11.memview = NULL;
   __pyx_t_11.data = NULL;
 
-  /* "Similarity.pyx":88
+  /* "Similarity.pyx":91
  *         self.user_to_item_data = np.array(URM.data, dtype=np.float64)
  * 
  *         URM = check_matrix(URM, 'csc')             # <<<<<<<<<<<<<<
  *         self.item_to_user_rows = URM.indices
  *         self.item_to_user_col_ptr = URM.indptr
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_check_matrix); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 88, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_check_matrix); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 91, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_3 = NULL;
   __pyx_t_5 = 0;
@@ -3553,7 +3572,7 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_1)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_URM, __pyx_n_u_csc};
-    __pyx_t_10 = __Pyx_PyFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 88, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 91, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_10);
   } else
@@ -3561,13 +3580,13 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_1)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_URM, __pyx_n_u_csc};
-    __pyx_t_10 = __Pyx_PyCFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 88, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyCFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 91, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_10);
   } else
   #endif
   {
-    __pyx_t_2 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 88, __pyx_L1_error)
+    __pyx_t_2 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 91, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     if (__pyx_t_3) {
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -3578,7 +3597,7 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
     __Pyx_INCREF(__pyx_n_u_csc);
     __Pyx_GIVEREF(__pyx_n_u_csc);
     PyTuple_SET_ITEM(__pyx_t_2, 1+__pyx_t_5, __pyx_n_u_csc);
-    __pyx_t_10 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_2, NULL); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 88, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_2, NULL); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 91, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   }
@@ -3586,91 +3605,91 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
   __Pyx_DECREF_SET(__pyx_v_URM, __pyx_t_10);
   __pyx_t_10 = 0;
 
-  /* "Similarity.pyx":89
+  /* "Similarity.pyx":92
  * 
  *         URM = check_matrix(URM, 'csc')
  *         self.item_to_user_rows = URM.indices             # <<<<<<<<<<<<<<
  *         self.item_to_user_col_ptr = URM.indptr
  *         self.item_to_user_data = np.array(URM.data, dtype=np.float64)
  */
-  __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_indices); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_indices); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 92, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
-  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(__pyx_t_10, PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(__pyx_t_10, PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 92, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_v_self->item_to_user_rows, 0);
   __pyx_v_self->item_to_user_rows = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
 
-  /* "Similarity.pyx":90
+  /* "Similarity.pyx":93
  *         URM = check_matrix(URM, 'csc')
  *         self.item_to_user_rows = URM.indices
  *         self.item_to_user_col_ptr = URM.indptr             # <<<<<<<<<<<<<<
  *         self.item_to_user_data = np.array(URM.data, dtype=np.float64)
  * 
  */
-  __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_indptr); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 90, __pyx_L1_error)
+  __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_indptr); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 93, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
-  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(__pyx_t_10, PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 90, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(__pyx_t_10, PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 93, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_v_self->item_to_user_col_ptr, 0);
   __pyx_v_self->item_to_user_col_ptr = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
 
-  /* "Similarity.pyx":91
+  /* "Similarity.pyx":94
  *         self.item_to_user_rows = URM.indices
  *         self.item_to_user_col_ptr = URM.indptr
  *         self.item_to_user_data = np.array(URM.data, dtype=np.float64)             # <<<<<<<<<<<<<<
  * 
  *         # Compute sum of squared values to be used in normalization
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_n_s_np); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_n_s_np); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 94, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_n_s_array); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_n_s_array); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 94, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-  __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_data); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_data); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 94, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 94, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_10);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_10);
   __pyx_t_10 = 0;
-  __pyx_t_10 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __pyx_t_10 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 94, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 94, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_float64); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_float64); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 94, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_t_10, __pyx_n_s_dtype, __pyx_t_8) < 0) __PYX_ERR(0, 91, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_10, __pyx_n_s_dtype, __pyx_t_8) < 0) __PYX_ERR(0, 94, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_2, __pyx_t_10); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_2, __pyx_t_10); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 94, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-  __pyx_t_11 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_8, PyBUF_WRITABLE); if (unlikely(!__pyx_t_11.memview)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __pyx_t_11 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_8, PyBUF_WRITABLE); if (unlikely(!__pyx_t_11.memview)) __PYX_ERR(0, 94, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_v_self->item_to_user_data, 0);
   __pyx_v_self->item_to_user_data = __pyx_t_11;
   __pyx_t_11.memview = NULL;
   __pyx_t_11.data = NULL;
 
-  /* "Similarity.pyx":94
+  /* "Similarity.pyx":97
  * 
  *         # Compute sum of squared values to be used in normalization
  *         self.sumOfSquared = np.array(URM.power(2).sum(axis=0), dtype=np.float64).ravel()             # <<<<<<<<<<<<<<
  * 
  *         # Tanimoto does not require the square root to be applied
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_n_s_np); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 94, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_n_s_np); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 97, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_n_s_array); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 94, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_n_s_array); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 97, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_power); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 94, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_power); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 97, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
@@ -3684,39 +3703,39 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
   }
   __pyx_t_10 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_3, __pyx_int_2) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_int_2);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 94, __pyx_L1_error)
+  if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 97, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_n_s_sum); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 94, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_n_s_sum); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 97, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-  __pyx_t_10 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 94, __pyx_L1_error)
+  __pyx_t_10 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 97, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
-  if (PyDict_SetItem(__pyx_t_10, __pyx_n_s_axis, __pyx_int_0) < 0) __PYX_ERR(0, 94, __pyx_L1_error)
-  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_empty_tuple, __pyx_t_10); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 94, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_10, __pyx_n_s_axis, __pyx_int_0) < 0) __PYX_ERR(0, 97, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_empty_tuple, __pyx_t_10); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 97, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-  __pyx_t_10 = PyTuple_New(1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 94, __pyx_L1_error)
+  __pyx_t_10 = PyTuple_New(1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 97, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
   __Pyx_GIVEREF(__pyx_t_3);
   PyTuple_SET_ITEM(__pyx_t_10, 0, __pyx_t_3);
   __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 94, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 97, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 94, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 97, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_float64); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 94, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_float64); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 97, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_12) < 0) __PYX_ERR(0, 94, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_12) < 0) __PYX_ERR(0, 97, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-  __pyx_t_12 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_10, __pyx_t_3); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 94, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_10, __pyx_t_3); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 97, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_ravel); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 94, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_ravel); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 97, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
   __pyx_t_12 = NULL;
@@ -3731,17 +3750,17 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
   }
   __pyx_t_8 = (__pyx_t_12) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_12) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
-  if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 94, __pyx_L1_error)
+  if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 97, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_11 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_8, PyBUF_WRITABLE); if (unlikely(!__pyx_t_11.memview)) __PYX_ERR(0, 94, __pyx_L1_error)
+  __pyx_t_11 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_8, PyBUF_WRITABLE); if (unlikely(!__pyx_t_11.memview)) __PYX_ERR(0, 97, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_v_self->sumOfSquared, 0);
   __pyx_v_self->sumOfSquared = __pyx_t_11;
   __pyx_t_11.memview = NULL;
   __pyx_t_11.data = NULL;
 
-  /* "Similarity.pyx":97
+  /* "Similarity.pyx":100
  * 
  *         # Tanimoto does not require the square root to be applied
  *         if not self.tanimoto_coefficient:             # <<<<<<<<<<<<<<
@@ -3751,19 +3770,19 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
   __pyx_t_6 = ((!(__pyx_v_self->tanimoto_coefficient != 0)) != 0);
   if (__pyx_t_6) {
 
-    /* "Similarity.pyx":98
+    /* "Similarity.pyx":101
  *         # Tanimoto does not require the square root to be applied
  *         if not self.tanimoto_coefficient:
  *             self.sumOfSquared = np.sqrt(self.sumOfSquared)             # <<<<<<<<<<<<<<
  * 
  * 
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 98, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 101, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_sqrt); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 98, __pyx_L1_error)
+    __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_sqrt); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 101, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_12);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_v_self->sumOfSquared, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 98, __pyx_L1_error)
+    __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_v_self->sumOfSquared, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 101, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_10 = NULL;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_12))) {
@@ -3778,17 +3797,17 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
     __pyx_t_8 = (__pyx_t_10) ? __Pyx_PyObject_Call2Args(__pyx_t_12, __pyx_t_10, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_12, __pyx_t_3);
     __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 98, __pyx_L1_error)
+    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 101, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-    __pyx_t_11 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_8, PyBUF_WRITABLE); if (unlikely(!__pyx_t_11.memview)) __PYX_ERR(0, 98, __pyx_L1_error)
+    __pyx_t_11 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_8, PyBUF_WRITABLE); if (unlikely(!__pyx_t_11.memview)) __PYX_ERR(0, 101, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __PYX_XDEC_MEMVIEW(&__pyx_v_self->sumOfSquared, 0);
     __pyx_v_self->sumOfSquared = __pyx_t_11;
     __pyx_t_11.memview = NULL;
     __pyx_t_11.data = NULL;
 
-    /* "Similarity.pyx":97
+    /* "Similarity.pyx":100
  * 
  *         # Tanimoto does not require the square root to be applied
  *         if not self.tanimoto_coefficient:             # <<<<<<<<<<<<<<
@@ -3797,7 +3816,7 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
  */
   }
 
-  /* "Similarity.pyx":101
+  /* "Similarity.pyx":104
  * 
  * 
  *         if self.TopK == 0:             # <<<<<<<<<<<<<<
@@ -3807,23 +3826,23 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
   __pyx_t_6 = ((__pyx_v_self->TopK == 0) != 0);
   if (__pyx_t_6) {
 
-    /* "Similarity.pyx":102
+    /* "Similarity.pyx":105
  * 
  *         if self.TopK == 0:
  *             self.W_dense = np.zeros((self.n_items,self.n_items))             # <<<<<<<<<<<<<<
  * 
  * 
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_n_s_np); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 102, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_n_s_np); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 105, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_12);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_zeros); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_zeros); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 105, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-    __pyx_t_12 = __Pyx_PyInt_From_long(__pyx_v_self->n_items); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 102, __pyx_L1_error)
+    __pyx_t_12 = __Pyx_PyInt_From_long(__pyx_v_self->n_items); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 105, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_12);
-    __pyx_t_10 = __Pyx_PyInt_From_long(__pyx_v_self->n_items); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 102, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyInt_From_long(__pyx_v_self->n_items); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 105, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
-    __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 102, __pyx_L1_error)
+    __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 105, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_GIVEREF(__pyx_t_12);
     PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_12);
@@ -3844,17 +3863,17 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
     __pyx_t_8 = (__pyx_t_10) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_10, __pyx_t_2) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2);
     __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 102, __pyx_L1_error)
+    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 105, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_13 = __Pyx_PyObject_to_MemoryviewSlice_dsds_double(__pyx_t_8, PyBUF_WRITABLE); if (unlikely(!__pyx_t_13.memview)) __PYX_ERR(0, 102, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyObject_to_MemoryviewSlice_dsds_double(__pyx_t_8, PyBUF_WRITABLE); if (unlikely(!__pyx_t_13.memview)) __PYX_ERR(0, 105, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __PYX_XDEC_MEMVIEW(&__pyx_v_self->W_dense, 0);
     __pyx_v_self->W_dense = __pyx_t_13;
     __pyx_t_13.memview = NULL;
     __pyx_t_13.data = NULL;
 
-    /* "Similarity.pyx":101
+    /* "Similarity.pyx":104
  * 
  * 
  *         if self.TopK == 0:             # <<<<<<<<<<<<<<
@@ -3892,7 +3911,7 @@ static int __pyx_pf_10Similarity_10Similarity___init__(struct __pyx_obj_10Simila
   return __pyx_r;
 }
 
-/* "Similarity.pyx":106
+/* "Similarity.pyx":109
  * 
  * 
  *     cdef useOnlyBooleanInteractions(self, URM):             # <<<<<<<<<<<<<<
@@ -3910,35 +3929,35 @@ static PyObject *__pyx_f_10Similarity_10Similarity_useOnlyBooleanInteractions(CY
   long __pyx_t_4;
   __Pyx_RefNannySetupContext("useOnlyBooleanInteractions", 0);
 
-  /* "Similarity.pyx":114
+  /* "Similarity.pyx":117
  *         cdef long index
  * 
  *         for index in range(len(URM.data)):             # <<<<<<<<<<<<<<
  *             URM.data[index] = 1
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_data); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 114, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_data); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 117, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyObject_Length(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 114, __pyx_L1_error)
+  __pyx_t_2 = PyObject_Length(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 117, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_3 = __pyx_t_2;
   for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
     __pyx_v_index = __pyx_t_4;
 
-    /* "Similarity.pyx":115
+    /* "Similarity.pyx":118
  * 
  *         for index in range(len(URM.data)):
  *             URM.data[index] = 1             # <<<<<<<<<<<<<<
  * 
  *         return URM
  */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_data); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 115, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_data); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 118, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    if (unlikely(__Pyx_SetItemInt(__pyx_t_1, __pyx_v_index, __pyx_int_1, long, 1, __Pyx_PyInt_From_long, 0, 1, 0) < 0)) __PYX_ERR(0, 115, __pyx_L1_error)
+    if (unlikely(__Pyx_SetItemInt(__pyx_t_1, __pyx_v_index, __pyx_int_1, long, 1, __Pyx_PyInt_From_long, 0, 1, 0) < 0)) __PYX_ERR(0, 118, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
 
-  /* "Similarity.pyx":117
+  /* "Similarity.pyx":120
  *             URM.data[index] = 1
  * 
  *         return URM             # <<<<<<<<<<<<<<
@@ -3950,7 +3969,7 @@ static PyObject *__pyx_f_10Similarity_10Similarity_useOnlyBooleanInteractions(CY
   __pyx_r = __pyx_v_URM;
   goto __pyx_L0;
 
-  /* "Similarity.pyx":106
+  /* "Similarity.pyx":109
  * 
  * 
  *     cdef useOnlyBooleanInteractions(self, URM):             # <<<<<<<<<<<<<<
@@ -3969,7 +3988,7 @@ static PyObject *__pyx_f_10Similarity_10Similarity_useOnlyBooleanInteractions(CY
   return __pyx_r;
 }
 
-/* "Similarity.pyx":121
+/* "Similarity.pyx":124
  * 
  * 
  *     cdef applyPearsonCorrelation(self, URM):             # <<<<<<<<<<<<<<
@@ -4007,14 +4026,14 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyPearsonCorrelation(struc
   __Pyx_RefNannySetupContext("applyPearsonCorrelation", 0);
   __Pyx_INCREF(__pyx_v_URM);
 
-  /* "Similarity.pyx":133
+  /* "Similarity.pyx":136
  * 
  * 
  *         URM = check_matrix(URM, 'csc')             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_check_matrix); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 133, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_check_matrix); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   __pyx_t_4 = 0;
@@ -4031,7 +4050,7 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyPearsonCorrelation(struc
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_URM, __pyx_n_u_csc};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 133, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 136, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
@@ -4039,13 +4058,13 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyPearsonCorrelation(struc
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_URM, __pyx_n_u_csc};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 133, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 136, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
   #endif
   {
-    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 133, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 136, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     if (__pyx_t_3) {
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -4056,7 +4075,7 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyPearsonCorrelation(struc
     __Pyx_INCREF(__pyx_n_u_csc);
     __Pyx_GIVEREF(__pyx_n_u_csc);
     PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_4, __pyx_n_u_csc);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 133, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 136, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
@@ -4064,47 +4083,47 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyPearsonCorrelation(struc
   __Pyx_DECREF_SET(__pyx_v_URM, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "Similarity.pyx":136
+  /* "Similarity.pyx":139
  * 
  * 
  *         sumPerCol = np.array(URM.sum(axis=0), dtype=np.float64).ravel()             # <<<<<<<<<<<<<<
  *         interactionsPerCol = np.diff(URM.indptr)
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 136, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_array); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 136, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_array); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_sum); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 136, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_sum); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 136, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_axis, __pyx_int_0) < 0) __PYX_ERR(0, 136, __pyx_L1_error)
-  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_empty_tuple, __pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 136, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_axis, __pyx_int_0) < 0) __PYX_ERR(0, 139, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_empty_tuple, __pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 136, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_6);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_6);
   __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 136, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 136, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_float64); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 136, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_float64); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 136, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_3, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 136, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_3, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_ravel); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 136, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_ravel); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __pyx_t_7 = NULL;
@@ -4119,28 +4138,28 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyPearsonCorrelation(struc
   }
   __pyx_t_1 = (__pyx_t_7) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_7) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 136, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 136, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_sumPerCol = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
 
-  /* "Similarity.pyx":137
+  /* "Similarity.pyx":140
  * 
  *         sumPerCol = np.array(URM.sum(axis=0), dtype=np.float64).ravel()
  *         interactionsPerCol = np.diff(URM.indptr)             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_diff); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_diff); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_indptr); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_indptr); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_7))) {
@@ -4155,16 +4174,16 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyPearsonCorrelation(struc
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_7, __pyx_t_3, __pyx_t_6) : __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_t_6);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 137, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_interactionsPerCol = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
 
-  /* "Similarity.pyx":141
+  /* "Similarity.pyx":144
  * 
  *         #Remove for every row the corresponding average
  *         for colIndex in range(self.n_items):             # <<<<<<<<<<<<<<
@@ -4176,7 +4195,7 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyPearsonCorrelation(struc
   for (__pyx_t_12 = 0; __pyx_t_12 < __pyx_t_11; __pyx_t_12+=1) {
     __pyx_v_colIndex = __pyx_t_12;
 
-    /* "Similarity.pyx":143
+    /* "Similarity.pyx":146
  *         for colIndex in range(self.n_items):
  * 
  *             if interactionsPerCol[colIndex]>0:             # <<<<<<<<<<<<<<
@@ -4188,7 +4207,7 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyPearsonCorrelation(struc
     __pyx_t_14 = (((*((int *) ( /* dim=0 */ (__pyx_v_interactionsPerCol.data + __pyx_t_13 * __pyx_v_interactionsPerCol.strides[0]) ))) > 0) != 0);
     if (__pyx_t_14) {
 
-      /* "Similarity.pyx":145
+      /* "Similarity.pyx":148
  *             if interactionsPerCol[colIndex]>0:
  * 
  *                 colAverage = sumPerCol[colIndex] / interactionsPerCol[colIndex]             # <<<<<<<<<<<<<<
@@ -4201,40 +4220,40 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyPearsonCorrelation(struc
       if (__pyx_t_16 < 0) __pyx_t_16 += __pyx_v_interactionsPerCol.shape[0];
       __pyx_v_colAverage = ((*((double *) ( /* dim=0 */ (__pyx_v_sumPerCol.data + __pyx_t_15 * __pyx_v_sumPerCol.strides[0]) ))) / ((double)(*((int *) ( /* dim=0 */ (__pyx_v_interactionsPerCol.data + __pyx_t_16 * __pyx_v_interactionsPerCol.strides[0]) )))));
 
-      /* "Similarity.pyx":147
+      /* "Similarity.pyx":150
  *                 colAverage = sumPerCol[colIndex] / interactionsPerCol[colIndex]
  * 
  *                 start_pos = URM.indptr[colIndex]             # <<<<<<<<<<<<<<
  *                 end_pos = URM.indptr[colIndex+1]
  * 
  */
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_indptr); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 147, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_indptr); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 150, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_7 = __Pyx_GetItemInt(__pyx_t_1, __pyx_v_colIndex, long, 1, __Pyx_PyInt_From_long, 0, 1, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 147, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_GetItemInt(__pyx_t_1, __pyx_v_colIndex, long, 1, __Pyx_PyInt_From_long, 0, 1, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 150, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_17 = __Pyx_PyInt_As_long(__pyx_t_7); if (unlikely((__pyx_t_17 == (long)-1) && PyErr_Occurred())) __PYX_ERR(0, 147, __pyx_L1_error)
+      __pyx_t_17 = __Pyx_PyInt_As_long(__pyx_t_7); if (unlikely((__pyx_t_17 == (long)-1) && PyErr_Occurred())) __PYX_ERR(0, 150, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __pyx_v_start_pos = __pyx_t_17;
 
-      /* "Similarity.pyx":148
+      /* "Similarity.pyx":151
  * 
  *                 start_pos = URM.indptr[colIndex]
  *                 end_pos = URM.indptr[colIndex+1]             # <<<<<<<<<<<<<<
  * 
  *                 innerIndex = start_pos
  */
-      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_indptr); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 148, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_indptr); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 151, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __pyx_t_17 = (__pyx_v_colIndex + 1);
-      __pyx_t_1 = __Pyx_GetItemInt(__pyx_t_7, __pyx_t_17, long, 1, __Pyx_PyInt_From_long, 0, 1, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 148, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_GetItemInt(__pyx_t_7, __pyx_t_17, long, 1, __Pyx_PyInt_From_long, 0, 1, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 151, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __pyx_t_17 = __Pyx_PyInt_As_long(__pyx_t_1); if (unlikely((__pyx_t_17 == (long)-1) && PyErr_Occurred())) __PYX_ERR(0, 148, __pyx_L1_error)
+      __pyx_t_17 = __Pyx_PyInt_As_long(__pyx_t_1); if (unlikely((__pyx_t_17 == (long)-1) && PyErr_Occurred())) __PYX_ERR(0, 151, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __pyx_v_end_pos = __pyx_t_17;
 
-      /* "Similarity.pyx":150
+      /* "Similarity.pyx":153
  *                 end_pos = URM.indptr[colIndex+1]
  * 
  *                 innerIndex = start_pos             # <<<<<<<<<<<<<<
@@ -4243,7 +4262,7 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyPearsonCorrelation(struc
  */
       __pyx_v_innerIndex = __pyx_v_start_pos;
 
-      /* "Similarity.pyx":152
+      /* "Similarity.pyx":155
  *                 innerIndex = start_pos
  * 
  *                 while innerIndex < end_pos:             # <<<<<<<<<<<<<<
@@ -4254,29 +4273,29 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyPearsonCorrelation(struc
         __pyx_t_14 = ((__pyx_v_innerIndex < __pyx_v_end_pos) != 0);
         if (!__pyx_t_14) break;
 
-        /* "Similarity.pyx":154
+        /* "Similarity.pyx":157
  *                 while innerIndex < end_pos:
  * 
  *                     URM.data[innerIndex] -= colAverage             # <<<<<<<<<<<<<<
  *                     innerIndex+=1
  * 
  */
-        __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_data); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 154, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_data); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 157, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         __pyx_t_17 = __pyx_v_innerIndex;
-        __pyx_t_7 = __Pyx_GetItemInt(__pyx_t_1, __pyx_t_17, long, 1, __Pyx_PyInt_From_long, 0, 1, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 154, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_GetItemInt(__pyx_t_1, __pyx_t_17, long, 1, __Pyx_PyInt_From_long, 0, 1, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 157, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
-        __pyx_t_6 = PyFloat_FromDouble(__pyx_v_colAverage); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 154, __pyx_L1_error)
+        __pyx_t_6 = PyFloat_FromDouble(__pyx_v_colAverage); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 157, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_3 = PyNumber_InPlaceSubtract(__pyx_t_7, __pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 154, __pyx_L1_error)
+        __pyx_t_3 = PyNumber_InPlaceSubtract(__pyx_t_7, __pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 157, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-        if (unlikely(__Pyx_SetItemInt(__pyx_t_1, __pyx_t_17, __pyx_t_3, long, 1, __Pyx_PyInt_From_long, 0, 1, 0) < 0)) __PYX_ERR(0, 154, __pyx_L1_error)
+        if (unlikely(__Pyx_SetItemInt(__pyx_t_1, __pyx_t_17, __pyx_t_3, long, 1, __Pyx_PyInt_From_long, 0, 1, 0) < 0)) __PYX_ERR(0, 157, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-        /* "Similarity.pyx":155
+        /* "Similarity.pyx":158
  * 
  *                     URM.data[innerIndex] -= colAverage
  *                     innerIndex+=1             # <<<<<<<<<<<<<<
@@ -4286,7 +4305,7 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyPearsonCorrelation(struc
         __pyx_v_innerIndex = (__pyx_v_innerIndex + 1);
       }
 
-      /* "Similarity.pyx":143
+      /* "Similarity.pyx":146
  *         for colIndex in range(self.n_items):
  * 
  *             if interactionsPerCol[colIndex]>0:             # <<<<<<<<<<<<<<
@@ -4296,7 +4315,7 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyPearsonCorrelation(struc
     }
   }
 
-  /* "Similarity.pyx":158
+  /* "Similarity.pyx":161
  * 
  * 
  *         return URM             # <<<<<<<<<<<<<<
@@ -4308,7 +4327,7 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyPearsonCorrelation(struc
   __pyx_r = __pyx_v_URM;
   goto __pyx_L0;
 
-  /* "Similarity.pyx":121
+  /* "Similarity.pyx":124
  * 
  * 
  *     cdef applyPearsonCorrelation(self, URM):             # <<<<<<<<<<<<<<
@@ -4337,7 +4356,7 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyPearsonCorrelation(struc
   return __pyx_r;
 }
 
-/* "Similarity.pyx":162
+/* "Similarity.pyx":165
  * 
  * 
  *     cdef applyAdjustedCosine(self, URM):             # <<<<<<<<<<<<<<
@@ -4375,14 +4394,14 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyAdjustedCosine(struct __
   __Pyx_RefNannySetupContext("applyAdjustedCosine", 0);
   __Pyx_INCREF(__pyx_v_URM);
 
-  /* "Similarity.pyx":173
+  /* "Similarity.pyx":176
  *         cdef double rowAverage
  * 
  *         URM = check_matrix(URM, 'csr')             # <<<<<<<<<<<<<<
  * 
  *         sumPerRow = np.array(URM.sum(axis=1), dtype=np.float64).ravel()
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_check_matrix); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 173, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_check_matrix); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 176, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   __pyx_t_4 = 0;
@@ -4399,7 +4418,7 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyAdjustedCosine(struct __
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_URM, __pyx_n_u_csr};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 173, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 176, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
@@ -4407,13 +4426,13 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyAdjustedCosine(struct __
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_URM, __pyx_n_u_csr};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 173, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 176, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
   #endif
   {
-    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 173, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 176, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     if (__pyx_t_3) {
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -4424,7 +4443,7 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyAdjustedCosine(struct __
     __Pyx_INCREF(__pyx_n_u_csr);
     __Pyx_GIVEREF(__pyx_n_u_csr);
     PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_4, __pyx_n_u_csr);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 173, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 176, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
@@ -4432,47 +4451,47 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyAdjustedCosine(struct __
   __Pyx_DECREF_SET(__pyx_v_URM, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "Similarity.pyx":175
+  /* "Similarity.pyx":178
  *         URM = check_matrix(URM, 'csr')
  * 
  *         sumPerRow = np.array(URM.sum(axis=1), dtype=np.float64).ravel()             # <<<<<<<<<<<<<<
  *         interactionsPerRow = np.diff(URM.indptr)
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 175, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 178, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_array); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 175, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_array); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 178, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_sum); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 175, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_sum); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 178, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 175, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 178, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_axis, __pyx_int_1) < 0) __PYX_ERR(0, 175, __pyx_L1_error)
-  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_empty_tuple, __pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 175, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_axis, __pyx_int_1) < 0) __PYX_ERR(0, 178, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_empty_tuple, __pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 178, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 175, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 178, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_6);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_6);
   __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 175, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 178, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 175, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 178, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_float64); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 175, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_float64); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 178, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 175, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 178, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_3, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 175, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_3, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 178, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_ravel); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 175, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_ravel); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 178, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __pyx_t_7 = NULL;
@@ -4487,28 +4506,28 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyAdjustedCosine(struct __
   }
   __pyx_t_1 = (__pyx_t_7) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_7) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 175, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 178, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 175, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 178, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_sumPerRow = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
 
-  /* "Similarity.pyx":176
+  /* "Similarity.pyx":179
  * 
  *         sumPerRow = np.array(URM.sum(axis=1), dtype=np.float64).ravel()
  *         interactionsPerRow = np.diff(URM.indptr)             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 176, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 179, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_diff); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 176, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_diff); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 179, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_indptr); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 176, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_indptr); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 179, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_7))) {
@@ -4523,16 +4542,16 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyAdjustedCosine(struct __
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_7, __pyx_t_3, __pyx_t_6) : __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_t_6);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 176, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 179, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 176, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 179, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_interactionsPerRow = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
 
-  /* "Similarity.pyx":180
+  /* "Similarity.pyx":183
  * 
  *         #Remove for every row the corresponding average
  *         for rowIndex in range(self.n_users):             # <<<<<<<<<<<<<<
@@ -4544,7 +4563,7 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyAdjustedCosine(struct __
   for (__pyx_t_12 = 0; __pyx_t_12 < __pyx_t_11; __pyx_t_12+=1) {
     __pyx_v_rowIndex = __pyx_t_12;
 
-    /* "Similarity.pyx":182
+    /* "Similarity.pyx":185
  *         for rowIndex in range(self.n_users):
  * 
  *             if interactionsPerRow[rowIndex]>0:             # <<<<<<<<<<<<<<
@@ -4556,7 +4575,7 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyAdjustedCosine(struct __
     __pyx_t_14 = (((*((int *) ( /* dim=0 */ (__pyx_v_interactionsPerRow.data + __pyx_t_13 * __pyx_v_interactionsPerRow.strides[0]) ))) > 0) != 0);
     if (__pyx_t_14) {
 
-      /* "Similarity.pyx":184
+      /* "Similarity.pyx":187
  *             if interactionsPerRow[rowIndex]>0:
  * 
  *                 rowAverage = sumPerRow[rowIndex] / interactionsPerRow[rowIndex]             # <<<<<<<<<<<<<<
@@ -4569,40 +4588,40 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyAdjustedCosine(struct __
       if (__pyx_t_16 < 0) __pyx_t_16 += __pyx_v_interactionsPerRow.shape[0];
       __pyx_v_rowAverage = ((*((double *) ( /* dim=0 */ (__pyx_v_sumPerRow.data + __pyx_t_15 * __pyx_v_sumPerRow.strides[0]) ))) / ((double)(*((int *) ( /* dim=0 */ (__pyx_v_interactionsPerRow.data + __pyx_t_16 * __pyx_v_interactionsPerRow.strides[0]) )))));
 
-      /* "Similarity.pyx":186
+      /* "Similarity.pyx":189
  *                 rowAverage = sumPerRow[rowIndex] / interactionsPerRow[rowIndex]
  * 
  *                 start_pos = URM.indptr[rowIndex]             # <<<<<<<<<<<<<<
  *                 end_pos = URM.indptr[rowIndex+1]
  * 
  */
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_indptr); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 186, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_indptr); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 189, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_7 = __Pyx_GetItemInt(__pyx_t_1, __pyx_v_rowIndex, long, 1, __Pyx_PyInt_From_long, 0, 1, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 186, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_GetItemInt(__pyx_t_1, __pyx_v_rowIndex, long, 1, __Pyx_PyInt_From_long, 0, 1, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 189, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_17 = __Pyx_PyInt_As_long(__pyx_t_7); if (unlikely((__pyx_t_17 == (long)-1) && PyErr_Occurred())) __PYX_ERR(0, 186, __pyx_L1_error)
+      __pyx_t_17 = __Pyx_PyInt_As_long(__pyx_t_7); if (unlikely((__pyx_t_17 == (long)-1) && PyErr_Occurred())) __PYX_ERR(0, 189, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __pyx_v_start_pos = __pyx_t_17;
 
-      /* "Similarity.pyx":187
+      /* "Similarity.pyx":190
  * 
  *                 start_pos = URM.indptr[rowIndex]
  *                 end_pos = URM.indptr[rowIndex+1]             # <<<<<<<<<<<<<<
  * 
  *                 innerIndex = start_pos
  */
-      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_indptr); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 187, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_indptr); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 190, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __pyx_t_17 = (__pyx_v_rowIndex + 1);
-      __pyx_t_1 = __Pyx_GetItemInt(__pyx_t_7, __pyx_t_17, long, 1, __Pyx_PyInt_From_long, 0, 1, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 187, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_GetItemInt(__pyx_t_7, __pyx_t_17, long, 1, __Pyx_PyInt_From_long, 0, 1, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 190, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __pyx_t_17 = __Pyx_PyInt_As_long(__pyx_t_1); if (unlikely((__pyx_t_17 == (long)-1) && PyErr_Occurred())) __PYX_ERR(0, 187, __pyx_L1_error)
+      __pyx_t_17 = __Pyx_PyInt_As_long(__pyx_t_1); if (unlikely((__pyx_t_17 == (long)-1) && PyErr_Occurred())) __PYX_ERR(0, 190, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __pyx_v_end_pos = __pyx_t_17;
 
-      /* "Similarity.pyx":189
+      /* "Similarity.pyx":192
  *                 end_pos = URM.indptr[rowIndex+1]
  * 
  *                 innerIndex = start_pos             # <<<<<<<<<<<<<<
@@ -4611,7 +4630,7 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyAdjustedCosine(struct __
  */
       __pyx_v_innerIndex = __pyx_v_start_pos;
 
-      /* "Similarity.pyx":191
+      /* "Similarity.pyx":194
  *                 innerIndex = start_pos
  * 
  *                 while innerIndex < end_pos:             # <<<<<<<<<<<<<<
@@ -4622,29 +4641,29 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyAdjustedCosine(struct __
         __pyx_t_14 = ((__pyx_v_innerIndex < __pyx_v_end_pos) != 0);
         if (!__pyx_t_14) break;
 
-        /* "Similarity.pyx":193
+        /* "Similarity.pyx":196
  *                 while innerIndex < end_pos:
  * 
  *                     URM.data[innerIndex] -= rowAverage             # <<<<<<<<<<<<<<
  *                     innerIndex+=1
  * 
  */
-        __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_data); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 193, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_URM, __pyx_n_s_data); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 196, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         __pyx_t_17 = __pyx_v_innerIndex;
-        __pyx_t_7 = __Pyx_GetItemInt(__pyx_t_1, __pyx_t_17, long, 1, __Pyx_PyInt_From_long, 0, 1, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 193, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_GetItemInt(__pyx_t_1, __pyx_t_17, long, 1, __Pyx_PyInt_From_long, 0, 1, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 196, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
-        __pyx_t_6 = PyFloat_FromDouble(__pyx_v_rowAverage); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 193, __pyx_L1_error)
+        __pyx_t_6 = PyFloat_FromDouble(__pyx_v_rowAverage); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 196, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_3 = PyNumber_InPlaceSubtract(__pyx_t_7, __pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 193, __pyx_L1_error)
+        __pyx_t_3 = PyNumber_InPlaceSubtract(__pyx_t_7, __pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 196, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-        if (unlikely(__Pyx_SetItemInt(__pyx_t_1, __pyx_t_17, __pyx_t_3, long, 1, __Pyx_PyInt_From_long, 0, 1, 0) < 0)) __PYX_ERR(0, 193, __pyx_L1_error)
+        if (unlikely(__Pyx_SetItemInt(__pyx_t_1, __pyx_t_17, __pyx_t_3, long, 1, __Pyx_PyInt_From_long, 0, 1, 0) < 0)) __PYX_ERR(0, 196, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-        /* "Similarity.pyx":194
+        /* "Similarity.pyx":197
  * 
  *                     URM.data[innerIndex] -= rowAverage
  *                     innerIndex+=1             # <<<<<<<<<<<<<<
@@ -4654,7 +4673,7 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyAdjustedCosine(struct __
         __pyx_v_innerIndex = (__pyx_v_innerIndex + 1);
       }
 
-      /* "Similarity.pyx":182
+      /* "Similarity.pyx":185
  *         for rowIndex in range(self.n_users):
  * 
  *             if interactionsPerRow[rowIndex]>0:             # <<<<<<<<<<<<<<
@@ -4664,7 +4683,7 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyAdjustedCosine(struct __
     }
   }
 
-  /* "Similarity.pyx":197
+  /* "Similarity.pyx":200
  * 
  * 
  *         return URM             # <<<<<<<<<<<<<<
@@ -4676,7 +4695,7 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyAdjustedCosine(struct __
   __pyx_r = __pyx_v_URM;
   goto __pyx_L0;
 
-  /* "Similarity.pyx":162
+  /* "Similarity.pyx":165
  * 
  * 
  *     cdef applyAdjustedCosine(self, URM):             # <<<<<<<<<<<<<<
@@ -4705,7 +4724,7 @@ static PyObject *__pyx_f_10Similarity_10Similarity_applyAdjustedCosine(struct __
   return __pyx_r;
 }
 
-/* "Similarity.pyx":203
+/* "Similarity.pyx":206
  * 
  * 
  *     cdef int[:] getUsersThatRatedItem(self, long item_id):             # <<<<<<<<<<<<<<
@@ -4722,7 +4741,7 @@ static __Pyx_memviewslice __pyx_f_10Similarity_10Similarity_getUsersThatRatedIte
   int __pyx_t_4;
   __Pyx_RefNannySetupContext("getUsersThatRatedItem", 0);
 
-  /* "Similarity.pyx":204
+  /* "Similarity.pyx":207
  * 
  *     cdef int[:] getUsersThatRatedItem(self, long item_id):
  *         return self.item_to_user_rows[self.item_to_user_col_ptr[item_id]:self.item_to_user_col_ptr[item_id+1]]             # <<<<<<<<<<<<<<
@@ -4751,7 +4770,7 @@ static __Pyx_memviewslice __pyx_f_10Similarity_10Similarity_getUsersThatRatedIte
     0,
     1) < 0))
 {
-    __PYX_ERR(0, 204, __pyx_L1_error)
+    __PYX_ERR(0, 207, __pyx_L1_error)
 }
 
 __pyx_r = __pyx_t_3;
@@ -4759,7 +4778,7 @@ __pyx_r = __pyx_t_3;
   __pyx_t_3.data = NULL;
   goto __pyx_L0;
 
-  /* "Similarity.pyx":203
+  /* "Similarity.pyx":206
  * 
  * 
  *     cdef int[:] getUsersThatRatedItem(self, long item_id):             # <<<<<<<<<<<<<<
@@ -4783,7 +4802,7 @@ __pyx_r = __pyx_t_3;
   return __pyx_r;
 }
 
-/* "Similarity.pyx":206
+/* "Similarity.pyx":209
  *         return self.item_to_user_rows[self.item_to_user_col_ptr[item_id]:self.item_to_user_col_ptr[item_id+1]]
  * 
  *     cdef int[:] getItemsRatedByUser(self, long user_id):             # <<<<<<<<<<<<<<
@@ -4800,7 +4819,7 @@ static __Pyx_memviewslice __pyx_f_10Similarity_10Similarity_getItemsRatedByUser(
   int __pyx_t_4;
   __Pyx_RefNannySetupContext("getItemsRatedByUser", 0);
 
-  /* "Similarity.pyx":207
+  /* "Similarity.pyx":210
  * 
  *     cdef int[:] getItemsRatedByUser(self, long user_id):
  *         return self.user_to_item_cols[self.user_to_item_row_ptr[user_id]:self.user_to_item_row_ptr[user_id+1]]             # <<<<<<<<<<<<<<
@@ -4829,7 +4848,7 @@ static __Pyx_memviewslice __pyx_f_10Similarity_10Similarity_getItemsRatedByUser(
     0,
     1) < 0))
 {
-    __PYX_ERR(0, 207, __pyx_L1_error)
+    __PYX_ERR(0, 210, __pyx_L1_error)
 }
 
 __pyx_r = __pyx_t_3;
@@ -4837,7 +4856,7 @@ __pyx_r = __pyx_t_3;
   __pyx_t_3.data = NULL;
   goto __pyx_L0;
 
-  /* "Similarity.pyx":206
+  /* "Similarity.pyx":209
  *         return self.item_to_user_rows[self.item_to_user_col_ptr[item_id]:self.item_to_user_col_ptr[item_id+1]]
  * 
  *     cdef int[:] getItemsRatedByUser(self, long user_id):             # <<<<<<<<<<<<<<
@@ -4861,7 +4880,7 @@ __pyx_r = __pyx_t_3;
   return __pyx_r;
 }
 
-/* "Similarity.pyx":215
+/* "Similarity.pyx":218
  * 
  * 
  *     cdef double[:] computeItemSimilarities(self, long item_id_input):             # <<<<<<<<<<<<<<
@@ -4913,59 +4932,59 @@ static __Pyx_memviewslice __pyx_f_10Similarity_10Similarity_computeItemSimilarit
   __pyx_pybuffernd_result.data = NULL;
   __pyx_pybuffernd_result.rcbuffer = &__pyx_pybuffer_result;
 
-  /* "Similarity.pyx":244
+  /* "Similarity.pyx":247
  *         # Create template used to initialize an array with zeros
  *         # Much faster than np.zeros(self.n_items)
  *         cdef array[double] template_zero = array('d')             # <<<<<<<<<<<<<<
  *         cdef array[double] result = clone(template_zero, self.n_items, zero=True)
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_7cpython_5array_array), __pyx_tuple_, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 244, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_7cpython_5array_array), __pyx_tuple_, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 247, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_template_zero.rcbuffer->pybuffer, (PyObject*)((arrayobject *)__pyx_t_1), &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_INDIRECT, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_template_zero = ((arrayobject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_template_zero.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 244, __pyx_L1_error)
+      __PYX_ERR(0, 247, __pyx_L1_error)
     } else {__pyx_pybuffernd_template_zero.diminfo[0].strides = __pyx_pybuffernd_template_zero.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_template_zero.diminfo[0].shape = __pyx_pybuffernd_template_zero.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_template_zero.diminfo[0].suboffsets = __pyx_pybuffernd_template_zero.rcbuffer->pybuffer.suboffsets[0];
     }
   }
   __pyx_v_template_zero = ((arrayobject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "Similarity.pyx":245
+  /* "Similarity.pyx":248
  *         # Much faster than np.zeros(self.n_items)
  *         cdef array[double] template_zero = array('d')
  *         cdef array[double] result = clone(template_zero, self.n_items, zero=True)             # <<<<<<<<<<<<<<
  * 
  *         cdef long user_index, user_id, item_index, item_id_second
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_7cpython_5array_clone(((arrayobject *)__pyx_v_template_zero), __pyx_v_self->n_items, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 245, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_7cpython_5array_clone(((arrayobject *)__pyx_v_template_zero), __pyx_v_self->n_items, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 248, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_result.rcbuffer->pybuffer, (PyObject*)((arrayobject *)__pyx_t_1), &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_INDIRECT| PyBUF_WRITABLE, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_result = ((arrayobject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_result.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 245, __pyx_L1_error)
+      __PYX_ERR(0, 248, __pyx_L1_error)
     } else {__pyx_pybuffernd_result.diminfo[0].strides = __pyx_pybuffernd_result.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_result.diminfo[0].shape = __pyx_pybuffernd_result.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_result.diminfo[0].suboffsets = __pyx_pybuffernd_result.rcbuffer->pybuffer.suboffsets[0];
     }
   }
   __pyx_v_result = ((arrayobject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "Similarity.pyx":249
+  /* "Similarity.pyx":252
  *         cdef long user_index, user_id, item_index, item_id_second
  * 
  *         cdef int[:] users_that_rated_item = self.getUsersThatRatedItem(item_id_input)             # <<<<<<<<<<<<<<
  *         cdef int[:] items_rated_by_user
  * 
  */
-  __pyx_t_2 = ((struct __pyx_vtabstruct_10Similarity_Similarity *)__pyx_v_self->__pyx_vtab)->getUsersThatRatedItem(__pyx_v_self, __pyx_v_item_id_input); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 249, __pyx_L1_error)
+  __pyx_t_2 = ((struct __pyx_vtabstruct_10Similarity_Similarity *)__pyx_v_self->__pyx_vtab)->getUsersThatRatedItem(__pyx_v_self, __pyx_v_item_id_input); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 252, __pyx_L1_error)
   __pyx_v_users_that_rated_item = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
 
-  /* "Similarity.pyx":255
+  /* "Similarity.pyx":258
  * 
  *         # Get users that rated the items
  *         for user_index in range(len(users_that_rated_item)):             # <<<<<<<<<<<<<<
@@ -4977,7 +4996,7 @@ static __Pyx_memviewslice __pyx_f_10Similarity_10Similarity_computeItemSimilarit
   for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
     __pyx_v_user_index = __pyx_t_5;
 
-    /* "Similarity.pyx":257
+    /* "Similarity.pyx":260
  *         for user_index in range(len(users_that_rated_item)):
  * 
  *             user_id = users_that_rated_item[user_index]             # <<<<<<<<<<<<<<
@@ -4988,7 +5007,7 @@ static __Pyx_memviewslice __pyx_f_10Similarity_10Similarity_computeItemSimilarit
     if (__pyx_t_6 < 0) __pyx_t_6 += __pyx_v_users_that_rated_item.shape[0];
     __pyx_v_user_id = (*((int *) ( /* dim=0 */ (__pyx_v_users_that_rated_item.data + __pyx_t_6 * __pyx_v_users_that_rated_item.strides[0]) )));
 
-    /* "Similarity.pyx":258
+    /* "Similarity.pyx":261
  * 
  *             user_id = users_that_rated_item[user_index]
  *             rating_item_input = self.item_to_user_data[self.item_to_user_col_ptr[item_id_input]+user_index]             # <<<<<<<<<<<<<<
@@ -5001,20 +5020,20 @@ static __Pyx_memviewslice __pyx_f_10Similarity_10Similarity_computeItemSimilarit
     if (__pyx_t_8 < 0) __pyx_t_8 += __pyx_v_self->item_to_user_data.shape[0];
     __pyx_v_rating_item_input = (*((double *) ( /* dim=0 */ (__pyx_v_self->item_to_user_data.data + __pyx_t_8 * __pyx_v_self->item_to_user_data.strides[0]) )));
 
-    /* "Similarity.pyx":261
+    /* "Similarity.pyx":264
  * 
  *             # Get all items rated by that user
  *             items_rated_by_user = self.getItemsRatedByUser(user_id)             # <<<<<<<<<<<<<<
  * 
  *             for item_index in range(len(items_rated_by_user)):
  */
-    __pyx_t_2 = ((struct __pyx_vtabstruct_10Similarity_Similarity *)__pyx_v_self->__pyx_vtab)->getItemsRatedByUser(__pyx_v_self, __pyx_v_user_id); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 261, __pyx_L1_error)
+    __pyx_t_2 = ((struct __pyx_vtabstruct_10Similarity_Similarity *)__pyx_v_self->__pyx_vtab)->getItemsRatedByUser(__pyx_v_self, __pyx_v_user_id); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 264, __pyx_L1_error)
     __PYX_XDEC_MEMVIEW(&__pyx_v_items_rated_by_user, 1);
     __pyx_v_items_rated_by_user = __pyx_t_2;
     __pyx_t_2.memview = NULL;
     __pyx_t_2.data = NULL;
 
-    /* "Similarity.pyx":263
+    /* "Similarity.pyx":266
  *             items_rated_by_user = self.getItemsRatedByUser(user_id)
  * 
  *             for item_index in range(len(items_rated_by_user)):             # <<<<<<<<<<<<<<
@@ -5026,7 +5045,7 @@ static __Pyx_memviewslice __pyx_f_10Similarity_10Similarity_computeItemSimilarit
     for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
       __pyx_v_item_index = __pyx_t_11;
 
-      /* "Similarity.pyx":265
+      /* "Similarity.pyx":268
  *             for item_index in range(len(items_rated_by_user)):
  * 
  *                 item_id_second = items_rated_by_user[item_index]             # <<<<<<<<<<<<<<
@@ -5037,7 +5056,7 @@ static __Pyx_memviewslice __pyx_f_10Similarity_10Similarity_computeItemSimilarit
       if (__pyx_t_12 < 0) __pyx_t_12 += __pyx_v_items_rated_by_user.shape[0];
       __pyx_v_item_id_second = (*((int *) ( /* dim=0 */ (__pyx_v_items_rated_by_user.data + __pyx_t_12 * __pyx_v_items_rated_by_user.strides[0]) )));
 
-      /* "Similarity.pyx":268
+      /* "Similarity.pyx":271
  * 
  *                 # Do not compute the similarity on the diagonal
  *                 if item_id_second != item_id_input:             # <<<<<<<<<<<<<<
@@ -5047,7 +5066,7 @@ static __Pyx_memviewslice __pyx_f_10Similarity_10Similarity_computeItemSimilarit
       __pyx_t_13 = ((__pyx_v_item_id_second != __pyx_v_item_id_input) != 0);
       if (__pyx_t_13) {
 
-        /* "Similarity.pyx":270
+        /* "Similarity.pyx":273
  *                 if item_id_second != item_id_input:
  *                     # Increment similairty
  *                     rating_item_second = self.user_to_item_data[self.user_to_item_row_ptr[user_id]+item_index]             # <<<<<<<<<<<<<<
@@ -5060,7 +5079,7 @@ static __Pyx_memviewslice __pyx_f_10Similarity_10Similarity_computeItemSimilarit
         if (__pyx_t_15 < 0) __pyx_t_15 += __pyx_v_self->user_to_item_data.shape[0];
         __pyx_v_rating_item_second = (*((double *) ( /* dim=0 */ (__pyx_v_self->user_to_item_data.data + __pyx_t_15 * __pyx_v_self->user_to_item_data.strides[0]) )));
 
-        /* "Similarity.pyx":272
+        /* "Similarity.pyx":275
  *                     rating_item_second = self.user_to_item_data[self.user_to_item_row_ptr[user_id]+item_index]
  * 
  *                     result[item_id_second] += rating_item_input*rating_item_second             # <<<<<<<<<<<<<<
@@ -5071,7 +5090,7 @@ static __Pyx_memviewslice __pyx_f_10Similarity_10Similarity_computeItemSimilarit
         if (__pyx_t_16 < 0) __pyx_t_16 += __pyx_pybuffernd_result.diminfo[0].shape;
         *__Pyx_BufPtrFull1d(double *, __pyx_pybuffernd_result.rcbuffer->pybuffer.buf, __pyx_t_16, __pyx_pybuffernd_result.diminfo[0].strides, __pyx_pybuffernd_result.diminfo[0].suboffsets) += (__pyx_v_rating_item_input * __pyx_v_rating_item_second);
 
-        /* "Similarity.pyx":268
+        /* "Similarity.pyx":271
  * 
  *                 # Do not compute the similarity on the diagonal
  *                 if item_id_second != item_id_input:             # <<<<<<<<<<<<<<
@@ -5082,20 +5101,20 @@ static __Pyx_memviewslice __pyx_f_10Similarity_10Similarity_computeItemSimilarit
     }
   }
 
-  /* "Similarity.pyx":274
+  /* "Similarity.pyx":277
  *                     result[item_id_second] += rating_item_input*rating_item_second
  * 
  *         return result             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_t_17 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(((PyObject *)__pyx_v_result), PyBUF_WRITABLE); if (unlikely(!__pyx_t_17.memview)) __PYX_ERR(0, 274, __pyx_L1_error)
+  __pyx_t_17 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(((PyObject *)__pyx_v_result), PyBUF_WRITABLE); if (unlikely(!__pyx_t_17.memview)) __PYX_ERR(0, 277, __pyx_L1_error)
   __pyx_r = __pyx_t_17;
   __pyx_t_17.memview = NULL;
   __pyx_t_17.data = NULL;
   goto __pyx_L0;
 
-  /* "Similarity.pyx":215
+  /* "Similarity.pyx":218
  * 
  * 
  *     cdef double[:] computeItemSimilarities(self, long item_id_input):             # <<<<<<<<<<<<<<
@@ -5134,12 +5153,12 @@ static __Pyx_memviewslice __pyx_f_10Similarity_10Similarity_computeItemSimilarit
   return __pyx_r;
 }
 
-/* "Similarity.pyx":279
+/* "Similarity.pyx":282
  * 
  * 
  *     def compute_similarity(self):             # <<<<<<<<<<<<<<
  *         if self.verbose:
- *             print("Computation of User User Similarity matrix with {} mode is started.".format((self.method)))
+ *             print("Computation of User User Similarity matrix with {} mode is started.".format((self.mode)))
  */
 
 /* Python wrapper */
@@ -5180,8 +5199,8 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
   __Pyx_Buffer __pyx_pybuffer_top_k_partition_sorting;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  int __pyx_t_2;
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
   PyObject *__pyx_t_4 = NULL;
   PyObject *__pyx_t_5 = NULL;
@@ -5235,29 +5254,26 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
   __pyx_pybuffernd_this_item_weights_np.data = NULL;
   __pyx_pybuffernd_this_item_weights_np.rcbuffer = &__pyx_pybuffer_this_item_weights_np;
 
-  /* "Similarity.pyx":280
+  /* "Similarity.pyx":283
  * 
  *     def compute_similarity(self):
  *         if self.verbose:             # <<<<<<<<<<<<<<
- *             print("Computation of User User Similarity matrix with {} mode is started.".format((self.method)))
+ *             print("Computation of User User Similarity matrix with {} mode is started.".format((self.mode)))
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_verbose); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 280, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 280, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (__pyx_t_2) {
+  __pyx_t_1 = (__pyx_v_self->verbose != 0);
+  if (__pyx_t_1) {
 
-    /* "Similarity.pyx":281
+    /* "Similarity.pyx":284
  *     def compute_similarity(self):
  *         if self.verbose:
- *             print("Computation of User User Similarity matrix with {} mode is started.".format((self.method)))             # <<<<<<<<<<<<<<
+ *             print("Computation of User User Similarity matrix with {} mode is started.".format((self.mode)))             # <<<<<<<<<<<<<<
  * 
  *         cdef int itemIndex, innerItemIndex
  */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_kp_u_Computation_of_User_User_Similar, __pyx_n_s_format); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 281, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_kp_u_Computation_of_User_User_Similar, __pyx_n_s_format); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 284, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_method); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 281, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_self->mode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 284, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
@@ -5269,27 +5285,27 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
         __Pyx_DECREF_SET(__pyx_t_3, function);
       }
     }
-    __pyx_t_1 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_5, __pyx_t_4) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4);
+    __pyx_t_2 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_5, __pyx_t_4) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 281, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 284, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 281, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 284, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "Similarity.pyx":280
+    /* "Similarity.pyx":283
  * 
  *     def compute_similarity(self):
  *         if self.verbose:             # <<<<<<<<<<<<<<
- *             print("Computation of User User Similarity matrix with {} mode is started.".format((self.method)))
+ *             print("Computation of User User Similarity matrix with {} mode is started.".format((self.mode)))
  * 
  */
   }
 
-  /* "Similarity.pyx":294
+  /* "Similarity.pyx":297
  *         cdef double[:] this_item_weights
  * 
  *         cdef long processedItems = 0             # <<<<<<<<<<<<<<
@@ -5298,20 +5314,20 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
  */
   __pyx_v_processedItems = 0;
 
-  /* "Similarity.pyx":298
+  /* "Similarity.pyx":301
  *         # Data structure to incrementally build sparse matrix
  *         # Preinitialize max possible length
  *         cdef double[:] values = np.zeros((self.n_items*self.TopK))             # <<<<<<<<<<<<<<
  *         cdef int[:] rows = np.zeros((self.n_items*self.TopK,), dtype=np.int32)
  *         cdef int[:] cols = np.zeros((self.n_items*self.TopK,), dtype=np.int32)
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 298, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 298, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 301, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 301, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyInt_From_long((__pyx_v_self->n_items * __pyx_v_self->TopK)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 298, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyInt_From_long((__pyx_v_self->n_items * __pyx_v_self->TopK)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 301, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_5 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_4))) {
     __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_4);
@@ -5322,107 +5338,107 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
       __Pyx_DECREF_SET(__pyx_t_4, function);
     }
   }
-  __pyx_t_3 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_5, __pyx_t_1) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_1);
+  __pyx_t_3 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_5, __pyx_t_2) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_2);
   __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 298, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 301, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_3, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 298, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_3, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 301, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_values = __pyx_t_6;
   __pyx_t_6.memview = NULL;
   __pyx_t_6.data = NULL;
 
-  /* "Similarity.pyx":299
+  /* "Similarity.pyx":302
  *         # Preinitialize max possible length
  *         cdef double[:] values = np.zeros((self.n_items*self.TopK))
  *         cdef int[:] rows = np.zeros((self.n_items*self.TopK,), dtype=np.int32)             # <<<<<<<<<<<<<<
  *         cdef int[:] cols = np.zeros((self.n_items*self.TopK,), dtype=np.int32)
  *         cdef long sparse_data_pointer = 0
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 299, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 302, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 299, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 302, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyInt_From_long((__pyx_v_self->n_items * __pyx_v_self->TopK)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 299, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_long((__pyx_v_self->n_items * __pyx_v_self->TopK)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 302, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 299, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 302, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_3);
-  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_3);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_3);
   __pyx_t_3 = 0;
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 299, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 302, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GIVEREF(__pyx_t_1);
-  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
-  __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 299, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 299, __pyx_L1_error)
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_2);
+  __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 302, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 302, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_int32); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 299, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_int32); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 302, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 299, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 302, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 299, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 302, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(__pyx_t_7, PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 299, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(__pyx_t_7, PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 302, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __pyx_v_rows = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
 
-  /* "Similarity.pyx":300
+  /* "Similarity.pyx":303
  *         cdef double[:] values = np.zeros((self.n_items*self.TopK))
  *         cdef int[:] rows = np.zeros((self.n_items*self.TopK,), dtype=np.int32)
  *         cdef int[:] cols = np.zeros((self.n_items*self.TopK,), dtype=np.int32)             # <<<<<<<<<<<<<<
  *         cdef long sparse_data_pointer = 0
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_np); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 300, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_np); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 303, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_zeros); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 300, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_zeros); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 303, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyInt_From_long((__pyx_v_self->n_items * __pyx_v_self->TopK)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 300, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyInt_From_long((__pyx_v_self->n_items * __pyx_v_self->TopK)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 303, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 300, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 303, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_7);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_7);
   __pyx_t_7 = 0;
-  __pyx_t_7 = PyTuple_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 300, __pyx_L1_error)
+  __pyx_t_7 = PyTuple_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 303, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_GIVEREF(__pyx_t_3);
   PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_3);
   __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 300, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 303, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 300, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 303, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_int32); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 300, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_int32); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 303, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_5) < 0) __PYX_ERR(0, 300, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_5) < 0) __PYX_ERR(0, 303, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_7, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 300, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_7, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 303, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(__pyx_t_5, PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 300, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(__pyx_t_5, PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 303, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_v_cols = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
 
-  /* "Similarity.pyx":301
+  /* "Similarity.pyx":304
  *         cdef int[:] rows = np.zeros((self.n_items*self.TopK,), dtype=np.int32)
  *         cdef int[:] cols = np.zeros((self.n_items*self.TopK,), dtype=np.int32)
  *         cdef long sparse_data_pointer = 0             # <<<<<<<<<<<<<<
@@ -5431,16 +5447,16 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
  */
   __pyx_v_sparse_data_pointer = 0;
 
-  /* "Similarity.pyx":305
+  /* "Similarity.pyx":308
  * 
  * 
  *         start_time = time.time()             # <<<<<<<<<<<<<<
  * 
  *         # Compute all similarities for each item
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_time); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 305, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_time); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 308, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_time); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 305, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_time); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 308, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_3 = NULL;
@@ -5455,13 +5471,13 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
   }
   __pyx_t_5 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_7);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 305, __pyx_L1_error)
+  if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 308, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __pyx_v_start_time = __pyx_t_5;
   __pyx_t_5 = 0;
 
-  /* "Similarity.pyx":308
+  /* "Similarity.pyx":311
  * 
  *         # Compute all similarities for each item
  *         for itemIndex in range(self.n_items):             # <<<<<<<<<<<<<<
@@ -5473,7 +5489,7 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
   for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
     __pyx_v_itemIndex = __pyx_t_11;
 
-    /* "Similarity.pyx":310
+    /* "Similarity.pyx":313
  *         for itemIndex in range(self.n_items):
  * 
  *             processedItems += 1             # <<<<<<<<<<<<<<
@@ -5482,7 +5498,7 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
  */
     __pyx_v_processedItems = (__pyx_v_processedItems + 1);
 
-    /* "Similarity.pyx":312
+    /* "Similarity.pyx":315
  *             processedItems += 1
  * 
  *             if processedItems % 10000==0 or processedItems==self.n_items:             # <<<<<<<<<<<<<<
@@ -5492,77 +5508,77 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
     __pyx_t_12 = (((__pyx_v_processedItems % 0x2710) == 0) != 0);
     if (!__pyx_t_12) {
     } else {
-      __pyx_t_2 = __pyx_t_12;
+      __pyx_t_1 = __pyx_t_12;
       goto __pyx_L7_bool_binop_done;
     }
     __pyx_t_12 = ((__pyx_v_processedItems == __pyx_v_self->n_items) != 0);
-    __pyx_t_2 = __pyx_t_12;
+    __pyx_t_1 = __pyx_t_12;
     __pyx_L7_bool_binop_done:;
-    if (__pyx_t_2) {
+    if (__pyx_t_1) {
 
-      /* "Similarity.pyx":314
+      /* "Similarity.pyx":317
  *             if processedItems % 10000==0 or processedItems==self.n_items:
  * 
  *                 itemPerSec = processedItems/(time.time()-start_time)             # <<<<<<<<<<<<<<
  * 
  *                 print("Similarity column {} ( {:2.0f} % ), {:.2f} column/sec, elapsed time {:.2f} min".format(
  */
-      __pyx_t_5 = __Pyx_PyInt_From_long(__pyx_v_processedItems); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 314, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyInt_From_long(__pyx_v_processedItems); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 317, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_time); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 314, __pyx_L1_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_time); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 317, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_time); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 314, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_1);
+      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_time); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 317, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __pyx_t_3 = NULL;
-      if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_1))) {
-        __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_1);
+      if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
+        __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
         if (likely(__pyx_t_3)) {
-          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
           __Pyx_INCREF(__pyx_t_3);
           __Pyx_INCREF(function);
-          __Pyx_DECREF_SET(__pyx_t_1, function);
+          __Pyx_DECREF_SET(__pyx_t_2, function);
         }
       }
-      __pyx_t_7 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_1);
+      __pyx_t_7 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 314, __pyx_L1_error)
+      if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 317, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
-      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_1 = PyNumber_Subtract(__pyx_t_7, __pyx_v_start_time); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 314, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_1);
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __pyx_t_2 = PyNumber_Subtract(__pyx_t_7, __pyx_v_start_time); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 317, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __pyx_t_7 = __Pyx_PyNumber_Divide(__pyx_t_5, __pyx_t_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 314, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyNumber_Divide(__pyx_t_5, __pyx_t_2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 317, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_XDECREF_SET(__pyx_v_itemPerSec, __pyx_t_7);
       __pyx_t_7 = 0;
 
-      /* "Similarity.pyx":316
+      /* "Similarity.pyx":319
  *                 itemPerSec = processedItems/(time.time()-start_time)
  * 
  *                 print("Similarity column {} ( {:2.0f} % ), {:.2f} column/sec, elapsed time {:.2f} min".format(             # <<<<<<<<<<<<<<
  *                     processedItems, processedItems*1.0/self.n_items*100, itemPerSec, (time.time()-start_time) / 60))
  * 
  */
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_kp_u_Similarity_column_2_0f_2f_column, __pyx_n_s_format); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 316, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_1);
+      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_u_Similarity_column_2_0f_2f_column, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 319, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
 
-      /* "Similarity.pyx":317
+      /* "Similarity.pyx":320
  * 
  *                 print("Similarity column {} ( {:2.0f} % ), {:.2f} column/sec, elapsed time {:.2f} min".format(
  *                     processedItems, processedItems*1.0/self.n_items*100, itemPerSec, (time.time()-start_time) / 60))             # <<<<<<<<<<<<<<
  * 
  *                 sys.stdout.flush()
  */
-      __pyx_t_5 = __Pyx_PyInt_From_long(__pyx_v_processedItems); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 317, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyInt_From_long(__pyx_v_processedItems); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 320, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_3 = PyFloat_FromDouble((((__pyx_v_processedItems * 1.0) / ((double)__pyx_v_self->n_items)) * 100.0)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 317, __pyx_L1_error)
+      __pyx_t_3 = PyFloat_FromDouble((((__pyx_v_processedItems * 1.0) / ((double)__pyx_v_self->n_items)) * 100.0)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 320, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_GetModuleGlobalName(__pyx_t_13, __pyx_n_s_time); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 317, __pyx_L1_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_13, __pyx_n_s_time); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 320, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_13);
-      __pyx_t_14 = __Pyx_PyObject_GetAttrStr(__pyx_t_13, __pyx_n_s_time); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 317, __pyx_L1_error)
+      __pyx_t_14 = __Pyx_PyObject_GetAttrStr(__pyx_t_13, __pyx_n_s_time); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 320, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_14);
       __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
       __pyx_t_13 = NULL;
@@ -5577,31 +5593,31 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
       }
       __pyx_t_4 = (__pyx_t_13) ? __Pyx_PyObject_CallOneArg(__pyx_t_14, __pyx_t_13) : __Pyx_PyObject_CallNoArg(__pyx_t_14);
       __Pyx_XDECREF(__pyx_t_13); __pyx_t_13 = 0;
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 317, __pyx_L1_error)
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 320, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-      __pyx_t_14 = PyNumber_Subtract(__pyx_t_4, __pyx_v_start_time); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 317, __pyx_L1_error)
+      __pyx_t_14 = PyNumber_Subtract(__pyx_t_4, __pyx_v_start_time); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 320, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_14);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_4 = __Pyx_PyInt_TrueDivideObjC(__pyx_t_14, __pyx_int_60, 60, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 317, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyInt_TrueDivideObjC(__pyx_t_14, __pyx_int_60, 60, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 320, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
       __pyx_t_14 = NULL;
       __pyx_t_15 = 0;
-      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
-        __pyx_t_14 = PyMethod_GET_SELF(__pyx_t_1);
+      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+        __pyx_t_14 = PyMethod_GET_SELF(__pyx_t_2);
         if (likely(__pyx_t_14)) {
-          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
           __Pyx_INCREF(__pyx_t_14);
           __Pyx_INCREF(function);
-          __Pyx_DECREF_SET(__pyx_t_1, function);
+          __Pyx_DECREF_SET(__pyx_t_2, function);
           __pyx_t_15 = 1;
         }
       }
       #if CYTHON_FAST_PYCALL
-      if (PyFunction_Check(__pyx_t_1)) {
+      if (PyFunction_Check(__pyx_t_2)) {
         PyObject *__pyx_temp[5] = {__pyx_t_14, __pyx_t_5, __pyx_t_3, __pyx_v_itemPerSec, __pyx_t_4};
-        __pyx_t_7 = __Pyx_PyFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_15, 4+__pyx_t_15); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 316, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_15, 4+__pyx_t_15); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 319, __pyx_L1_error)
         __Pyx_XDECREF(__pyx_t_14); __pyx_t_14 = 0;
         __Pyx_GOTREF(__pyx_t_7);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -5610,9 +5626,9 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
       } else
       #endif
       #if CYTHON_FAST_PYCCALL
-      if (__Pyx_PyFastCFunction_Check(__pyx_t_1)) {
+      if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
         PyObject *__pyx_temp[5] = {__pyx_t_14, __pyx_t_5, __pyx_t_3, __pyx_v_itemPerSec, __pyx_t_4};
-        __pyx_t_7 = __Pyx_PyCFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_15, 4+__pyx_t_15); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 316, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_15, 4+__pyx_t_15); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 319, __pyx_L1_error)
         __Pyx_XDECREF(__pyx_t_14); __pyx_t_14 = 0;
         __Pyx_GOTREF(__pyx_t_7);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -5621,7 +5637,7 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
       } else
       #endif
       {
-        __pyx_t_13 = PyTuple_New(4+__pyx_t_15); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 316, __pyx_L1_error)
+        __pyx_t_13 = PyTuple_New(4+__pyx_t_15); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 319, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_13);
         if (__pyx_t_14) {
           __Pyx_GIVEREF(__pyx_t_14); PyTuple_SET_ITEM(__pyx_t_13, 0, __pyx_t_14); __pyx_t_14 = NULL;
@@ -5638,37 +5654,37 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
         __pyx_t_5 = 0;
         __pyx_t_3 = 0;
         __pyx_t_4 = 0;
-        __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_13, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 316, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_13, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 319, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
         __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
       }
-      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-      /* "Similarity.pyx":316
+      /* "Similarity.pyx":319
  *                 itemPerSec = processedItems/(time.time()-start_time)
  * 
  *                 print("Similarity column {} ( {:2.0f} % ), {:.2f} column/sec, elapsed time {:.2f} min".format(             # <<<<<<<<<<<<<<
  *                     processedItems, processedItems*1.0/self.n_items*100, itemPerSec, (time.time()-start_time) / 60))
  * 
  */
-      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 316, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_1);
+      __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_7); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 319, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-      /* "Similarity.pyx":319
+      /* "Similarity.pyx":322
  *                     processedItems, processedItems*1.0/self.n_items*100, itemPerSec, (time.time()-start_time) / 60))
  * 
  *                 sys.stdout.flush()             # <<<<<<<<<<<<<<
  *                 sys.stderr.flush()
  * 
  */
-      __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_sys); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 319, __pyx_L1_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_sys); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 322, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_stdout); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 319, __pyx_L1_error)
+      __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_stdout); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 322, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_13);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_13, __pyx_n_s_flush); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 319, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_13, __pyx_n_s_flush); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 322, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
       __pyx_t_13 = NULL;
@@ -5681,26 +5697,26 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
           __Pyx_DECREF_SET(__pyx_t_7, function);
         }
       }
-      __pyx_t_1 = (__pyx_t_13) ? __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_t_13) : __Pyx_PyObject_CallNoArg(__pyx_t_7);
+      __pyx_t_2 = (__pyx_t_13) ? __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_t_13) : __Pyx_PyObject_CallNoArg(__pyx_t_7);
       __Pyx_XDECREF(__pyx_t_13); __pyx_t_13 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 319, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_1);
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 322, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-      /* "Similarity.pyx":320
+      /* "Similarity.pyx":323
  * 
  *                 sys.stdout.flush()
  *                 sys.stderr.flush()             # <<<<<<<<<<<<<<
  * 
  * 
  */
-      __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_sys); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 320, __pyx_L1_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_sys); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 323, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_stderr); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 320, __pyx_L1_error)
+      __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_stderr); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 323, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_13);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_13, __pyx_n_s_flush); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 320, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_13, __pyx_n_s_flush); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 323, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
       __pyx_t_13 = NULL;
@@ -5713,14 +5729,14 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
           __Pyx_DECREF_SET(__pyx_t_7, function);
         }
       }
-      __pyx_t_1 = (__pyx_t_13) ? __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_t_13) : __Pyx_PyObject_CallNoArg(__pyx_t_7);
+      __pyx_t_2 = (__pyx_t_13) ? __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_t_13) : __Pyx_PyObject_CallNoArg(__pyx_t_7);
       __Pyx_XDECREF(__pyx_t_13); __pyx_t_13 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 320, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_1);
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 323, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-      /* "Similarity.pyx":312
+      /* "Similarity.pyx":315
  *             processedItems += 1
  * 
  *             if processedItems % 10000==0 or processedItems==self.n_items:             # <<<<<<<<<<<<<<
@@ -5729,30 +5745,30 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
  */
     }
 
-    /* "Similarity.pyx":323
+    /* "Similarity.pyx":326
  * 
  * 
  *             this_item_weights = self.computeItemSimilarities(itemIndex)             # <<<<<<<<<<<<<<
  * 
  * 
  */
-    __pyx_t_6 = ((struct __pyx_vtabstruct_10Similarity_Similarity *)__pyx_v_self->__pyx_vtab)->computeItemSimilarities(__pyx_v_self, __pyx_v_itemIndex); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 323, __pyx_L1_error)
+    __pyx_t_6 = ((struct __pyx_vtabstruct_10Similarity_Similarity *)__pyx_v_self->__pyx_vtab)->computeItemSimilarities(__pyx_v_self, __pyx_v_itemIndex); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 326, __pyx_L1_error)
     __PYX_XDEC_MEMVIEW(&__pyx_v_this_item_weights, 1);
     __pyx_v_this_item_weights = __pyx_t_6;
     __pyx_t_6.memview = NULL;
     __pyx_t_6.data = NULL;
 
-    /* "Similarity.pyx":327
+    /* "Similarity.pyx":330
  * 
  *             # Apply normalization and shrinkage, ensure denominator != 0
  *             if self.normalize:             # <<<<<<<<<<<<<<
  *                 for innerItemIndex in range(self.n_items):
  *                     this_item_weights[innerItemIndex] /= self.sumOfSquared[itemIndex] * self.sumOfSquared[innerItemIndex]\
  */
-    __pyx_t_2 = (__pyx_v_self->normalize != 0);
-    if (__pyx_t_2) {
+    __pyx_t_1 = (__pyx_v_self->normalize != 0);
+    if (__pyx_t_1) {
 
-      /* "Similarity.pyx":328
+      /* "Similarity.pyx":331
  *             # Apply normalization and shrinkage, ensure denominator != 0
  *             if self.normalize:
  *                 for innerItemIndex in range(self.n_items):             # <<<<<<<<<<<<<<
@@ -5764,7 +5780,7 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
       for (__pyx_t_15 = 0; __pyx_t_15 < __pyx_t_17; __pyx_t_15+=1) {
         __pyx_v_innerItemIndex = __pyx_t_15;
 
-        /* "Similarity.pyx":329
+        /* "Similarity.pyx":332
  *             if self.normalize:
  *                 for innerItemIndex in range(self.n_items):
  *                     this_item_weights[innerItemIndex] /= self.sumOfSquared[itemIndex] * self.sumOfSquared[innerItemIndex]\             # <<<<<<<<<<<<<<
@@ -5776,7 +5792,7 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
         __pyx_t_19 = __pyx_v_innerItemIndex;
         if (__pyx_t_19 < 0) __pyx_t_19 += __pyx_v_self->sumOfSquared.shape[0];
 
-        /* "Similarity.pyx":330
+        /* "Similarity.pyx":333
  *                 for innerItemIndex in range(self.n_items):
  *                     this_item_weights[innerItemIndex] /= self.sumOfSquared[itemIndex] * self.sumOfSquared[innerItemIndex]\
  *                                                          + self.shrink + 1e-6             # <<<<<<<<<<<<<<
@@ -5788,7 +5804,7 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
         *((double *) ( /* dim=0 */ (__pyx_v_this_item_weights.data + __pyx_t_20 * __pyx_v_this_item_weights.strides[0]) )) /= ((((*((double *) ( /* dim=0 */ (__pyx_v_self->sumOfSquared.data + __pyx_t_18 * __pyx_v_self->sumOfSquared.strides[0]) ))) * (*((double *) ( /* dim=0 */ (__pyx_v_self->sumOfSquared.data + __pyx_t_19 * __pyx_v_self->sumOfSquared.strides[0]) )))) + __pyx_v_self->shrink) + 1e-6);
       }
 
-      /* "Similarity.pyx":327
+      /* "Similarity.pyx":330
  * 
  *             # Apply normalization and shrinkage, ensure denominator != 0
  *             if self.normalize:             # <<<<<<<<<<<<<<
@@ -5798,17 +5814,17 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
       goto __pyx_L9;
     }
 
-    /* "Similarity.pyx":333
+    /* "Similarity.pyx":336
  * 
  *             # Apply the specific denominator for Tanimoto
  *             elif self.tanimoto_coefficient:             # <<<<<<<<<<<<<<
  *                 for innerItemIndex in range(self.n_items):
  *                     this_item_weights[innerItemIndex] /= self.sumOfSquared[itemIndex] + self.sumOfSquared[innerItemIndex] -\
  */
-    __pyx_t_2 = (__pyx_v_self->tanimoto_coefficient != 0);
-    if (__pyx_t_2) {
+    __pyx_t_1 = (__pyx_v_self->tanimoto_coefficient != 0);
+    if (__pyx_t_1) {
 
-      /* "Similarity.pyx":334
+      /* "Similarity.pyx":337
  *             # Apply the specific denominator for Tanimoto
  *             elif self.tanimoto_coefficient:
  *                 for innerItemIndex in range(self.n_items):             # <<<<<<<<<<<<<<
@@ -5820,7 +5836,7 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
       for (__pyx_t_15 = 0; __pyx_t_15 < __pyx_t_17; __pyx_t_15+=1) {
         __pyx_v_innerItemIndex = __pyx_t_15;
 
-        /* "Similarity.pyx":335
+        /* "Similarity.pyx":338
  *             elif self.tanimoto_coefficient:
  *                 for innerItemIndex in range(self.n_items):
  *                     this_item_weights[innerItemIndex] /= self.sumOfSquared[itemIndex] + self.sumOfSquared[innerItemIndex] -\             # <<<<<<<<<<<<<<
@@ -5832,7 +5848,7 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
         __pyx_t_22 = __pyx_v_innerItemIndex;
         if (__pyx_t_22 < 0) __pyx_t_22 += __pyx_v_self->sumOfSquared.shape[0];
 
-        /* "Similarity.pyx":336
+        /* "Similarity.pyx":339
  *                 for innerItemIndex in range(self.n_items):
  *                     this_item_weights[innerItemIndex] /= self.sumOfSquared[itemIndex] + self.sumOfSquared[innerItemIndex] -\
  *                                                          this_item_weights[innerItemIndex] + self.shrink + 1e-6             # <<<<<<<<<<<<<<
@@ -5842,7 +5858,7 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
         __pyx_t_23 = __pyx_v_innerItemIndex;
         if (__pyx_t_23 < 0) __pyx_t_23 += __pyx_v_this_item_weights.shape[0];
 
-        /* "Similarity.pyx":335
+        /* "Similarity.pyx":338
  *             elif self.tanimoto_coefficient:
  *                 for innerItemIndex in range(self.n_items):
  *                     this_item_weights[innerItemIndex] /= self.sumOfSquared[itemIndex] + self.sumOfSquared[innerItemIndex] -\             # <<<<<<<<<<<<<<
@@ -5854,7 +5870,7 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
         *((double *) ( /* dim=0 */ (__pyx_v_this_item_weights.data + __pyx_t_24 * __pyx_v_this_item_weights.strides[0]) )) /= (((((*((double *) ( /* dim=0 */ (__pyx_v_self->sumOfSquared.data + __pyx_t_21 * __pyx_v_self->sumOfSquared.strides[0]) ))) + (*((double *) ( /* dim=0 */ (__pyx_v_self->sumOfSquared.data + __pyx_t_22 * __pyx_v_self->sumOfSquared.strides[0]) )))) - (*((double *) ( /* dim=0 */ (__pyx_v_this_item_weights.data + __pyx_t_23 * __pyx_v_this_item_weights.strides[0]) )))) + __pyx_v_self->shrink) + 1e-6);
       }
 
-      /* "Similarity.pyx":333
+      /* "Similarity.pyx":336
  * 
  *             # Apply the specific denominator for Tanimoto
  *             elif self.tanimoto_coefficient:             # <<<<<<<<<<<<<<
@@ -5864,17 +5880,17 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
       goto __pyx_L9;
     }
 
-    /* "Similarity.pyx":338
+    /* "Similarity.pyx":341
  *                                                          this_item_weights[innerItemIndex] + self.shrink + 1e-6
  * 
  *             elif self.shrink != 0:             # <<<<<<<<<<<<<<
  *                 for innerItemIndex in range(self.n_items):
  *                     this_item_weights[innerItemIndex] /= self.shrink
  */
-    __pyx_t_2 = ((__pyx_v_self->shrink != 0) != 0);
-    if (__pyx_t_2) {
+    __pyx_t_1 = ((__pyx_v_self->shrink != 0) != 0);
+    if (__pyx_t_1) {
 
-      /* "Similarity.pyx":339
+      /* "Similarity.pyx":342
  * 
  *             elif self.shrink != 0:
  *                 for innerItemIndex in range(self.n_items):             # <<<<<<<<<<<<<<
@@ -5886,7 +5902,7 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
       for (__pyx_t_15 = 0; __pyx_t_15 < __pyx_t_17; __pyx_t_15+=1) {
         __pyx_v_innerItemIndex = __pyx_t_15;
 
-        /* "Similarity.pyx":340
+        /* "Similarity.pyx":343
  *             elif self.shrink != 0:
  *                 for innerItemIndex in range(self.n_items):
  *                     this_item_weights[innerItemIndex] /= self.shrink             # <<<<<<<<<<<<<<
@@ -5898,7 +5914,7 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
         *((double *) ( /* dim=0 */ (__pyx_v_this_item_weights.data + __pyx_t_25 * __pyx_v_this_item_weights.strides[0]) )) /= __pyx_v_self->shrink;
       }
 
-      /* "Similarity.pyx":338
+      /* "Similarity.pyx":341
  *                                                          this_item_weights[innerItemIndex] + self.shrink + 1e-6
  * 
  *             elif self.shrink != 0:             # <<<<<<<<<<<<<<
@@ -5908,17 +5924,17 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
     }
     __pyx_L9:;
 
-    /* "Similarity.pyx":343
+    /* "Similarity.pyx":346
  * 
  * 
  *             if self.TopK == 0:             # <<<<<<<<<<<<<<
  * 
  *                 for innerItemIndex in range(self.n_items):
  */
-    __pyx_t_2 = ((__pyx_v_self->TopK == 0) != 0);
-    if (__pyx_t_2) {
+    __pyx_t_1 = ((__pyx_v_self->TopK == 0) != 0);
+    if (__pyx_t_1) {
 
-      /* "Similarity.pyx":345
+      /* "Similarity.pyx":348
  *             if self.TopK == 0:
  * 
  *                 for innerItemIndex in range(self.n_items):             # <<<<<<<<<<<<<<
@@ -5930,7 +5946,7 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
       for (__pyx_t_15 = 0; __pyx_t_15 < __pyx_t_17; __pyx_t_15+=1) {
         __pyx_v_innerItemIndex = __pyx_t_15;
 
-        /* "Similarity.pyx":346
+        /* "Similarity.pyx":349
  * 
  *                 for innerItemIndex in range(self.n_items):
  *                     self.W_dense[innerItemIndex,itemIndex] = this_item_weights[innerItemIndex]             # <<<<<<<<<<<<<<
@@ -5946,7 +5962,7 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
         *((double *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->W_dense.data + __pyx_t_27 * __pyx_v_self->W_dense.strides[0]) ) + __pyx_t_28 * __pyx_v_self->W_dense.strides[1]) )) = (*((double *) ( /* dim=0 */ (__pyx_v_this_item_weights.data + __pyx_t_26 * __pyx_v_this_item_weights.strides[0]) )));
       }
 
-      /* "Similarity.pyx":343
+      /* "Similarity.pyx":346
  * 
  * 
  *             if self.TopK == 0:             # <<<<<<<<<<<<<<
@@ -5956,7 +5972,7 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
       goto __pyx_L16;
     }
 
-    /* "Similarity.pyx":360
+    /* "Similarity.pyx":363
  *                 # - Get the original item index
  * 
  *                 this_item_weights_np = - np.array(this_item_weights)             # <<<<<<<<<<<<<<
@@ -5964,12 +5980,12 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
  *                 # Get the unordered set of topK items
  */
     /*else*/ {
-      __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_np); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 360, __pyx_L1_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_np); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 363, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_array); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 360, __pyx_L1_error)
+      __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_array); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 363, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_13);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __pyx_t_7 = __pyx_memoryview_fromslice(__pyx_v_this_item_weights, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 360, __pyx_L1_error)
+      __pyx_t_7 = __pyx_memoryview_fromslice(__pyx_v_this_item_weights, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 363, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __pyx_t_4 = NULL;
       if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_13))) {
@@ -5981,16 +5997,16 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
           __Pyx_DECREF_SET(__pyx_t_13, function);
         }
       }
-      __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_13, __pyx_t_4, __pyx_t_7) : __Pyx_PyObject_CallOneArg(__pyx_t_13, __pyx_t_7);
+      __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_13, __pyx_t_4, __pyx_t_7) : __Pyx_PyObject_CallOneArg(__pyx_t_13, __pyx_t_7);
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 360, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_1);
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 363, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-      __pyx_t_13 = PyNumber_Negative(__pyx_t_1); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 360, __pyx_L1_error)
+      __pyx_t_13 = PyNumber_Negative(__pyx_t_2); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 363, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_13);
-      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      if (!(likely(((__pyx_t_13) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_13, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 360, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      if (!(likely(((__pyx_t_13) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_13, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 363, __pyx_L1_error)
       __pyx_t_29 = ((PyArrayObject *)__pyx_t_13);
       {
         __Pyx_BufFmt_StackElem __pyx_stack[1];
@@ -6007,26 +6023,26 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
           __pyx_t_30 = __pyx_t_31 = __pyx_t_32 = 0;
         }
         __pyx_pybuffernd_this_item_weights_np.diminfo[0].strides = __pyx_pybuffernd_this_item_weights_np.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_this_item_weights_np.diminfo[0].shape = __pyx_pybuffernd_this_item_weights_np.rcbuffer->pybuffer.shape[0];
-        if (unlikely(__pyx_t_15 < 0)) __PYX_ERR(0, 360, __pyx_L1_error)
+        if (unlikely(__pyx_t_15 < 0)) __PYX_ERR(0, 363, __pyx_L1_error)
       }
       __pyx_t_29 = 0;
       __Pyx_XDECREF_SET(__pyx_v_this_item_weights_np, ((PyArrayObject *)__pyx_t_13));
       __pyx_t_13 = 0;
 
-      /* "Similarity.pyx":363
+      /* "Similarity.pyx":366
  *                 #
  *                 # Get the unordered set of topK items
  *                 top_k_partition = np.argpartition(this_item_weights_np, self.TopK-1)[0:self.TopK]             # <<<<<<<<<<<<<<
  *                 # Sort only the elements in the partition
  *                 top_k_partition_sorting = np.argsort(this_item_weights_np[top_k_partition])
  */
-      __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 363, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_argpartition); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 363, __pyx_L1_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 366, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_argpartition); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 366, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
-      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_1 = __Pyx_PyInt_From_long((__pyx_v_self->TopK - 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 363, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_1);
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __pyx_t_2 = __Pyx_PyInt_From_long((__pyx_v_self->TopK - 1)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 366, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_4 = NULL;
       __pyx_t_15 = 0;
       if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_7))) {
@@ -6041,24 +6057,24 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
       }
       #if CYTHON_FAST_PYCALL
       if (PyFunction_Check(__pyx_t_7)) {
-        PyObject *__pyx_temp[3] = {__pyx_t_4, ((PyObject *)__pyx_v_this_item_weights_np), __pyx_t_1};
-        __pyx_t_13 = __Pyx_PyFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_15, 2+__pyx_t_15); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 363, __pyx_L1_error)
+        PyObject *__pyx_temp[3] = {__pyx_t_4, ((PyObject *)__pyx_v_this_item_weights_np), __pyx_t_2};
+        __pyx_t_13 = __Pyx_PyFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_15, 2+__pyx_t_15); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 366, __pyx_L1_error)
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
         __Pyx_GOTREF(__pyx_t_13);
-        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       } else
       #endif
       #if CYTHON_FAST_PYCCALL
       if (__Pyx_PyFastCFunction_Check(__pyx_t_7)) {
-        PyObject *__pyx_temp[3] = {__pyx_t_4, ((PyObject *)__pyx_v_this_item_weights_np), __pyx_t_1};
-        __pyx_t_13 = __Pyx_PyCFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_15, 2+__pyx_t_15); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 363, __pyx_L1_error)
+        PyObject *__pyx_temp[3] = {__pyx_t_4, ((PyObject *)__pyx_v_this_item_weights_np), __pyx_t_2};
+        __pyx_t_13 = __Pyx_PyCFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_15, 2+__pyx_t_15); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 366, __pyx_L1_error)
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
         __Pyx_GOTREF(__pyx_t_13);
-        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       } else
       #endif
       {
-        __pyx_t_3 = PyTuple_New(2+__pyx_t_15); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 363, __pyx_L1_error)
+        __pyx_t_3 = PyTuple_New(2+__pyx_t_15); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 366, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         if (__pyx_t_4) {
           __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_4); __pyx_t_4 = NULL;
@@ -6066,18 +6082,18 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
         __Pyx_INCREF(((PyObject *)__pyx_v_this_item_weights_np));
         __Pyx_GIVEREF(((PyObject *)__pyx_v_this_item_weights_np));
         PyTuple_SET_ITEM(__pyx_t_3, 0+__pyx_t_15, ((PyObject *)__pyx_v_this_item_weights_np));
-        __Pyx_GIVEREF(__pyx_t_1);
-        PyTuple_SET_ITEM(__pyx_t_3, 1+__pyx_t_15, __pyx_t_1);
-        __pyx_t_1 = 0;
-        __pyx_t_13 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_3, NULL); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 363, __pyx_L1_error)
+        __Pyx_GIVEREF(__pyx_t_2);
+        PyTuple_SET_ITEM(__pyx_t_3, 1+__pyx_t_15, __pyx_t_2);
+        __pyx_t_2 = 0;
+        __pyx_t_13 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_3, NULL); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 366, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_13);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       }
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __pyx_t_7 = __Pyx_PyObject_GetSlice(__pyx_t_13, 0, __pyx_v_self->TopK, NULL, NULL, NULL, 1, 1, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 363, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyObject_GetSlice(__pyx_t_13, 0, __pyx_v_self->TopK, NULL, NULL, NULL, 1, 1, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 366, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-      if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 363, __pyx_L1_error)
+      if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 366, __pyx_L1_error)
       __pyx_t_33 = ((PyArrayObject *)__pyx_t_7);
       {
         __Pyx_BufFmt_StackElem __pyx_stack[1];
@@ -6094,43 +6110,43 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
           __pyx_t_32 = __pyx_t_31 = __pyx_t_30 = 0;
         }
         __pyx_pybuffernd_top_k_partition.diminfo[0].strides = __pyx_pybuffernd_top_k_partition.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_top_k_partition.diminfo[0].shape = __pyx_pybuffernd_top_k_partition.rcbuffer->pybuffer.shape[0];
-        if (unlikely(__pyx_t_15 < 0)) __PYX_ERR(0, 363, __pyx_L1_error)
+        if (unlikely(__pyx_t_15 < 0)) __PYX_ERR(0, 366, __pyx_L1_error)
       }
       __pyx_t_33 = 0;
       __Pyx_XDECREF_SET(__pyx_v_top_k_partition, ((PyArrayObject *)__pyx_t_7));
       __pyx_t_7 = 0;
 
-      /* "Similarity.pyx":365
+      /* "Similarity.pyx":368
  *                 top_k_partition = np.argpartition(this_item_weights_np, self.TopK-1)[0:self.TopK]
  *                 # Sort only the elements in the partition
  *                 top_k_partition_sorting = np.argsort(this_item_weights_np[top_k_partition])             # <<<<<<<<<<<<<<
  *                 # Get original index
  *                 top_k_idx = top_k_partition[top_k_partition_sorting]
  */
-      __Pyx_GetModuleGlobalName(__pyx_t_13, __pyx_n_s_np); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 365, __pyx_L1_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_13, __pyx_n_s_np); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 368, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_13);
-      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_13, __pyx_n_s_argsort); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 365, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_13, __pyx_n_s_argsort); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 368, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-      __pyx_t_13 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_this_item_weights_np), ((PyObject *)__pyx_v_top_k_partition)); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 365, __pyx_L1_error)
+      __pyx_t_13 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_this_item_weights_np), ((PyObject *)__pyx_v_top_k_partition)); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 368, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_13);
-      __pyx_t_1 = NULL;
+      __pyx_t_2 = NULL;
       if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
-        __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_3);
-        if (likely(__pyx_t_1)) {
+        __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
+        if (likely(__pyx_t_2)) {
           PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-          __Pyx_INCREF(__pyx_t_1);
+          __Pyx_INCREF(__pyx_t_2);
           __Pyx_INCREF(function);
           __Pyx_DECREF_SET(__pyx_t_3, function);
         }
       }
-      __pyx_t_7 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_1, __pyx_t_13) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_13);
-      __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __pyx_t_7 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_2, __pyx_t_13) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_13);
+      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-      if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 365, __pyx_L1_error)
+      if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 368, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 365, __pyx_L1_error)
+      if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 368, __pyx_L1_error)
       __pyx_t_33 = ((PyArrayObject *)__pyx_t_7);
       {
         __Pyx_BufFmt_StackElem __pyx_stack[1];
@@ -6147,29 +6163,29 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
           __pyx_t_30 = __pyx_t_31 = __pyx_t_32 = 0;
         }
         __pyx_pybuffernd_top_k_partition_sorting.diminfo[0].strides = __pyx_pybuffernd_top_k_partition_sorting.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_top_k_partition_sorting.diminfo[0].shape = __pyx_pybuffernd_top_k_partition_sorting.rcbuffer->pybuffer.shape[0];
-        if (unlikely(__pyx_t_15 < 0)) __PYX_ERR(0, 365, __pyx_L1_error)
+        if (unlikely(__pyx_t_15 < 0)) __PYX_ERR(0, 368, __pyx_L1_error)
       }
       __pyx_t_33 = 0;
       __Pyx_XDECREF_SET(__pyx_v_top_k_partition_sorting, ((PyArrayObject *)__pyx_t_7));
       __pyx_t_7 = 0;
 
-      /* "Similarity.pyx":367
+      /* "Similarity.pyx":370
  *                 top_k_partition_sorting = np.argsort(this_item_weights_np[top_k_partition])
  *                 # Get original index
  *                 top_k_idx = top_k_partition[top_k_partition_sorting]             # <<<<<<<<<<<<<<
  * 
  * 
  */
-      __pyx_t_7 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_top_k_partition), ((PyObject *)__pyx_v_top_k_partition_sorting)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 367, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_top_k_partition), ((PyObject *)__pyx_v_top_k_partition_sorting)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 370, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_34 = __Pyx_PyObject_to_MemoryviewSlice_ds_PY_LONG_LONG(__pyx_t_7, PyBUF_WRITABLE); if (unlikely(!__pyx_t_34.memview)) __PYX_ERR(0, 367, __pyx_L1_error)
+      __pyx_t_34 = __Pyx_PyObject_to_MemoryviewSlice_ds_PY_LONG_LONG(__pyx_t_7, PyBUF_WRITABLE); if (unlikely(!__pyx_t_34.memview)) __PYX_ERR(0, 370, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __PYX_XDEC_MEMVIEW(&__pyx_v_top_k_idx, 1);
       __pyx_v_top_k_idx = __pyx_t_34;
       __pyx_t_34.memview = NULL;
       __pyx_t_34.data = NULL;
 
-      /* "Similarity.pyx":372
+      /* "Similarity.pyx":375
  * 
  *                 # Incrementally build sparse matrix
  *                 for innerItemIndex in range(len(top_k_idx)):             # <<<<<<<<<<<<<<
@@ -6181,7 +6197,7 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
       for (__pyx_t_15 = 0; __pyx_t_15 < __pyx_t_36; __pyx_t_15+=1) {
         __pyx_v_innerItemIndex = __pyx_t_15;
 
-        /* "Similarity.pyx":374
+        /* "Similarity.pyx":377
  *                 for innerItemIndex in range(len(top_k_idx)):
  * 
  *                     topKItemIndex = top_k_idx[innerItemIndex]             # <<<<<<<<<<<<<<
@@ -6192,7 +6208,7 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
         if (__pyx_t_37 < 0) __pyx_t_37 += __pyx_v_top_k_idx.shape[0];
         __pyx_v_topKItemIndex = (*((PY_LONG_LONG *) ( /* dim=0 */ (__pyx_v_top_k_idx.data + __pyx_t_37 * __pyx_v_top_k_idx.strides[0]) )));
 
-        /* "Similarity.pyx":376
+        /* "Similarity.pyx":379
  *                     topKItemIndex = top_k_idx[innerItemIndex]
  * 
  *                     values[sparse_data_pointer] = this_item_weights[topKItemIndex]             # <<<<<<<<<<<<<<
@@ -6205,7 +6221,7 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
         if (__pyx_t_39 < 0) __pyx_t_39 += __pyx_v_values.shape[0];
         *((double *) ( /* dim=0 */ (__pyx_v_values.data + __pyx_t_39 * __pyx_v_values.strides[0]) )) = (*((double *) ( /* dim=0 */ (__pyx_v_this_item_weights.data + __pyx_t_38 * __pyx_v_this_item_weights.strides[0]) )));
 
-        /* "Similarity.pyx":377
+        /* "Similarity.pyx":380
  * 
  *                     values[sparse_data_pointer] = this_item_weights[topKItemIndex]
  *                     rows[sparse_data_pointer] = topKItemIndex             # <<<<<<<<<<<<<<
@@ -6216,7 +6232,7 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
         if (__pyx_t_40 < 0) __pyx_t_40 += __pyx_v_rows.shape[0];
         *((int *) ( /* dim=0 */ (__pyx_v_rows.data + __pyx_t_40 * __pyx_v_rows.strides[0]) )) = __pyx_v_topKItemIndex;
 
-        /* "Similarity.pyx":378
+        /* "Similarity.pyx":381
  *                     values[sparse_data_pointer] = this_item_weights[topKItemIndex]
  *                     rows[sparse_data_pointer] = topKItemIndex
  *                     cols[sparse_data_pointer] = itemIndex             # <<<<<<<<<<<<<<
@@ -6227,7 +6243,7 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
         if (__pyx_t_41 < 0) __pyx_t_41 += __pyx_v_cols.shape[0];
         *((int *) ( /* dim=0 */ (__pyx_v_cols.data + __pyx_t_41 * __pyx_v_cols.strides[0]) )) = __pyx_v_itemIndex;
 
-        /* "Similarity.pyx":380
+        /* "Similarity.pyx":383
  *                     cols[sparse_data_pointer] = itemIndex
  * 
  *                     sparse_data_pointer += 1             # <<<<<<<<<<<<<<
@@ -6240,52 +6256,49 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
     __pyx_L16:;
   }
 
-  /* "Similarity.pyx":381
+  /* "Similarity.pyx":384
  * 
  *                     sparse_data_pointer += 1
  *         if self.verbose:             # <<<<<<<<<<<<<<
  *             print("Computation is completend in {} minutes".format((time.time() - start_time)/60))
  * 
  */
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_verbose); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 381, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 381, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  if (__pyx_t_2) {
+  __pyx_t_1 = (__pyx_v_self->verbose != 0);
+  if (__pyx_t_1) {
 
-    /* "Similarity.pyx":382
+    /* "Similarity.pyx":385
  *                     sparse_data_pointer += 1
  *         if self.verbose:
  *             print("Computation is completend in {} minutes".format((time.time() - start_time)/60))             # <<<<<<<<<<<<<<
  * 
  *         if self.TopK == 0:
  */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_kp_u_Computation_is_completend_in_min, __pyx_n_s_format); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 382, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_kp_u_Computation_is_completend_in_min, __pyx_n_s_format); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 385, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_time); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 382, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_time); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 382, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_time); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 385, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_time); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 385, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = NULL;
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_2 = NULL;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_4))) {
-      __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_4);
-      if (likely(__pyx_t_1)) {
+      __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_4);
+      if (likely(__pyx_t_2)) {
         PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
-        __Pyx_INCREF(__pyx_t_1);
+        __Pyx_INCREF(__pyx_t_2);
         __Pyx_INCREF(function);
         __Pyx_DECREF_SET(__pyx_t_4, function);
       }
     }
-    __pyx_t_13 = (__pyx_t_1) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_1) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
-    __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 382, __pyx_L1_error)
+    __pyx_t_13 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
+    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+    if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 385, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = PyNumber_Subtract(__pyx_t_13, __pyx_v_start_time); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 382, __pyx_L1_error)
+    __pyx_t_4 = PyNumber_Subtract(__pyx_t_13, __pyx_v_start_time); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 385, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-    __pyx_t_13 = __Pyx_PyInt_TrueDivideObjC(__pyx_t_4, __pyx_int_60, 60, 0); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 382, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyInt_TrueDivideObjC(__pyx_t_4, __pyx_int_60, 60, 0); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 385, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_t_4 = NULL;
@@ -6301,15 +6314,15 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
     __pyx_t_7 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_t_13) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_13);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-    if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 382, __pyx_L1_error)
+    if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 385, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_7); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 382, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_7); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 385, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "Similarity.pyx":381
+    /* "Similarity.pyx":384
  * 
  *                     sparse_data_pointer += 1
  *         if self.verbose:             # <<<<<<<<<<<<<<
@@ -6318,17 +6331,17 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
  */
   }
 
-  /* "Similarity.pyx":384
+  /* "Similarity.pyx":387
  *             print("Computation is completend in {} minutes".format((time.time() - start_time)/60))
  * 
  *         if self.TopK == 0:             # <<<<<<<<<<<<<<
  * 
  *             return np.array(self.W_dense)
  */
-  __pyx_t_2 = ((__pyx_v_self->TopK == 0) != 0);
-  if (__pyx_t_2) {
+  __pyx_t_1 = ((__pyx_v_self->TopK == 0) != 0);
+  if (__pyx_t_1) {
 
-    /* "Similarity.pyx":386
+    /* "Similarity.pyx":389
  *         if self.TopK == 0:
  * 
  *             return np.array(self.W_dense)             # <<<<<<<<<<<<<<
@@ -6336,12 +6349,12 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
  *         else:
  */
     __Pyx_XDECREF(__pyx_r);
-    __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_np); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 386, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_np); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 389, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_array); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 386, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_array); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 389, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __pyx_t_7 = __pyx_memoryview_fromslice(__pyx_v_self->W_dense, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 386, __pyx_L1_error)
+    __pyx_t_7 = __pyx_memoryview_fromslice(__pyx_v_self->W_dense, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 389, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __pyx_t_4 = NULL;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_13))) {
@@ -6356,14 +6369,14 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
     __pyx_t_3 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_13, __pyx_t_4, __pyx_t_7) : __Pyx_PyObject_CallOneArg(__pyx_t_13, __pyx_t_7);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 386, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 389, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
     __pyx_r = __pyx_t_3;
     __pyx_t_3 = 0;
     goto __pyx_L0;
 
-    /* "Similarity.pyx":384
+    /* "Similarity.pyx":387
  *             print("Computation is completend in {} minutes".format((time.time() - start_time)/60))
  * 
  *         if self.TopK == 0:             # <<<<<<<<<<<<<<
@@ -6372,7 +6385,7 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
  */
   }
 
-  /* "Similarity.pyx":390
+  /* "Similarity.pyx":393
  *         else:
  * 
  *             values = np.array(values[0:sparse_data_pointer])             # <<<<<<<<<<<<<<
@@ -6380,9 +6393,9 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
  *             cols = np.array(cols[0:sparse_data_pointer])
  */
   /*else*/ {
-    __Pyx_GetModuleGlobalName(__pyx_t_13, __pyx_n_s_np); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 390, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_13, __pyx_n_s_np); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 393, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
-    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_13, __pyx_n_s_array); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 390, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_13, __pyx_n_s_array); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 393, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
     __pyx_t_6.data = __pyx_v_values.data;
@@ -6403,10 +6416,10 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_2compute_similarity(struct _
     0,
     1) < 0))
 {
-    __PYX_ERR(0, 390, __pyx_L1_error)
+    __PYX_ERR(0, 393, __pyx_L1_error)
 }
 
-__pyx_t_13 = __pyx_memoryview_fromslice(__pyx_t_6, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 390, __pyx_L1_error)
+__pyx_t_13 = __pyx_memoryview_fromslice(__pyx_t_6, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 393, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     __PYX_XDEC_MEMVIEW(&__pyx_t_6, 1);
     __pyx_t_6.memview = NULL;
@@ -6424,26 +6437,26 @@ __pyx_t_13 = __pyx_memoryview_fromslice(__pyx_t_6, 1, (PyObject *(*)(char *)) __
     __pyx_t_3 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_7, __pyx_t_4, __pyx_t_13) : __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_t_13);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 390, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 393, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_3, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 390, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_3, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 393, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __PYX_XDEC_MEMVIEW(&__pyx_v_values, 1);
     __pyx_v_values = __pyx_t_6;
     __pyx_t_6.memview = NULL;
     __pyx_t_6.data = NULL;
 
-    /* "Similarity.pyx":391
+    /* "Similarity.pyx":394
  * 
  *             values = np.array(values[0:sparse_data_pointer])
  *             rows = np.array(rows[0:sparse_data_pointer])             # <<<<<<<<<<<<<<
  *             cols = np.array(cols[0:sparse_data_pointer])
  * 
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_np); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 391, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_np); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 394, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_array); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 391, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_array); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 394, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __pyx_t_8.data = __pyx_v_rows.data;
@@ -6464,10 +6477,10 @@ __pyx_t_13 = __pyx_memoryview_fromslice(__pyx_t_6, 1, (PyObject *(*)(char *)) __
     0,
     1) < 0))
 {
-    __PYX_ERR(0, 391, __pyx_L1_error)
+    __PYX_ERR(0, 394, __pyx_L1_error)
 }
 
-__pyx_t_7 = __pyx_memoryview_fromslice(__pyx_t_8, 1, (PyObject *(*)(char *)) __pyx_memview_get_int, (int (*)(char *, PyObject *)) __pyx_memview_set_int, 0);; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 391, __pyx_L1_error)
+__pyx_t_7 = __pyx_memoryview_fromslice(__pyx_t_8, 1, (PyObject *(*)(char *)) __pyx_memview_get_int, (int (*)(char *, PyObject *)) __pyx_memview_set_int, 0);; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 394, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __PYX_XDEC_MEMVIEW(&__pyx_t_8, 1);
     __pyx_t_8.memview = NULL;
@@ -6485,26 +6498,26 @@ __pyx_t_7 = __pyx_memoryview_fromslice(__pyx_t_8, 1, (PyObject *(*)(char *)) __p
     __pyx_t_3 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_13, __pyx_t_4, __pyx_t_7) : __Pyx_PyObject_CallOneArg(__pyx_t_13, __pyx_t_7);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 391, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 394, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-    __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(__pyx_t_3, PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 391, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(__pyx_t_3, PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 394, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __PYX_XDEC_MEMVIEW(&__pyx_v_rows, 1);
     __pyx_v_rows = __pyx_t_8;
     __pyx_t_8.memview = NULL;
     __pyx_t_8.data = NULL;
 
-    /* "Similarity.pyx":392
+    /* "Similarity.pyx":395
  *             values = np.array(values[0:sparse_data_pointer])
  *             rows = np.array(rows[0:sparse_data_pointer])
  *             cols = np.array(cols[0:sparse_data_pointer])             # <<<<<<<<<<<<<<
  * 
  *             W_sparse = sps.csr_matrix((values, (rows, cols)),
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_13, __pyx_n_s_np); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 392, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_13, __pyx_n_s_np); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 395, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
-    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_13, __pyx_n_s_array); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 392, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_13, __pyx_n_s_array); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 395, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
     __pyx_t_8.data = __pyx_v_cols.data;
@@ -6525,10 +6538,10 @@ __pyx_t_7 = __pyx_memoryview_fromslice(__pyx_t_8, 1, (PyObject *(*)(char *)) __p
     0,
     1) < 0))
 {
-    __PYX_ERR(0, 392, __pyx_L1_error)
+    __PYX_ERR(0, 395, __pyx_L1_error)
 }
 
-__pyx_t_13 = __pyx_memoryview_fromslice(__pyx_t_8, 1, (PyObject *(*)(char *)) __pyx_memview_get_int, (int (*)(char *, PyObject *)) __pyx_memview_set_int, 0);; if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 392, __pyx_L1_error)
+__pyx_t_13 = __pyx_memoryview_fromslice(__pyx_t_8, 1, (PyObject *(*)(char *)) __pyx_memview_get_int, (int (*)(char *, PyObject *)) __pyx_memview_set_int, 0);; if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 395, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     __PYX_XDEC_MEMVIEW(&__pyx_t_8, 1);
     __pyx_t_8.memview = NULL;
@@ -6546,70 +6559,70 @@ __pyx_t_13 = __pyx_memoryview_fromslice(__pyx_t_8, 1, (PyObject *(*)(char *)) __
     __pyx_t_3 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_7, __pyx_t_4, __pyx_t_13) : __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_t_13);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 392, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 395, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(__pyx_t_3, PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 392, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(__pyx_t_3, PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 395, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __PYX_XDEC_MEMVIEW(&__pyx_v_cols, 1);
     __pyx_v_cols = __pyx_t_8;
     __pyx_t_8.memview = NULL;
     __pyx_t_8.data = NULL;
 
-    /* "Similarity.pyx":394
+    /* "Similarity.pyx":397
  *             cols = np.array(cols[0:sparse_data_pointer])
  * 
  *             W_sparse = sps.csr_matrix((values, (rows, cols)),             # <<<<<<<<<<<<<<
  *                                     shape=(self.n_items, self.n_items),
  *                                     dtype=np.float32)
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_sps); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 394, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_sps); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 397, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 394, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 397, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_v_values, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 394, __pyx_L1_error)
+    __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_v_values, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 397, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_13 = __pyx_memoryview_fromslice(__pyx_v_rows, 1, (PyObject *(*)(char *)) __pyx_memview_get_int, (int (*)(char *, PyObject *)) __pyx_memview_set_int, 0);; if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 394, __pyx_L1_error)
+    __pyx_t_13 = __pyx_memoryview_fromslice(__pyx_v_rows, 1, (PyObject *(*)(char *)) __pyx_memview_get_int, (int (*)(char *, PyObject *)) __pyx_memview_set_int, 0);; if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 397, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
-    __pyx_t_4 = __pyx_memoryview_fromslice(__pyx_v_cols, 1, (PyObject *(*)(char *)) __pyx_memview_get_int, (int (*)(char *, PyObject *)) __pyx_memview_set_int, 0);; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 394, __pyx_L1_error)
+    __pyx_t_4 = __pyx_memoryview_fromslice(__pyx_v_cols, 1, (PyObject *(*)(char *)) __pyx_memview_get_int, (int (*)(char *, PyObject *)) __pyx_memview_set_int, 0);; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 397, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 394, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 397, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
     __Pyx_GIVEREF(__pyx_t_13);
-    PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_13);
+    PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_13);
     __Pyx_GIVEREF(__pyx_t_4);
-    PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_4);
+    PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_4);
     __pyx_t_13 = 0;
     __pyx_t_4 = 0;
-    __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 394, __pyx_L1_error)
+    __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 397, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_GIVEREF(__pyx_t_3);
     PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3);
-    __Pyx_GIVEREF(__pyx_t_1);
-    PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_1);
+    __Pyx_GIVEREF(__pyx_t_2);
+    PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_2);
     __pyx_t_3 = 0;
-    __pyx_t_1 = 0;
-    __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 394, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_2 = 0;
+    __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 397, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
     __Pyx_GIVEREF(__pyx_t_4);
-    PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_4);
+    PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "Similarity.pyx":395
+    /* "Similarity.pyx":398
  * 
  *             W_sparse = sps.csr_matrix((values, (rows, cols)),
  *                                     shape=(self.n_items, self.n_items),             # <<<<<<<<<<<<<<
  *                                     dtype=np.float32)
  * 
  */
-    __pyx_t_4 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 395, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 398, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_3 = __Pyx_PyInt_From_long(__pyx_v_self->n_items); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 395, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_From_long(__pyx_v_self->n_items); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 398, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_13 = __Pyx_PyInt_From_long(__pyx_v_self->n_items); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 395, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyInt_From_long(__pyx_v_self->n_items); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 398, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
-    __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 395, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 398, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_GIVEREF(__pyx_t_3);
     PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3);
@@ -6617,40 +6630,40 @@ __pyx_t_13 = __pyx_memoryview_fromslice(__pyx_t_8, 1, (PyObject *(*)(char *)) __
     PyTuple_SET_ITEM(__pyx_t_5, 1, __pyx_t_13);
     __pyx_t_3 = 0;
     __pyx_t_13 = 0;
-    if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_shape, __pyx_t_5) < 0) __PYX_ERR(0, 395, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_shape, __pyx_t_5) < 0) __PYX_ERR(0, 398, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "Similarity.pyx":396
+    /* "Similarity.pyx":399
  *             W_sparse = sps.csr_matrix((values, (rows, cols)),
  *                                     shape=(self.n_items, self.n_items),
  *                                     dtype=np.float32)             # <<<<<<<<<<<<<<
  * 
  *             return W_sparse
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 396, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 399, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_float32); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 396, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_float32); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 399, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_dtype, __pyx_t_13) < 0) __PYX_ERR(0, 395, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_dtype, __pyx_t_13) < 0) __PYX_ERR(0, 398, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
 
-    /* "Similarity.pyx":394
+    /* "Similarity.pyx":397
  *             cols = np.array(cols[0:sparse_data_pointer])
  * 
  *             W_sparse = sps.csr_matrix((values, (rows, cols)),             # <<<<<<<<<<<<<<
  *                                     shape=(self.n_items, self.n_items),
  *                                     dtype=np.float32)
  */
-    __pyx_t_13 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_1, __pyx_t_4); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 394, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 397, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_v_W_sparse = __pyx_t_13;
     __pyx_t_13 = 0;
 
-    /* "Similarity.pyx":398
+    /* "Similarity.pyx":401
  *                                     dtype=np.float32)
  * 
  *             return W_sparse             # <<<<<<<<<<<<<<
@@ -6662,17 +6675,17 @@ __pyx_t_13 = __pyx_memoryview_fromslice(__pyx_t_8, 1, (PyObject *(*)(char *)) __
     goto __pyx_L0;
   }
 
-  /* "Similarity.pyx":279
+  /* "Similarity.pyx":282
  * 
  * 
  *     def compute_similarity(self):             # <<<<<<<<<<<<<<
  *         if self.verbose:
- *             print("Computation of User User Similarity matrix with {} mode is started.".format((self.method)))
+ *             print("Computation of User User Similarity matrix with {} mode is started.".format((self.mode)))
  */
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
@@ -6717,7 +6730,7 @@ __pyx_t_13 = __pyx_memoryview_fromslice(__pyx_t_8, 1, (PyObject *(*)(char *)) __
 /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
  *     cdef bint use_setstate
- *     state = (self.TopK, self.W_dense, self.adjusted_cosine, self.item_to_user_col_ptr, self.item_to_user_data, self.item_to_user_rows, self.n_items, self.n_users, self.normalize, self.pearson_correlation, self.shrink, self.sumOfSquared, self.tanimoto_coefficient, self.user_to_item_cols, self.user_to_item_data, self.user_to_item_row_ptr)
+ *     state = (self.TopK, self.W_dense, self.adjusted_cosine, self.item_to_user_col_ptr, self.item_to_user_data, self.item_to_user_rows, self.mode, self.n_items, self.n_users, self.normalize, self.pearson_correlation, self.shrink, self.sumOfSquared, self.tanimoto_coefficient, self.user_to_item_cols, self.user_to_item_data, self.user_to_item_row_ptr, self.verbose)
  */
 
 /* Python wrapper */
@@ -6756,14 +6769,16 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_4__reduce_cython__(struct __
   PyObject *__pyx_t_15 = NULL;
   PyObject *__pyx_t_16 = NULL;
   PyObject *__pyx_t_17 = NULL;
-  int __pyx_t_18;
-  int __pyx_t_19;
+  PyObject *__pyx_t_18 = NULL;
+  PyObject *__pyx_t_19 = NULL;
+  int __pyx_t_20;
+  int __pyx_t_21;
   __Pyx_RefNannySetupContext("__reduce_cython__", 0);
 
   /* "(tree fragment)":3
  * def __reduce_cython__(self):
  *     cdef bint use_setstate
- *     state = (self.TopK, self.W_dense, self.adjusted_cosine, self.item_to_user_col_ptr, self.item_to_user_data, self.item_to_user_rows, self.n_items, self.n_users, self.normalize, self.pearson_correlation, self.shrink, self.sumOfSquared, self.tanimoto_coefficient, self.user_to_item_cols, self.user_to_item_data, self.user_to_item_row_ptr)             # <<<<<<<<<<<<<<
+ *     state = (self.TopK, self.W_dense, self.adjusted_cosine, self.item_to_user_col_ptr, self.item_to_user_data, self.item_to_user_rows, self.mode, self.n_items, self.n_users, self.normalize, self.pearson_correlation, self.shrink, self.sumOfSquared, self.tanimoto_coefficient, self.user_to_item_cols, self.user_to_item_data, self.user_to_item_row_ptr, self.verbose)             # <<<<<<<<<<<<<<
  *     _dict = getattr(self, '__dict__', None)
  *     if _dict is not None:
  */
@@ -6779,60 +6794,68 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_4__reduce_cython__(struct __
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_6 = __pyx_memoryview_fromslice(__pyx_v_self->item_to_user_rows, 1, (PyObject *(*)(char *)) __pyx_memview_get_int, (int (*)(char *, PyObject *)) __pyx_memview_set_int, 0);; if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 3, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_7 = __Pyx_PyInt_From_long(__pyx_v_self->n_items); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 3, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_self->mode); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 3, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_8 = __Pyx_PyInt_From_long(__pyx_v_self->n_users); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 3, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyInt_From_long(__pyx_v_self->n_items); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 3, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_9 = __Pyx_PyInt_From_int(__pyx_v_self->normalize); if (unlikely(!__pyx_t_9)) __PYX_ERR(1, 3, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyInt_From_long(__pyx_v_self->n_users); if (unlikely(!__pyx_t_9)) __PYX_ERR(1, 3, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
-  __pyx_t_10 = __Pyx_PyInt_From_int(__pyx_v_self->pearson_correlation); if (unlikely(!__pyx_t_10)) __PYX_ERR(1, 3, __pyx_L1_error)
+  __pyx_t_10 = __Pyx_PyInt_From_int(__pyx_v_self->normalize); if (unlikely(!__pyx_t_10)) __PYX_ERR(1, 3, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
-  __pyx_t_11 = __Pyx_PyInt_From_int(__pyx_v_self->shrink); if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 3, __pyx_L1_error)
+  __pyx_t_11 = __Pyx_PyInt_From_int(__pyx_v_self->pearson_correlation); if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 3, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_11);
-  __pyx_t_12 = __pyx_memoryview_fromslice(__pyx_v_self->sumOfSquared, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_12)) __PYX_ERR(1, 3, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyInt_From_int(__pyx_v_self->shrink); if (unlikely(!__pyx_t_12)) __PYX_ERR(1, 3, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
-  __pyx_t_13 = __Pyx_PyInt_From_int(__pyx_v_self->tanimoto_coefficient); if (unlikely(!__pyx_t_13)) __PYX_ERR(1, 3, __pyx_L1_error)
+  __pyx_t_13 = __pyx_memoryview_fromslice(__pyx_v_self->sumOfSquared, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_13)) __PYX_ERR(1, 3, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_13);
-  __pyx_t_14 = __pyx_memoryview_fromslice(__pyx_v_self->user_to_item_cols, 1, (PyObject *(*)(char *)) __pyx_memview_get_int, (int (*)(char *, PyObject *)) __pyx_memview_set_int, 0);; if (unlikely(!__pyx_t_14)) __PYX_ERR(1, 3, __pyx_L1_error)
+  __pyx_t_14 = __Pyx_PyInt_From_int(__pyx_v_self->tanimoto_coefficient); if (unlikely(!__pyx_t_14)) __PYX_ERR(1, 3, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
-  __pyx_t_15 = __pyx_memoryview_fromslice(__pyx_v_self->user_to_item_data, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_15)) __PYX_ERR(1, 3, __pyx_L1_error)
+  __pyx_t_15 = __pyx_memoryview_fromslice(__pyx_v_self->user_to_item_cols, 1, (PyObject *(*)(char *)) __pyx_memview_get_int, (int (*)(char *, PyObject *)) __pyx_memview_set_int, 0);; if (unlikely(!__pyx_t_15)) __PYX_ERR(1, 3, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_15);
-  __pyx_t_16 = __pyx_memoryview_fromslice(__pyx_v_self->user_to_item_row_ptr, 1, (PyObject *(*)(char *)) __pyx_memview_get_int, (int (*)(char *, PyObject *)) __pyx_memview_set_int, 0);; if (unlikely(!__pyx_t_16)) __PYX_ERR(1, 3, __pyx_L1_error)
+  __pyx_t_16 = __pyx_memoryview_fromslice(__pyx_v_self->user_to_item_data, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_16)) __PYX_ERR(1, 3, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_16);
-  __pyx_t_17 = PyTuple_New(16); if (unlikely(!__pyx_t_17)) __PYX_ERR(1, 3, __pyx_L1_error)
+  __pyx_t_17 = __pyx_memoryview_fromslice(__pyx_v_self->user_to_item_row_ptr, 1, (PyObject *(*)(char *)) __pyx_memview_get_int, (int (*)(char *, PyObject *)) __pyx_memview_set_int, 0);; if (unlikely(!__pyx_t_17)) __PYX_ERR(1, 3, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
+  __pyx_t_18 = __Pyx_PyInt_From_int(__pyx_v_self->verbose); if (unlikely(!__pyx_t_18)) __PYX_ERR(1, 3, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_18);
+  __pyx_t_19 = PyTuple_New(18); if (unlikely(!__pyx_t_19)) __PYX_ERR(1, 3, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_19);
   __Pyx_GIVEREF(__pyx_t_1);
-  PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_t_1);
+  PyTuple_SET_ITEM(__pyx_t_19, 0, __pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_2);
-  PyTuple_SET_ITEM(__pyx_t_17, 1, __pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_19, 1, __pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_3);
-  PyTuple_SET_ITEM(__pyx_t_17, 2, __pyx_t_3);
+  PyTuple_SET_ITEM(__pyx_t_19, 2, __pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_4);
-  PyTuple_SET_ITEM(__pyx_t_17, 3, __pyx_t_4);
+  PyTuple_SET_ITEM(__pyx_t_19, 3, __pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_5);
-  PyTuple_SET_ITEM(__pyx_t_17, 4, __pyx_t_5);
+  PyTuple_SET_ITEM(__pyx_t_19, 4, __pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_6);
-  PyTuple_SET_ITEM(__pyx_t_17, 5, __pyx_t_6);
+  PyTuple_SET_ITEM(__pyx_t_19, 5, __pyx_t_6);
   __Pyx_GIVEREF(__pyx_t_7);
-  PyTuple_SET_ITEM(__pyx_t_17, 6, __pyx_t_7);
+  PyTuple_SET_ITEM(__pyx_t_19, 6, __pyx_t_7);
   __Pyx_GIVEREF(__pyx_t_8);
-  PyTuple_SET_ITEM(__pyx_t_17, 7, __pyx_t_8);
+  PyTuple_SET_ITEM(__pyx_t_19, 7, __pyx_t_8);
   __Pyx_GIVEREF(__pyx_t_9);
-  PyTuple_SET_ITEM(__pyx_t_17, 8, __pyx_t_9);
+  PyTuple_SET_ITEM(__pyx_t_19, 8, __pyx_t_9);
   __Pyx_GIVEREF(__pyx_t_10);
-  PyTuple_SET_ITEM(__pyx_t_17, 9, __pyx_t_10);
+  PyTuple_SET_ITEM(__pyx_t_19, 9, __pyx_t_10);
   __Pyx_GIVEREF(__pyx_t_11);
-  PyTuple_SET_ITEM(__pyx_t_17, 10, __pyx_t_11);
+  PyTuple_SET_ITEM(__pyx_t_19, 10, __pyx_t_11);
   __Pyx_GIVEREF(__pyx_t_12);
-  PyTuple_SET_ITEM(__pyx_t_17, 11, __pyx_t_12);
+  PyTuple_SET_ITEM(__pyx_t_19, 11, __pyx_t_12);
   __Pyx_GIVEREF(__pyx_t_13);
-  PyTuple_SET_ITEM(__pyx_t_17, 12, __pyx_t_13);
+  PyTuple_SET_ITEM(__pyx_t_19, 12, __pyx_t_13);
   __Pyx_GIVEREF(__pyx_t_14);
-  PyTuple_SET_ITEM(__pyx_t_17, 13, __pyx_t_14);
+  PyTuple_SET_ITEM(__pyx_t_19, 13, __pyx_t_14);
   __Pyx_GIVEREF(__pyx_t_15);
-  PyTuple_SET_ITEM(__pyx_t_17, 14, __pyx_t_15);
+  PyTuple_SET_ITEM(__pyx_t_19, 14, __pyx_t_15);
   __Pyx_GIVEREF(__pyx_t_16);
-  PyTuple_SET_ITEM(__pyx_t_17, 15, __pyx_t_16);
+  PyTuple_SET_ITEM(__pyx_t_19, 15, __pyx_t_16);
+  __Pyx_GIVEREF(__pyx_t_17);
+  PyTuple_SET_ITEM(__pyx_t_19, 16, __pyx_t_17);
+  __Pyx_GIVEREF(__pyx_t_18);
+  PyTuple_SET_ITEM(__pyx_t_19, 17, __pyx_t_18);
   __pyx_t_1 = 0;
   __pyx_t_2 = 0;
   __pyx_t_3 = 0;
@@ -6849,31 +6872,33 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_4__reduce_cython__(struct __
   __pyx_t_14 = 0;
   __pyx_t_15 = 0;
   __pyx_t_16 = 0;
-  __pyx_v_state = ((PyObject*)__pyx_t_17);
   __pyx_t_17 = 0;
+  __pyx_t_18 = 0;
+  __pyx_v_state = ((PyObject*)__pyx_t_19);
+  __pyx_t_19 = 0;
 
   /* "(tree fragment)":4
  *     cdef bint use_setstate
- *     state = (self.TopK, self.W_dense, self.adjusted_cosine, self.item_to_user_col_ptr, self.item_to_user_data, self.item_to_user_rows, self.n_items, self.n_users, self.normalize, self.pearson_correlation, self.shrink, self.sumOfSquared, self.tanimoto_coefficient, self.user_to_item_cols, self.user_to_item_data, self.user_to_item_row_ptr)
+ *     state = (self.TopK, self.W_dense, self.adjusted_cosine, self.item_to_user_col_ptr, self.item_to_user_data, self.item_to_user_rows, self.mode, self.n_items, self.n_users, self.normalize, self.pearson_correlation, self.shrink, self.sumOfSquared, self.tanimoto_coefficient, self.user_to_item_cols, self.user_to_item_data, self.user_to_item_row_ptr, self.verbose)
  *     _dict = getattr(self, '__dict__', None)             # <<<<<<<<<<<<<<
  *     if _dict is not None:
  *         state += (_dict,)
  */
-  __pyx_t_17 = __Pyx_GetAttr3(((PyObject *)__pyx_v_self), __pyx_n_s_dict, Py_None); if (unlikely(!__pyx_t_17)) __PYX_ERR(1, 4, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_17);
-  __pyx_v__dict = __pyx_t_17;
-  __pyx_t_17 = 0;
+  __pyx_t_19 = __Pyx_GetAttr3(((PyObject *)__pyx_v_self), __pyx_n_s_dict, Py_None); if (unlikely(!__pyx_t_19)) __PYX_ERR(1, 4, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_19);
+  __pyx_v__dict = __pyx_t_19;
+  __pyx_t_19 = 0;
 
   /* "(tree fragment)":5
- *     state = (self.TopK, self.W_dense, self.adjusted_cosine, self.item_to_user_col_ptr, self.item_to_user_data, self.item_to_user_rows, self.n_items, self.n_users, self.normalize, self.pearson_correlation, self.shrink, self.sumOfSquared, self.tanimoto_coefficient, self.user_to_item_cols, self.user_to_item_data, self.user_to_item_row_ptr)
+ *     state = (self.TopK, self.W_dense, self.adjusted_cosine, self.item_to_user_col_ptr, self.item_to_user_data, self.item_to_user_rows, self.mode, self.n_items, self.n_users, self.normalize, self.pearson_correlation, self.shrink, self.sumOfSquared, self.tanimoto_coefficient, self.user_to_item_cols, self.user_to_item_data, self.user_to_item_row_ptr, self.verbose)
  *     _dict = getattr(self, '__dict__', None)
  *     if _dict is not None:             # <<<<<<<<<<<<<<
  *         state += (_dict,)
  *         use_setstate = True
  */
-  __pyx_t_18 = (__pyx_v__dict != Py_None);
-  __pyx_t_19 = (__pyx_t_18 != 0);
-  if (__pyx_t_19) {
+  __pyx_t_20 = (__pyx_v__dict != Py_None);
+  __pyx_t_21 = (__pyx_t_20 != 0);
+  if (__pyx_t_21) {
 
     /* "(tree fragment)":6
  *     _dict = getattr(self, '__dict__', None)
@@ -6882,16 +6907,16 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_4__reduce_cython__(struct __
  *         use_setstate = True
  *     else:
  */
-    __pyx_t_17 = PyTuple_New(1); if (unlikely(!__pyx_t_17)) __PYX_ERR(1, 6, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_17);
+    __pyx_t_19 = PyTuple_New(1); if (unlikely(!__pyx_t_19)) __PYX_ERR(1, 6, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_19);
     __Pyx_INCREF(__pyx_v__dict);
     __Pyx_GIVEREF(__pyx_v__dict);
-    PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_v__dict);
-    __pyx_t_16 = PyNumber_InPlaceAdd(__pyx_v_state, __pyx_t_17); if (unlikely(!__pyx_t_16)) __PYX_ERR(1, 6, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_16);
-    __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
-    __Pyx_DECREF_SET(__pyx_v_state, ((PyObject*)__pyx_t_16));
-    __pyx_t_16 = 0;
+    PyTuple_SET_ITEM(__pyx_t_19, 0, __pyx_v__dict);
+    __pyx_t_18 = PyNumber_InPlaceAdd(__pyx_v_state, __pyx_t_19); if (unlikely(!__pyx_t_18)) __PYX_ERR(1, 6, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_18);
+    __Pyx_DECREF(__pyx_t_19); __pyx_t_19 = 0;
+    __Pyx_DECREF_SET(__pyx_v_state, ((PyObject*)__pyx_t_18));
+    __pyx_t_18 = 0;
 
     /* "(tree fragment)":7
  *     if _dict is not None:
@@ -6903,7 +6928,7 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_4__reduce_cython__(struct __
     __pyx_v_use_setstate = 1;
 
     /* "(tree fragment)":5
- *     state = (self.TopK, self.W_dense, self.adjusted_cosine, self.item_to_user_col_ptr, self.item_to_user_data, self.item_to_user_rows, self.n_items, self.n_users, self.normalize, self.pearson_correlation, self.shrink, self.sumOfSquared, self.tanimoto_coefficient, self.user_to_item_cols, self.user_to_item_data, self.user_to_item_row_ptr)
+ *     state = (self.TopK, self.W_dense, self.adjusted_cosine, self.item_to_user_col_ptr, self.item_to_user_data, self.item_to_user_rows, self.mode, self.n_items, self.n_users, self.normalize, self.pearson_correlation, self.shrink, self.sumOfSquared, self.tanimoto_coefficient, self.user_to_item_cols, self.user_to_item_data, self.user_to_item_row_ptr, self.verbose)
  *     _dict = getattr(self, '__dict__', None)
  *     if _dict is not None:             # <<<<<<<<<<<<<<
  *         state += (_dict,)
@@ -6917,7 +6942,7 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_4__reduce_cython__(struct __
  *     else:
  *         use_setstate = False             # <<<<<<<<<<<<<<
  *     if use_setstate:
- *         return __pyx_unpickle_Similarity, (type(self), 0x97207f4, None), state
+ *         return __pyx_unpickle_Similarity, (type(self), 0x25ef4b8, None), state
  */
   /*else*/ {
     __pyx_v_use_setstate = 0;
@@ -6928,96 +6953,96 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_4__reduce_cython__(struct __
  *     else:
  *         use_setstate = False
  *     if use_setstate:             # <<<<<<<<<<<<<<
- *         return __pyx_unpickle_Similarity, (type(self), 0x97207f4, None), state
+ *         return __pyx_unpickle_Similarity, (type(self), 0x25ef4b8, None), state
  *     else:
  */
-  __pyx_t_19 = (__pyx_v_use_setstate != 0);
-  if (__pyx_t_19) {
+  __pyx_t_21 = (__pyx_v_use_setstate != 0);
+  if (__pyx_t_21) {
 
     /* "(tree fragment)":11
  *         use_setstate = False
  *     if use_setstate:
- *         return __pyx_unpickle_Similarity, (type(self), 0x97207f4, None), state             # <<<<<<<<<<<<<<
+ *         return __pyx_unpickle_Similarity, (type(self), 0x25ef4b8, None), state             # <<<<<<<<<<<<<<
  *     else:
- *         return __pyx_unpickle_Similarity, (type(self), 0x97207f4, state)
+ *         return __pyx_unpickle_Similarity, (type(self), 0x25ef4b8, state)
  */
     __Pyx_XDECREF(__pyx_r);
-    __Pyx_GetModuleGlobalName(__pyx_t_16, __pyx_n_s_pyx_unpickle_Similarity); if (unlikely(!__pyx_t_16)) __PYX_ERR(1, 11, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_16);
-    __pyx_t_17 = PyTuple_New(3); if (unlikely(!__pyx_t_17)) __PYX_ERR(1, 11, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_17);
+    __Pyx_GetModuleGlobalName(__pyx_t_18, __pyx_n_s_pyx_unpickle_Similarity); if (unlikely(!__pyx_t_18)) __PYX_ERR(1, 11, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_18);
+    __pyx_t_19 = PyTuple_New(3); if (unlikely(!__pyx_t_19)) __PYX_ERR(1, 11, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_19);
     __Pyx_INCREF(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
     __Pyx_GIVEREF(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
-    PyTuple_SET_ITEM(__pyx_t_17, 0, ((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
-    __Pyx_INCREF(__pyx_int_158468084);
-    __Pyx_GIVEREF(__pyx_int_158468084);
-    PyTuple_SET_ITEM(__pyx_t_17, 1, __pyx_int_158468084);
+    PyTuple_SET_ITEM(__pyx_t_19, 0, ((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
+    __Pyx_INCREF(__pyx_int_39777464);
+    __Pyx_GIVEREF(__pyx_int_39777464);
+    PyTuple_SET_ITEM(__pyx_t_19, 1, __pyx_int_39777464);
     __Pyx_INCREF(Py_None);
     __Pyx_GIVEREF(Py_None);
-    PyTuple_SET_ITEM(__pyx_t_17, 2, Py_None);
-    __pyx_t_15 = PyTuple_New(3); if (unlikely(!__pyx_t_15)) __PYX_ERR(1, 11, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_15);
-    __Pyx_GIVEREF(__pyx_t_16);
-    PyTuple_SET_ITEM(__pyx_t_15, 0, __pyx_t_16);
-    __Pyx_GIVEREF(__pyx_t_17);
-    PyTuple_SET_ITEM(__pyx_t_15, 1, __pyx_t_17);
+    PyTuple_SET_ITEM(__pyx_t_19, 2, Py_None);
+    __pyx_t_17 = PyTuple_New(3); if (unlikely(!__pyx_t_17)) __PYX_ERR(1, 11, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_17);
+    __Pyx_GIVEREF(__pyx_t_18);
+    PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_t_18);
+    __Pyx_GIVEREF(__pyx_t_19);
+    PyTuple_SET_ITEM(__pyx_t_17, 1, __pyx_t_19);
     __Pyx_INCREF(__pyx_v_state);
     __Pyx_GIVEREF(__pyx_v_state);
-    PyTuple_SET_ITEM(__pyx_t_15, 2, __pyx_v_state);
-    __pyx_t_16 = 0;
+    PyTuple_SET_ITEM(__pyx_t_17, 2, __pyx_v_state);
+    __pyx_t_18 = 0;
+    __pyx_t_19 = 0;
+    __pyx_r = __pyx_t_17;
     __pyx_t_17 = 0;
-    __pyx_r = __pyx_t_15;
-    __pyx_t_15 = 0;
     goto __pyx_L0;
 
     /* "(tree fragment)":10
  *     else:
  *         use_setstate = False
  *     if use_setstate:             # <<<<<<<<<<<<<<
- *         return __pyx_unpickle_Similarity, (type(self), 0x97207f4, None), state
+ *         return __pyx_unpickle_Similarity, (type(self), 0x25ef4b8, None), state
  *     else:
  */
   }
 
   /* "(tree fragment)":13
- *         return __pyx_unpickle_Similarity, (type(self), 0x97207f4, None), state
+ *         return __pyx_unpickle_Similarity, (type(self), 0x25ef4b8, None), state
  *     else:
- *         return __pyx_unpickle_Similarity, (type(self), 0x97207f4, state)             # <<<<<<<<<<<<<<
+ *         return __pyx_unpickle_Similarity, (type(self), 0x25ef4b8, state)             # <<<<<<<<<<<<<<
  * def __setstate_cython__(self, __pyx_state):
  *     __pyx_unpickle_Similarity__set_state(self, __pyx_state)
  */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
-    __Pyx_GetModuleGlobalName(__pyx_t_15, __pyx_n_s_pyx_unpickle_Similarity); if (unlikely(!__pyx_t_15)) __PYX_ERR(1, 13, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_15);
-    __pyx_t_17 = PyTuple_New(3); if (unlikely(!__pyx_t_17)) __PYX_ERR(1, 13, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_17, __pyx_n_s_pyx_unpickle_Similarity); if (unlikely(!__pyx_t_17)) __PYX_ERR(1, 13, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_17);
+    __pyx_t_19 = PyTuple_New(3); if (unlikely(!__pyx_t_19)) __PYX_ERR(1, 13, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_19);
     __Pyx_INCREF(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
     __Pyx_GIVEREF(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
-    PyTuple_SET_ITEM(__pyx_t_17, 0, ((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
-    __Pyx_INCREF(__pyx_int_158468084);
-    __Pyx_GIVEREF(__pyx_int_158468084);
-    PyTuple_SET_ITEM(__pyx_t_17, 1, __pyx_int_158468084);
+    PyTuple_SET_ITEM(__pyx_t_19, 0, ((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
+    __Pyx_INCREF(__pyx_int_39777464);
+    __Pyx_GIVEREF(__pyx_int_39777464);
+    PyTuple_SET_ITEM(__pyx_t_19, 1, __pyx_int_39777464);
     __Pyx_INCREF(__pyx_v_state);
     __Pyx_GIVEREF(__pyx_v_state);
-    PyTuple_SET_ITEM(__pyx_t_17, 2, __pyx_v_state);
-    __pyx_t_16 = PyTuple_New(2); if (unlikely(!__pyx_t_16)) __PYX_ERR(1, 13, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_16);
-    __Pyx_GIVEREF(__pyx_t_15);
-    PyTuple_SET_ITEM(__pyx_t_16, 0, __pyx_t_15);
+    PyTuple_SET_ITEM(__pyx_t_19, 2, __pyx_v_state);
+    __pyx_t_18 = PyTuple_New(2); if (unlikely(!__pyx_t_18)) __PYX_ERR(1, 13, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_18);
     __Pyx_GIVEREF(__pyx_t_17);
-    PyTuple_SET_ITEM(__pyx_t_16, 1, __pyx_t_17);
-    __pyx_t_15 = 0;
+    PyTuple_SET_ITEM(__pyx_t_18, 0, __pyx_t_17);
+    __Pyx_GIVEREF(__pyx_t_19);
+    PyTuple_SET_ITEM(__pyx_t_18, 1, __pyx_t_19);
     __pyx_t_17 = 0;
-    __pyx_r = __pyx_t_16;
-    __pyx_t_16 = 0;
+    __pyx_t_19 = 0;
+    __pyx_r = __pyx_t_18;
+    __pyx_t_18 = 0;
     goto __pyx_L0;
   }
 
   /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
  *     cdef bint use_setstate
- *     state = (self.TopK, self.W_dense, self.adjusted_cosine, self.item_to_user_col_ptr, self.item_to_user_data, self.item_to_user_rows, self.n_items, self.n_users, self.normalize, self.pearson_correlation, self.shrink, self.sumOfSquared, self.tanimoto_coefficient, self.user_to_item_cols, self.user_to_item_data, self.user_to_item_row_ptr)
+ *     state = (self.TopK, self.W_dense, self.adjusted_cosine, self.item_to_user_col_ptr, self.item_to_user_data, self.item_to_user_rows, self.mode, self.n_items, self.n_users, self.normalize, self.pearson_correlation, self.shrink, self.sumOfSquared, self.tanimoto_coefficient, self.user_to_item_cols, self.user_to_item_data, self.user_to_item_row_ptr, self.verbose)
  */
 
   /* function exit code */
@@ -7039,6 +7064,8 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_4__reduce_cython__(struct __
   __Pyx_XDECREF(__pyx_t_15);
   __Pyx_XDECREF(__pyx_t_16);
   __Pyx_XDECREF(__pyx_t_17);
+  __Pyx_XDECREF(__pyx_t_18);
+  __Pyx_XDECREF(__pyx_t_19);
   __Pyx_AddTraceback("Similarity.Similarity.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
@@ -7051,7 +7078,7 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_4__reduce_cython__(struct __
 
 /* "(tree fragment)":14
  *     else:
- *         return __pyx_unpickle_Similarity, (type(self), 0x97207f4, state)
+ *         return __pyx_unpickle_Similarity, (type(self), 0x25ef4b8, state)
  * def __setstate_cython__(self, __pyx_state):             # <<<<<<<<<<<<<<
  *     __pyx_unpickle_Similarity__set_state(self, __pyx_state)
  */
@@ -7076,7 +7103,7 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_6__setstate_cython__(struct 
   __Pyx_RefNannySetupContext("__setstate_cython__", 0);
 
   /* "(tree fragment)":15
- *         return __pyx_unpickle_Similarity, (type(self), 0x97207f4, state)
+ *         return __pyx_unpickle_Similarity, (type(self), 0x25ef4b8, state)
  * def __setstate_cython__(self, __pyx_state):
  *     __pyx_unpickle_Similarity__set_state(self, __pyx_state)             # <<<<<<<<<<<<<<
  */
@@ -7087,7 +7114,7 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_6__setstate_cython__(struct 
 
   /* "(tree fragment)":14
  *     else:
- *         return __pyx_unpickle_Similarity, (type(self), 0x97207f4, state)
+ *         return __pyx_unpickle_Similarity, (type(self), 0x25ef4b8, state)
  * def __setstate_cython__(self, __pyx_state):             # <<<<<<<<<<<<<<
  *     __pyx_unpickle_Similarity__set_state(self, __pyx_state)
  */
@@ -7107,7 +7134,7 @@ static PyObject *__pyx_pf_10Similarity_10Similarity_6__setstate_cython__(struct 
 
 /* "(tree fragment)":1
  * def __pyx_unpickle_Similarity(__pyx_type, long __pyx_checksum, __pyx_state):             # <<<<<<<<<<<<<<
- *     if __pyx_checksum != 0x97207f4:
+ *     if __pyx_checksum != 0x25ef4b8:
  *         from pickle import PickleError as __pyx_PickleError
  */
 
@@ -7199,18 +7226,18 @@ static PyObject *__pyx_pf_10Similarity___pyx_unpickle_Similarity(CYTHON_UNUSED P
 
   /* "(tree fragment)":2
  * def __pyx_unpickle_Similarity(__pyx_type, long __pyx_checksum, __pyx_state):
- *     if __pyx_checksum != 0x97207f4:             # <<<<<<<<<<<<<<
+ *     if __pyx_checksum != 0x25ef4b8:             # <<<<<<<<<<<<<<
  *         from pickle import PickleError as __pyx_PickleError
- *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x97207f4 = (TopK, W_dense, adjusted_cosine, item_to_user_col_ptr, item_to_user_data, item_to_user_rows, n_items, n_users, normalize, pearson_correlation, shrink, sumOfSquared, tanimoto_coefficient, user_to_item_cols, user_to_item_data, user_to_item_row_ptr))" % __pyx_checksum)
+ *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x25ef4b8 = (TopK, W_dense, adjusted_cosine, item_to_user_col_ptr, item_to_user_data, item_to_user_rows, mode, n_items, n_users, normalize, pearson_correlation, shrink, sumOfSquared, tanimoto_coefficient, user_to_item_cols, user_to_item_data, user_to_item_row_ptr, verbose))" % __pyx_checksum)
  */
-  __pyx_t_1 = ((__pyx_v___pyx_checksum != 0x97207f4) != 0);
+  __pyx_t_1 = ((__pyx_v___pyx_checksum != 0x25ef4b8) != 0);
   if (__pyx_t_1) {
 
     /* "(tree fragment)":3
  * def __pyx_unpickle_Similarity(__pyx_type, long __pyx_checksum, __pyx_state):
- *     if __pyx_checksum != 0x97207f4:
+ *     if __pyx_checksum != 0x25ef4b8:
  *         from pickle import PickleError as __pyx_PickleError             # <<<<<<<<<<<<<<
- *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x97207f4 = (TopK, W_dense, adjusted_cosine, item_to_user_col_ptr, item_to_user_data, item_to_user_rows, n_items, n_users, normalize, pearson_correlation, shrink, sumOfSquared, tanimoto_coefficient, user_to_item_cols, user_to_item_data, user_to_item_row_ptr))" % __pyx_checksum)
+ *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x25ef4b8 = (TopK, W_dense, adjusted_cosine, item_to_user_col_ptr, item_to_user_data, item_to_user_rows, mode, n_items, n_users, normalize, pearson_correlation, shrink, sumOfSquared, tanimoto_coefficient, user_to_item_cols, user_to_item_data, user_to_item_row_ptr, verbose))" % __pyx_checksum)
  *     __pyx_result = Similarity.__new__(__pyx_type)
  */
     __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 3, __pyx_L1_error)
@@ -7229,15 +7256,15 @@ static PyObject *__pyx_pf_10Similarity___pyx_unpickle_Similarity(CYTHON_UNUSED P
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
     /* "(tree fragment)":4
- *     if __pyx_checksum != 0x97207f4:
+ *     if __pyx_checksum != 0x25ef4b8:
  *         from pickle import PickleError as __pyx_PickleError
- *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x97207f4 = (TopK, W_dense, adjusted_cosine, item_to_user_col_ptr, item_to_user_data, item_to_user_rows, n_items, n_users, normalize, pearson_correlation, shrink, sumOfSquared, tanimoto_coefficient, user_to_item_cols, user_to_item_data, user_to_item_row_ptr))" % __pyx_checksum)             # <<<<<<<<<<<<<<
+ *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x25ef4b8 = (TopK, W_dense, adjusted_cosine, item_to_user_col_ptr, item_to_user_data, item_to_user_rows, mode, n_items, n_users, normalize, pearson_correlation, shrink, sumOfSquared, tanimoto_coefficient, user_to_item_cols, user_to_item_data, user_to_item_row_ptr, verbose))" % __pyx_checksum)             # <<<<<<<<<<<<<<
  *     __pyx_result = Similarity.__new__(__pyx_type)
  *     if __pyx_state is not None:
  */
     __pyx_t_2 = __Pyx_PyInt_From_long(__pyx_v___pyx_checksum); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 4, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = __Pyx_PyString_Format(__pyx_kp_s_Incompatible_checksums_s_vs_0x97, __pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 4, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyString_Format(__pyx_kp_s_Incompatible_checksums_s_vs_0x25, __pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 4, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_INCREF(__pyx_v___pyx_PickleError);
@@ -7263,15 +7290,15 @@ static PyObject *__pyx_pf_10Similarity___pyx_unpickle_Similarity(CYTHON_UNUSED P
 
     /* "(tree fragment)":2
  * def __pyx_unpickle_Similarity(__pyx_type, long __pyx_checksum, __pyx_state):
- *     if __pyx_checksum != 0x97207f4:             # <<<<<<<<<<<<<<
+ *     if __pyx_checksum != 0x25ef4b8:             # <<<<<<<<<<<<<<
  *         from pickle import PickleError as __pyx_PickleError
- *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x97207f4 = (TopK, W_dense, adjusted_cosine, item_to_user_col_ptr, item_to_user_data, item_to_user_rows, n_items, n_users, normalize, pearson_correlation, shrink, sumOfSquared, tanimoto_coefficient, user_to_item_cols, user_to_item_data, user_to_item_row_ptr))" % __pyx_checksum)
+ *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x25ef4b8 = (TopK, W_dense, adjusted_cosine, item_to_user_col_ptr, item_to_user_data, item_to_user_rows, mode, n_items, n_users, normalize, pearson_correlation, shrink, sumOfSquared, tanimoto_coefficient, user_to_item_cols, user_to_item_data, user_to_item_row_ptr, verbose))" % __pyx_checksum)
  */
   }
 
   /* "(tree fragment)":5
  *         from pickle import PickleError as __pyx_PickleError
- *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x97207f4 = (TopK, W_dense, adjusted_cosine, item_to_user_col_ptr, item_to_user_data, item_to_user_rows, n_items, n_users, normalize, pearson_correlation, shrink, sumOfSquared, tanimoto_coefficient, user_to_item_cols, user_to_item_data, user_to_item_row_ptr))" % __pyx_checksum)
+ *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x25ef4b8 = (TopK, W_dense, adjusted_cosine, item_to_user_col_ptr, item_to_user_data, item_to_user_rows, mode, n_items, n_users, normalize, pearson_correlation, shrink, sumOfSquared, tanimoto_coefficient, user_to_item_cols, user_to_item_data, user_to_item_row_ptr, verbose))" % __pyx_checksum)
  *     __pyx_result = Similarity.__new__(__pyx_type)             # <<<<<<<<<<<<<<
  *     if __pyx_state is not None:
  *         __pyx_unpickle_Similarity__set_state(<Similarity> __pyx_result, __pyx_state)
@@ -7297,7 +7324,7 @@ static PyObject *__pyx_pf_10Similarity___pyx_unpickle_Similarity(CYTHON_UNUSED P
   __pyx_t_3 = 0;
 
   /* "(tree fragment)":6
- *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x97207f4 = (TopK, W_dense, adjusted_cosine, item_to_user_col_ptr, item_to_user_data, item_to_user_rows, n_items, n_users, normalize, pearson_correlation, shrink, sumOfSquared, tanimoto_coefficient, user_to_item_cols, user_to_item_data, user_to_item_row_ptr))" % __pyx_checksum)
+ *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x25ef4b8 = (TopK, W_dense, adjusted_cosine, item_to_user_col_ptr, item_to_user_data, item_to_user_rows, mode, n_items, n_users, normalize, pearson_correlation, shrink, sumOfSquared, tanimoto_coefficient, user_to_item_cols, user_to_item_data, user_to_item_row_ptr, verbose))" % __pyx_checksum)
  *     __pyx_result = Similarity.__new__(__pyx_type)
  *     if __pyx_state is not None:             # <<<<<<<<<<<<<<
  *         __pyx_unpickle_Similarity__set_state(<Similarity> __pyx_result, __pyx_state)
@@ -7320,7 +7347,7 @@ static PyObject *__pyx_pf_10Similarity___pyx_unpickle_Similarity(CYTHON_UNUSED P
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
     /* "(tree fragment)":6
- *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x97207f4 = (TopK, W_dense, adjusted_cosine, item_to_user_col_ptr, item_to_user_data, item_to_user_rows, n_items, n_users, normalize, pearson_correlation, shrink, sumOfSquared, tanimoto_coefficient, user_to_item_cols, user_to_item_data, user_to_item_row_ptr))" % __pyx_checksum)
+ *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x25ef4b8 = (TopK, W_dense, adjusted_cosine, item_to_user_col_ptr, item_to_user_data, item_to_user_rows, mode, n_items, n_users, normalize, pearson_correlation, shrink, sumOfSquared, tanimoto_coefficient, user_to_item_cols, user_to_item_data, user_to_item_row_ptr, verbose))" % __pyx_checksum)
  *     __pyx_result = Similarity.__new__(__pyx_type)
  *     if __pyx_state is not None:             # <<<<<<<<<<<<<<
  *         __pyx_unpickle_Similarity__set_state(<Similarity> __pyx_result, __pyx_state)
@@ -7333,7 +7360,7 @@ static PyObject *__pyx_pf_10Similarity___pyx_unpickle_Similarity(CYTHON_UNUSED P
  *         __pyx_unpickle_Similarity__set_state(<Similarity> __pyx_result, __pyx_state)
  *     return __pyx_result             # <<<<<<<<<<<<<<
  * cdef __pyx_unpickle_Similarity__set_state(Similarity __pyx_result, tuple __pyx_state):
- *     __pyx_result.TopK = __pyx_state[0]; __pyx_result.W_dense = __pyx_state[1]; __pyx_result.adjusted_cosine = __pyx_state[2]; __pyx_result.item_to_user_col_ptr = __pyx_state[3]; __pyx_result.item_to_user_data = __pyx_state[4]; __pyx_result.item_to_user_rows = __pyx_state[5]; __pyx_result.n_items = __pyx_state[6]; __pyx_result.n_users = __pyx_state[7]; __pyx_result.normalize = __pyx_state[8]; __pyx_result.pearson_correlation = __pyx_state[9]; __pyx_result.shrink = __pyx_state[10]; __pyx_result.sumOfSquared = __pyx_state[11]; __pyx_result.tanimoto_coefficient = __pyx_state[12]; __pyx_result.user_to_item_cols = __pyx_state[13]; __pyx_result.user_to_item_data = __pyx_state[14]; __pyx_result.user_to_item_row_ptr = __pyx_state[15]
+ *     __pyx_result.TopK = __pyx_state[0]; __pyx_result.W_dense = __pyx_state[1]; __pyx_result.adjusted_cosine = __pyx_state[2]; __pyx_result.item_to_user_col_ptr = __pyx_state[3]; __pyx_result.item_to_user_data = __pyx_state[4]; __pyx_result.item_to_user_rows = __pyx_state[5]; __pyx_result.mode = __pyx_state[6]; __pyx_result.n_items = __pyx_state[7]; __pyx_result.n_users = __pyx_state[8]; __pyx_result.normalize = __pyx_state[9]; __pyx_result.pearson_correlation = __pyx_state[10]; __pyx_result.shrink = __pyx_state[11]; __pyx_result.sumOfSquared = __pyx_state[12]; __pyx_result.tanimoto_coefficient = __pyx_state[13]; __pyx_result.user_to_item_cols = __pyx_state[14]; __pyx_result.user_to_item_data = __pyx_state[15]; __pyx_result.user_to_item_row_ptr = __pyx_state[16]; __pyx_result.verbose = __pyx_state[17]
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v___pyx_result);
@@ -7342,7 +7369,7 @@ static PyObject *__pyx_pf_10Similarity___pyx_unpickle_Similarity(CYTHON_UNUSED P
 
   /* "(tree fragment)":1
  * def __pyx_unpickle_Similarity(__pyx_type, long __pyx_checksum, __pyx_state):             # <<<<<<<<<<<<<<
- *     if __pyx_checksum != 0x97207f4:
+ *     if __pyx_checksum != 0x25ef4b8:
  *         from pickle import PickleError as __pyx_PickleError
  */
 
@@ -7366,8 +7393,8 @@ static PyObject *__pyx_pf_10Similarity___pyx_unpickle_Similarity(CYTHON_UNUSED P
  *         __pyx_unpickle_Similarity__set_state(<Similarity> __pyx_result, __pyx_state)
  *     return __pyx_result
  * cdef __pyx_unpickle_Similarity__set_state(Similarity __pyx_result, tuple __pyx_state):             # <<<<<<<<<<<<<<
- *     __pyx_result.TopK = __pyx_state[0]; __pyx_result.W_dense = __pyx_state[1]; __pyx_result.adjusted_cosine = __pyx_state[2]; __pyx_result.item_to_user_col_ptr = __pyx_state[3]; __pyx_result.item_to_user_data = __pyx_state[4]; __pyx_result.item_to_user_rows = __pyx_state[5]; __pyx_result.n_items = __pyx_state[6]; __pyx_result.n_users = __pyx_state[7]; __pyx_result.normalize = __pyx_state[8]; __pyx_result.pearson_correlation = __pyx_state[9]; __pyx_result.shrink = __pyx_state[10]; __pyx_result.sumOfSquared = __pyx_state[11]; __pyx_result.tanimoto_coefficient = __pyx_state[12]; __pyx_result.user_to_item_cols = __pyx_state[13]; __pyx_result.user_to_item_data = __pyx_state[14]; __pyx_result.user_to_item_row_ptr = __pyx_state[15]
- *     if len(__pyx_state) > 16 and hasattr(__pyx_result, '__dict__'):
+ *     __pyx_result.TopK = __pyx_state[0]; __pyx_result.W_dense = __pyx_state[1]; __pyx_result.adjusted_cosine = __pyx_state[2]; __pyx_result.item_to_user_col_ptr = __pyx_state[3]; __pyx_result.item_to_user_data = __pyx_state[4]; __pyx_result.item_to_user_rows = __pyx_state[5]; __pyx_result.mode = __pyx_state[6]; __pyx_result.n_items = __pyx_state[7]; __pyx_result.n_users = __pyx_state[8]; __pyx_result.normalize = __pyx_state[9]; __pyx_result.pearson_correlation = __pyx_state[10]; __pyx_result.shrink = __pyx_state[11]; __pyx_result.sumOfSquared = __pyx_state[12]; __pyx_result.tanimoto_coefficient = __pyx_state[13]; __pyx_result.user_to_item_cols = __pyx_state[14]; __pyx_result.user_to_item_data = __pyx_state[15]; __pyx_result.user_to_item_row_ptr = __pyx_state[16]; __pyx_result.verbose = __pyx_state[17]
+ *     if len(__pyx_state) > 18 and hasattr(__pyx_result, '__dict__'):
  */
 
 static PyObject *__pyx_f_10Similarity___pyx_unpickle_Similarity__set_state(struct __pyx_obj_10Similarity_Similarity *__pyx_v___pyx_result, PyObject *__pyx_v___pyx_state) {
@@ -7390,9 +7417,9 @@ static PyObject *__pyx_f_10Similarity___pyx_unpickle_Similarity__set_state(struc
   /* "(tree fragment)":10
  *     return __pyx_result
  * cdef __pyx_unpickle_Similarity__set_state(Similarity __pyx_result, tuple __pyx_state):
- *     __pyx_result.TopK = __pyx_state[0]; __pyx_result.W_dense = __pyx_state[1]; __pyx_result.adjusted_cosine = __pyx_state[2]; __pyx_result.item_to_user_col_ptr = __pyx_state[3]; __pyx_result.item_to_user_data = __pyx_state[4]; __pyx_result.item_to_user_rows = __pyx_state[5]; __pyx_result.n_items = __pyx_state[6]; __pyx_result.n_users = __pyx_state[7]; __pyx_result.normalize = __pyx_state[8]; __pyx_result.pearson_correlation = __pyx_state[9]; __pyx_result.shrink = __pyx_state[10]; __pyx_result.sumOfSquared = __pyx_state[11]; __pyx_result.tanimoto_coefficient = __pyx_state[12]; __pyx_result.user_to_item_cols = __pyx_state[13]; __pyx_result.user_to_item_data = __pyx_state[14]; __pyx_result.user_to_item_row_ptr = __pyx_state[15]             # <<<<<<<<<<<<<<
- *     if len(__pyx_state) > 16 and hasattr(__pyx_result, '__dict__'):
- *         __pyx_result.__dict__.update(__pyx_state[16])
+ *     __pyx_result.TopK = __pyx_state[0]; __pyx_result.W_dense = __pyx_state[1]; __pyx_result.adjusted_cosine = __pyx_state[2]; __pyx_result.item_to_user_col_ptr = __pyx_state[3]; __pyx_result.item_to_user_data = __pyx_state[4]; __pyx_result.item_to_user_rows = __pyx_state[5]; __pyx_result.mode = __pyx_state[6]; __pyx_result.n_items = __pyx_state[7]; __pyx_result.n_users = __pyx_state[8]; __pyx_result.normalize = __pyx_state[9]; __pyx_result.pearson_correlation = __pyx_state[10]; __pyx_result.shrink = __pyx_state[11]; __pyx_result.sumOfSquared = __pyx_state[12]; __pyx_result.tanimoto_coefficient = __pyx_state[13]; __pyx_result.user_to_item_cols = __pyx_state[14]; __pyx_result.user_to_item_data = __pyx_state[15]; __pyx_result.user_to_item_row_ptr = __pyx_state[16]; __pyx_result.verbose = __pyx_state[17]             # <<<<<<<<<<<<<<
+ *     if len(__pyx_state) > 18 and hasattr(__pyx_result, '__dict__'):
+ *         __pyx_result.__dict__.update(__pyx_state[18])
  */
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
@@ -7446,37 +7473,43 @@ static PyObject *__pyx_f_10Similarity___pyx_unpickle_Similarity__set_state(struc
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 10, __pyx_L1_error)
   }
-  __pyx_t_5 = __Pyx_PyInt_As_long(PyTuple_GET_ITEM(__pyx_v___pyx_state, 6)); if (unlikely((__pyx_t_5 == (long)-1) && PyErr_Occurred())) __PYX_ERR(1, 10, __pyx_L1_error)
-  __pyx_v___pyx_result->n_items = __pyx_t_5;
+  __pyx_t_1 = __Pyx_PyInt_As_int(PyTuple_GET_ITEM(__pyx_v___pyx_state, 6)); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 10, __pyx_L1_error)
+  __pyx_v___pyx_result->mode = __pyx_t_1;
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 10, __pyx_L1_error)
   }
   __pyx_t_5 = __Pyx_PyInt_As_long(PyTuple_GET_ITEM(__pyx_v___pyx_state, 7)); if (unlikely((__pyx_t_5 == (long)-1) && PyErr_Occurred())) __PYX_ERR(1, 10, __pyx_L1_error)
+  __pyx_v___pyx_result->n_items = __pyx_t_5;
+  if (unlikely(__pyx_v___pyx_state == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+    __PYX_ERR(1, 10, __pyx_L1_error)
+  }
+  __pyx_t_5 = __Pyx_PyInt_As_long(PyTuple_GET_ITEM(__pyx_v___pyx_state, 8)); if (unlikely((__pyx_t_5 == (long)-1) && PyErr_Occurred())) __PYX_ERR(1, 10, __pyx_L1_error)
   __pyx_v___pyx_result->n_users = __pyx_t_5;
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 10, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_PyInt_As_int(PyTuple_GET_ITEM(__pyx_v___pyx_state, 8)); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 10, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(PyTuple_GET_ITEM(__pyx_v___pyx_state, 9)); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 10, __pyx_L1_error)
   __pyx_v___pyx_result->normalize = __pyx_t_1;
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 10, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_PyInt_As_int(PyTuple_GET_ITEM(__pyx_v___pyx_state, 9)); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 10, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(PyTuple_GET_ITEM(__pyx_v___pyx_state, 10)); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 10, __pyx_L1_error)
   __pyx_v___pyx_result->pearson_correlation = __pyx_t_1;
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 10, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_PyInt_As_int(PyTuple_GET_ITEM(__pyx_v___pyx_state, 10)); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 10, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(PyTuple_GET_ITEM(__pyx_v___pyx_state, 11)); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 10, __pyx_L1_error)
   __pyx_v___pyx_result->shrink = __pyx_t_1;
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 10, __pyx_L1_error)
   }
-  __pyx_t_4 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(PyTuple_GET_ITEM(__pyx_v___pyx_state, 11), PyBUF_WRITABLE); if (unlikely(!__pyx_t_4.memview)) __PYX_ERR(1, 10, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(PyTuple_GET_ITEM(__pyx_v___pyx_state, 12), PyBUF_WRITABLE); if (unlikely(!__pyx_t_4.memview)) __PYX_ERR(1, 10, __pyx_L1_error)
   __PYX_XDEC_MEMVIEW(&__pyx_v___pyx_result->sumOfSquared, 0);
   __pyx_v___pyx_result->sumOfSquared = __pyx_t_4;
   __pyx_t_4.memview = NULL;
@@ -7485,13 +7518,13 @@ static PyObject *__pyx_f_10Similarity___pyx_unpickle_Similarity__set_state(struc
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 10, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_PyInt_As_int(PyTuple_GET_ITEM(__pyx_v___pyx_state, 12)); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 10, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(PyTuple_GET_ITEM(__pyx_v___pyx_state, 13)); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 10, __pyx_L1_error)
   __pyx_v___pyx_result->tanimoto_coefficient = __pyx_t_1;
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 10, __pyx_L1_error)
   }
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(PyTuple_GET_ITEM(__pyx_v___pyx_state, 13), PyBUF_WRITABLE); if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(1, 10, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(PyTuple_GET_ITEM(__pyx_v___pyx_state, 14), PyBUF_WRITABLE); if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(1, 10, __pyx_L1_error)
   __PYX_XDEC_MEMVIEW(&__pyx_v___pyx_result->user_to_item_cols, 0);
   __pyx_v___pyx_result->user_to_item_cols = __pyx_t_3;
   __pyx_t_3.memview = NULL;
@@ -7500,7 +7533,7 @@ static PyObject *__pyx_f_10Similarity___pyx_unpickle_Similarity__set_state(struc
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 10, __pyx_L1_error)
   }
-  __pyx_t_4 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(PyTuple_GET_ITEM(__pyx_v___pyx_state, 14), PyBUF_WRITABLE); if (unlikely(!__pyx_t_4.memview)) __PYX_ERR(1, 10, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(PyTuple_GET_ITEM(__pyx_v___pyx_state, 15), PyBUF_WRITABLE); if (unlikely(!__pyx_t_4.memview)) __PYX_ERR(1, 10, __pyx_L1_error)
   __PYX_XDEC_MEMVIEW(&__pyx_v___pyx_result->user_to_item_data, 0);
   __pyx_v___pyx_result->user_to_item_data = __pyx_t_4;
   __pyx_t_4.memview = NULL;
@@ -7509,24 +7542,30 @@ static PyObject *__pyx_f_10Similarity___pyx_unpickle_Similarity__set_state(struc
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 10, __pyx_L1_error)
   }
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(PyTuple_GET_ITEM(__pyx_v___pyx_state, 15), PyBUF_WRITABLE); if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(1, 10, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(PyTuple_GET_ITEM(__pyx_v___pyx_state, 16), PyBUF_WRITABLE); if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(1, 10, __pyx_L1_error)
   __PYX_XDEC_MEMVIEW(&__pyx_v___pyx_result->user_to_item_row_ptr, 0);
   __pyx_v___pyx_result->user_to_item_row_ptr = __pyx_t_3;
   __pyx_t_3.memview = NULL;
   __pyx_t_3.data = NULL;
+  if (unlikely(__pyx_v___pyx_state == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+    __PYX_ERR(1, 10, __pyx_L1_error)
+  }
+  __pyx_t_1 = __Pyx_PyInt_As_int(PyTuple_GET_ITEM(__pyx_v___pyx_state, 17)); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 10, __pyx_L1_error)
+  __pyx_v___pyx_result->verbose = __pyx_t_1;
 
   /* "(tree fragment)":11
  * cdef __pyx_unpickle_Similarity__set_state(Similarity __pyx_result, tuple __pyx_state):
- *     __pyx_result.TopK = __pyx_state[0]; __pyx_result.W_dense = __pyx_state[1]; __pyx_result.adjusted_cosine = __pyx_state[2]; __pyx_result.item_to_user_col_ptr = __pyx_state[3]; __pyx_result.item_to_user_data = __pyx_state[4]; __pyx_result.item_to_user_rows = __pyx_state[5]; __pyx_result.n_items = __pyx_state[6]; __pyx_result.n_users = __pyx_state[7]; __pyx_result.normalize = __pyx_state[8]; __pyx_result.pearson_correlation = __pyx_state[9]; __pyx_result.shrink = __pyx_state[10]; __pyx_result.sumOfSquared = __pyx_state[11]; __pyx_result.tanimoto_coefficient = __pyx_state[12]; __pyx_result.user_to_item_cols = __pyx_state[13]; __pyx_result.user_to_item_data = __pyx_state[14]; __pyx_result.user_to_item_row_ptr = __pyx_state[15]
- *     if len(__pyx_state) > 16 and hasattr(__pyx_result, '__dict__'):             # <<<<<<<<<<<<<<
- *         __pyx_result.__dict__.update(__pyx_state[16])
+ *     __pyx_result.TopK = __pyx_state[0]; __pyx_result.W_dense = __pyx_state[1]; __pyx_result.adjusted_cosine = __pyx_state[2]; __pyx_result.item_to_user_col_ptr = __pyx_state[3]; __pyx_result.item_to_user_data = __pyx_state[4]; __pyx_result.item_to_user_rows = __pyx_state[5]; __pyx_result.mode = __pyx_state[6]; __pyx_result.n_items = __pyx_state[7]; __pyx_result.n_users = __pyx_state[8]; __pyx_result.normalize = __pyx_state[9]; __pyx_result.pearson_correlation = __pyx_state[10]; __pyx_result.shrink = __pyx_state[11]; __pyx_result.sumOfSquared = __pyx_state[12]; __pyx_result.tanimoto_coefficient = __pyx_state[13]; __pyx_result.user_to_item_cols = __pyx_state[14]; __pyx_result.user_to_item_data = __pyx_state[15]; __pyx_result.user_to_item_row_ptr = __pyx_state[16]; __pyx_result.verbose = __pyx_state[17]
+ *     if len(__pyx_state) > 18 and hasattr(__pyx_result, '__dict__'):             # <<<<<<<<<<<<<<
+ *         __pyx_result.__dict__.update(__pyx_state[18])
  */
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
     __PYX_ERR(1, 11, __pyx_L1_error)
   }
   __pyx_t_7 = PyTuple_GET_SIZE(__pyx_v___pyx_state); if (unlikely(__pyx_t_7 == ((Py_ssize_t)-1))) __PYX_ERR(1, 11, __pyx_L1_error)
-  __pyx_t_8 = ((__pyx_t_7 > 16) != 0);
+  __pyx_t_8 = ((__pyx_t_7 > 18) != 0);
   if (__pyx_t_8) {
   } else {
     __pyx_t_6 = __pyx_t_8;
@@ -7539,9 +7578,9 @@ static PyObject *__pyx_f_10Similarity___pyx_unpickle_Similarity__set_state(struc
   if (__pyx_t_6) {
 
     /* "(tree fragment)":12
- *     __pyx_result.TopK = __pyx_state[0]; __pyx_result.W_dense = __pyx_state[1]; __pyx_result.adjusted_cosine = __pyx_state[2]; __pyx_result.item_to_user_col_ptr = __pyx_state[3]; __pyx_result.item_to_user_data = __pyx_state[4]; __pyx_result.item_to_user_rows = __pyx_state[5]; __pyx_result.n_items = __pyx_state[6]; __pyx_result.n_users = __pyx_state[7]; __pyx_result.normalize = __pyx_state[8]; __pyx_result.pearson_correlation = __pyx_state[9]; __pyx_result.shrink = __pyx_state[10]; __pyx_result.sumOfSquared = __pyx_state[11]; __pyx_result.tanimoto_coefficient = __pyx_state[12]; __pyx_result.user_to_item_cols = __pyx_state[13]; __pyx_result.user_to_item_data = __pyx_state[14]; __pyx_result.user_to_item_row_ptr = __pyx_state[15]
- *     if len(__pyx_state) > 16 and hasattr(__pyx_result, '__dict__'):
- *         __pyx_result.__dict__.update(__pyx_state[16])             # <<<<<<<<<<<<<<
+ *     __pyx_result.TopK = __pyx_state[0]; __pyx_result.W_dense = __pyx_state[1]; __pyx_result.adjusted_cosine = __pyx_state[2]; __pyx_result.item_to_user_col_ptr = __pyx_state[3]; __pyx_result.item_to_user_data = __pyx_state[4]; __pyx_result.item_to_user_rows = __pyx_state[5]; __pyx_result.mode = __pyx_state[6]; __pyx_result.n_items = __pyx_state[7]; __pyx_result.n_users = __pyx_state[8]; __pyx_result.normalize = __pyx_state[9]; __pyx_result.pearson_correlation = __pyx_state[10]; __pyx_result.shrink = __pyx_state[11]; __pyx_result.sumOfSquared = __pyx_state[12]; __pyx_result.tanimoto_coefficient = __pyx_state[13]; __pyx_result.user_to_item_cols = __pyx_state[14]; __pyx_result.user_to_item_data = __pyx_state[15]; __pyx_result.user_to_item_row_ptr = __pyx_state[16]; __pyx_result.verbose = __pyx_state[17]
+ *     if len(__pyx_state) > 18 and hasattr(__pyx_result, '__dict__'):
+ *         __pyx_result.__dict__.update(__pyx_state[18])             # <<<<<<<<<<<<<<
  */
     __pyx_t_11 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v___pyx_result), __pyx_n_s_dict); if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 12, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_11);
@@ -7562,7 +7601,7 @@ static PyObject *__pyx_f_10Similarity___pyx_unpickle_Similarity__set_state(struc
         __Pyx_DECREF_SET(__pyx_t_12, function);
       }
     }
-    __pyx_t_10 = (__pyx_t_11) ? __Pyx_PyObject_Call2Args(__pyx_t_12, __pyx_t_11, PyTuple_GET_ITEM(__pyx_v___pyx_state, 16)) : __Pyx_PyObject_CallOneArg(__pyx_t_12, PyTuple_GET_ITEM(__pyx_v___pyx_state, 16));
+    __pyx_t_10 = (__pyx_t_11) ? __Pyx_PyObject_Call2Args(__pyx_t_12, __pyx_t_11, PyTuple_GET_ITEM(__pyx_v___pyx_state, 18)) : __Pyx_PyObject_CallOneArg(__pyx_t_12, PyTuple_GET_ITEM(__pyx_v___pyx_state, 18));
     __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
     if (unlikely(!__pyx_t_10)) __PYX_ERR(1, 12, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
@@ -7571,9 +7610,9 @@ static PyObject *__pyx_f_10Similarity___pyx_unpickle_Similarity__set_state(struc
 
     /* "(tree fragment)":11
  * cdef __pyx_unpickle_Similarity__set_state(Similarity __pyx_result, tuple __pyx_state):
- *     __pyx_result.TopK = __pyx_state[0]; __pyx_result.W_dense = __pyx_state[1]; __pyx_result.adjusted_cosine = __pyx_state[2]; __pyx_result.item_to_user_col_ptr = __pyx_state[3]; __pyx_result.item_to_user_data = __pyx_state[4]; __pyx_result.item_to_user_rows = __pyx_state[5]; __pyx_result.n_items = __pyx_state[6]; __pyx_result.n_users = __pyx_state[7]; __pyx_result.normalize = __pyx_state[8]; __pyx_result.pearson_correlation = __pyx_state[9]; __pyx_result.shrink = __pyx_state[10]; __pyx_result.sumOfSquared = __pyx_state[11]; __pyx_result.tanimoto_coefficient = __pyx_state[12]; __pyx_result.user_to_item_cols = __pyx_state[13]; __pyx_result.user_to_item_data = __pyx_state[14]; __pyx_result.user_to_item_row_ptr = __pyx_state[15]
- *     if len(__pyx_state) > 16 and hasattr(__pyx_result, '__dict__'):             # <<<<<<<<<<<<<<
- *         __pyx_result.__dict__.update(__pyx_state[16])
+ *     __pyx_result.TopK = __pyx_state[0]; __pyx_result.W_dense = __pyx_state[1]; __pyx_result.adjusted_cosine = __pyx_state[2]; __pyx_result.item_to_user_col_ptr = __pyx_state[3]; __pyx_result.item_to_user_data = __pyx_state[4]; __pyx_result.item_to_user_rows = __pyx_state[5]; __pyx_result.mode = __pyx_state[6]; __pyx_result.n_items = __pyx_state[7]; __pyx_result.n_users = __pyx_state[8]; __pyx_result.normalize = __pyx_state[9]; __pyx_result.pearson_correlation = __pyx_state[10]; __pyx_result.shrink = __pyx_state[11]; __pyx_result.sumOfSquared = __pyx_state[12]; __pyx_result.tanimoto_coefficient = __pyx_state[13]; __pyx_result.user_to_item_cols = __pyx_state[14]; __pyx_result.user_to_item_data = __pyx_state[15]; __pyx_result.user_to_item_row_ptr = __pyx_state[16]; __pyx_result.verbose = __pyx_state[17]
+ *     if len(__pyx_state) > 18 and hasattr(__pyx_result, '__dict__'):             # <<<<<<<<<<<<<<
+ *         __pyx_result.__dict__.update(__pyx_state[18])
  */
   }
 
@@ -7581,8 +7620,8 @@ static PyObject *__pyx_f_10Similarity___pyx_unpickle_Similarity__set_state(struc
  *         __pyx_unpickle_Similarity__set_state(<Similarity> __pyx_result, __pyx_state)
  *     return __pyx_result
  * cdef __pyx_unpickle_Similarity__set_state(Similarity __pyx_result, tuple __pyx_state):             # <<<<<<<<<<<<<<
- *     __pyx_result.TopK = __pyx_state[0]; __pyx_result.W_dense = __pyx_state[1]; __pyx_result.adjusted_cosine = __pyx_state[2]; __pyx_result.item_to_user_col_ptr = __pyx_state[3]; __pyx_result.item_to_user_data = __pyx_state[4]; __pyx_result.item_to_user_rows = __pyx_state[5]; __pyx_result.n_items = __pyx_state[6]; __pyx_result.n_users = __pyx_state[7]; __pyx_result.normalize = __pyx_state[8]; __pyx_result.pearson_correlation = __pyx_state[9]; __pyx_result.shrink = __pyx_state[10]; __pyx_result.sumOfSquared = __pyx_state[11]; __pyx_result.tanimoto_coefficient = __pyx_state[12]; __pyx_result.user_to_item_cols = __pyx_state[13]; __pyx_result.user_to_item_data = __pyx_state[14]; __pyx_result.user_to_item_row_ptr = __pyx_state[15]
- *     if len(__pyx_state) > 16 and hasattr(__pyx_result, '__dict__'):
+ *     __pyx_result.TopK = __pyx_state[0]; __pyx_result.W_dense = __pyx_state[1]; __pyx_result.adjusted_cosine = __pyx_state[2]; __pyx_result.item_to_user_col_ptr = __pyx_state[3]; __pyx_result.item_to_user_data = __pyx_state[4]; __pyx_result.item_to_user_rows = __pyx_state[5]; __pyx_result.mode = __pyx_state[6]; __pyx_result.n_items = __pyx_state[7]; __pyx_result.n_users = __pyx_state[8]; __pyx_result.normalize = __pyx_state[9]; __pyx_result.pearson_correlation = __pyx_state[10]; __pyx_result.shrink = __pyx_state[11]; __pyx_result.sumOfSquared = __pyx_state[12]; __pyx_result.tanimoto_coefficient = __pyx_state[13]; __pyx_result.user_to_item_cols = __pyx_state[14]; __pyx_result.user_to_item_data = __pyx_state[15]; __pyx_result.user_to_item_row_ptr = __pyx_state[16]; __pyx_result.verbose = __pyx_state[17]
+ *     if len(__pyx_state) > 18 and hasattr(__pyx_result, '__dict__'):
  */
 
   /* function exit code */
@@ -24274,7 +24313,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_u_Format_string_allocated_too_shor, __pyx_k_Format_string_allocated_too_shor, sizeof(__pyx_k_Format_string_allocated_too_shor), 0, 1, 0, 0},
   {&__pyx_kp_u_Format_string_allocated_too_shor_2, __pyx_k_Format_string_allocated_too_shor_2, sizeof(__pyx_k_Format_string_allocated_too_shor_2), 0, 1, 0, 0},
   {&__pyx_n_s_ImportError, __pyx_k_ImportError, sizeof(__pyx_k_ImportError), 0, 0, 1, 1},
-  {&__pyx_kp_s_Incompatible_checksums_s_vs_0x97, __pyx_k_Incompatible_checksums_s_vs_0x97, sizeof(__pyx_k_Incompatible_checksums_s_vs_0x97), 0, 0, 1, 0},
+  {&__pyx_kp_s_Incompatible_checksums_s_vs_0x25, __pyx_k_Incompatible_checksums_s_vs_0x25, sizeof(__pyx_k_Incompatible_checksums_s_vs_0x25), 0, 0, 1, 0},
   {&__pyx_kp_s_Incompatible_checksums_s_vs_0xb0, __pyx_k_Incompatible_checksums_s_vs_0xb0, sizeof(__pyx_k_Incompatible_checksums_s_vs_0xb0), 0, 0, 1, 0},
   {&__pyx_n_s_IndexError, __pyx_k_IndexError, sizeof(__pyx_k_IndexError), 0, 0, 1, 1},
   {&__pyx_kp_s_Indirect_dimensions_not_supporte, __pyx_k_Indirect_dimensions_not_supporte, sizeof(__pyx_k_Indirect_dimensions_not_supporte), 0, 0, 1, 0},
@@ -24345,7 +24384,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_u_jaccard, __pyx_k_jaccard, sizeof(__pyx_k_jaccard), 0, 1, 0, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_memview, __pyx_k_memview, sizeof(__pyx_k_memview), 0, 0, 1, 1},
-  {&__pyx_n_s_method, __pyx_k_method, sizeof(__pyx_k_method), 0, 0, 1, 1},
   {&__pyx_n_s_mode, __pyx_k_mode, sizeof(__pyx_k_mode), 0, 0, 1, 1},
   {&__pyx_n_s_name, __pyx_k_name, sizeof(__pyx_k_name), 0, 0, 1, 1},
   {&__pyx_n_s_name_2, __pyx_k_name_2, sizeof(__pyx_k_name_2), 0, 0, 1, 1},
@@ -24415,9 +24453,9 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
   __pyx_builtin_super = __Pyx_GetBuiltinName(__pyx_n_s_super); if (!__pyx_builtin_super) __PYX_ERR(0, 41, __pyx_L1_error)
-  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 64, __pyx_L1_error)
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 114, __pyx_L1_error)
-  __pyx_builtin_print = __Pyx_GetBuiltinName(__pyx_n_s_print); if (!__pyx_builtin_print) __PYX_ERR(0, 281, __pyx_L1_error)
+  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 67, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 117, __pyx_L1_error)
+  __pyx_builtin_print = __Pyx_GetBuiltinName(__pyx_n_s_print); if (!__pyx_builtin_print) __PYX_ERR(0, 284, __pyx_L1_error)
   __pyx_builtin_RuntimeError = __Pyx_GetBuiltinName(__pyx_n_s_RuntimeError); if (!__pyx_builtin_RuntimeError) __PYX_ERR(2, 856, __pyx_L1_error)
   __pyx_builtin_ImportError = __Pyx_GetBuiltinName(__pyx_n_s_ImportError); if (!__pyx_builtin_ImportError) __PYX_ERR(2, 1038, __pyx_L1_error)
   __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(3, 109, __pyx_L1_error)
@@ -24435,14 +24473,14 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "Similarity.pyx":244
+  /* "Similarity.pyx":247
  *         # Create template used to initialize an array with zeros
  *         # Much faster than np.zeros(self.n_items)
  *         cdef array[double] template_zero = array('d')             # <<<<<<<<<<<<<<
  *         cdef array[double] result = clone(template_zero, self.n_items, zero=True)
  * 
  */
-  __pyx_tuple_ = PyTuple_Pack(1, __pyx_n_u_d); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 244, __pyx_L1_error)
+  __pyx_tuple_ = PyTuple_Pack(1, __pyx_n_u_d); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 247, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
 
@@ -24759,7 +24797,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
 
   /* "(tree fragment)":1
  * def __pyx_unpickle_Similarity(__pyx_type, long __pyx_checksum, __pyx_state):             # <<<<<<<<<<<<<<
- *     if __pyx_checksum != 0x97207f4:
+ *     if __pyx_checksum != 0x25ef4b8:
  *         from pickle import PickleError as __pyx_PickleError
  */
   __pyx_tuple__28 = PyTuple_Pack(5, __pyx_n_s_pyx_type, __pyx_n_s_pyx_checksum, __pyx_n_s_pyx_state, __pyx_n_s_pyx_PickleError, __pyx_n_s_pyx_result); if (unlikely(!__pyx_tuple__28)) __PYX_ERR(1, 1, __pyx_L1_error)
@@ -24845,7 +24883,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitGlobals(void) {
   __pyx_int_2 = PyInt_FromLong(2); if (unlikely(!__pyx_int_2)) __PYX_ERR(0, 3, __pyx_L1_error)
   __pyx_int_60 = PyInt_FromLong(60); if (unlikely(!__pyx_int_60)) __PYX_ERR(0, 3, __pyx_L1_error)
   __pyx_int_100 = PyInt_FromLong(100); if (unlikely(!__pyx_int_100)) __PYX_ERR(0, 3, __pyx_L1_error)
-  __pyx_int_158468084 = PyInt_FromLong(158468084L); if (unlikely(!__pyx_int_158468084)) __PYX_ERR(0, 3, __pyx_L1_error)
+  __pyx_int_39777464 = PyInt_FromLong(39777464L); if (unlikely(!__pyx_int_39777464)) __PYX_ERR(0, 3, __pyx_L1_error)
   __pyx_int_184977713 = PyInt_FromLong(184977713L); if (unlikely(!__pyx_int_184977713)) __PYX_ERR(0, 3, __pyx_L1_error)
   __pyx_int_neg_1 = PyInt_FromLong(-1); if (unlikely(!__pyx_int_neg_1)) __PYX_ERR(0, 3, __pyx_L1_error)
   return 0;
@@ -25285,7 +25323,7 @@ if (!__Pyx_RefNanny) {
 
   /* "(tree fragment)":1
  * def __pyx_unpickle_Similarity(__pyx_type, long __pyx_checksum, __pyx_state):             # <<<<<<<<<<<<<<
- *     if __pyx_checksum != 0x97207f4:
+ *     if __pyx_checksum != 0x25ef4b8:
  *         from pickle import PickleError as __pyx_PickleError
  */
   __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_10Similarity_1__pyx_unpickle_Similarity, NULL, __pyx_n_s_Similarity); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 1, __pyx_L1_error)
@@ -26001,20 +26039,6 @@ static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i, 
 #endif
     return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
 }
-
-/* PyObjectSetAttrStr */
-#if CYTHON_USE_TYPE_SLOTS
-static CYTHON_INLINE int __Pyx_PyObject_SetAttrStr(PyObject* obj, PyObject* attr_name, PyObject* value) {
-    PyTypeObject* tp = Py_TYPE(obj);
-    if (likely(tp->tp_setattro))
-        return tp->tp_setattro(obj, attr_name, value);
-#if PY_MAJOR_VERSION < 3
-    if (likely(tp->tp_setattr))
-        return tp->tp_setattr(obj, PyString_AS_STRING(attr_name), value);
-#endif
-    return PyObject_SetAttr(obj, attr_name, value);
-}
-#endif
 
 /* BytesEquals */
 static CYTHON_INLINE int __Pyx_PyBytes_Equals(PyObject* s1, PyObject* s2, int equals) {
