@@ -43,8 +43,8 @@ class Similarity(object):
         if self.neighbourhood == 0:
             self.full_weights = np.zeros((self.n_rows,self.n_rows))
 
-    def normalizeData_meanReduce(self,blockSize=1000,mode="user"):
-        if mode == "normal":
+    def normalizeData_(self, blockSize=1000, mode="user"):
+        if mode == "cosine":
             return
         if self.verbose:
             print("Normalization of data started with {} mean rating".format(mode))
@@ -85,9 +85,9 @@ class Similarity(object):
         processedItems = 0
 
         if self.pearsonCorrelation:
-            self.normalizeData_meanReduce()
+            self.normalizeData_()
         if self.adjustedCosine:
-            self.normalizeData_meanReduce(mode="item")
+            self.normalizeData_(mode="item")
         
         # self.dataMatrix = check_matrix(self.dataMatrix, 'csr')
         # sumOfSquared = np.array(self.dataMatrix.power(2).sum(axis=1)).ravel()
@@ -162,7 +162,7 @@ class Similarity(object):
         processedItems = 0
 
         if self.adjustedCosine:
-            self.normalizeData_meanReduce(mode='item')
+            self.normalizeData_(mode='item')
 
         self.dataMatrix = check_matrix(self.dataMatrix, 'csc')
         sumOfSquared = np.array(self.dataMatrix.power(2).sum(axis=0)).ravel()
