@@ -8,16 +8,16 @@ class Logger(object):
         self.verbose = verbose
         self.data = data
         self.submission_list = []
-        self.time = asctime()
+        self.time = asctime().replace(" ", "_")
 
     def export_submissions(self, model_bundle):
         for index,model in enumerate(model_bundle):
-            fileName = "submissions/submission-"+str(index)+"-" + self.time + ".csv"
+            fileName = "submissions/sub-"+str(index)+"-" + self.time + ".csv"
             self.submission_list.append((fileName, model))
             f = open(fileName,"w+")
             f.write("playlist_id,track_ids\n")
             for ind, playlist_id in enumerate(self.data['playlist_id']):
-                f.write(str(playlist_id) + ',' + model.recommend(playlist_id, n=10) + '\n');
+                f.write(str(playlist_id) + ',' + model.recommend(playlist_id, n=10,export=True) + '\n');
             f.close()
 
     def export_single_submission(data, model):

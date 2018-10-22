@@ -12,10 +12,9 @@ def clear():
     _ = call('clear' if os.name == 'posix' else 'cls')
 
 class Configurator(object):
-    def __init__(self,jsonFile,dataReader):
+    def __init__(self,jsonFile):
         self.dataFile = jsonFile
         self.configs = self.process_config(self.dataFile)
-        self.dataReader = dataReader
 
     def get_config_from_json(self,json_file):
         """
@@ -39,18 +38,18 @@ class Configurator(object):
         # config.checkpoint_dir = os.path.join("../experiments", config.exp_name, "checkpoint/")
         return configs
 
-    def extractModels(self):
+    def extractModels(self,dataReader):
         print("The models are being extracted from the config file")
         recsys = list()
         models = list(self.configs.models)
         for model in models:
             if model["model_name"] == "user_knn_cf":
-                recsys.append(UserKNNCFRecommender(self.dataReader.URM_train,
+                recsys.append(UserKNNCFRecommender(dataReader.URM_train,
                                                    sparse_weights=model["sparse_weights"],
                                                    verbose=model["verbose"],
                                                    similarity_mode=model["similarity_mode"]))
             elif model["model_name"] == "item_knn_cf":
-                recsys.append(ItemKNNCFRecommender(self.dataReader.URM_train,
+                recsys.append(ItemKNNCFRecommender(dataReader.URM_train,
                                                    sparse_weights=model["sparse_weights"],
                                                    verbose=model["verbose"],
                                                    similarity_mode=model["similarity_mode"]))

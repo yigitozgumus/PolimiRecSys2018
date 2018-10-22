@@ -27,13 +27,13 @@ class ItemKNNCFRecommender(RecommenderSystem,RecommenderSystem_SM):
         self.shrink = shrink
         self.similarity = Similarity(self.URM_train,
                                      shrink=shrink,
-                                     verbose=self.verbose,
+                                     #verbose=self.verbose,
                                      neighbourhood=k,
                                      mode=self.similarity_mode)
         if self.sparse_weights:
-            self.W_sparse = self.similarity.computeUUSimilarity()
+            self.W_sparse = self.similarity.compute_similarity()
         else:
-            self.W = self.similarity.computeUUSimilarity()
+            self.W = self.similarity.compute_similarity()
             self.W = self.W.toarray()
 
     def recommend(self,playlist_id,n=None, exclude_seen= True):

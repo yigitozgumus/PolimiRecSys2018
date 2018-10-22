@@ -1,183 +1,195 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on 23/10/17
+
+@author: Maurizio Ferrari Dacrema
+"""
+
 import numpy as np
 import time
-import scipy.sparse as sps
 import sys
-from sklearn.metrics.pairwise import cosine_similarity
-
+import scipy.sparse as sps
 from base.RecommenderUtils import check_matrix
 
 
-class Similarity(object):
+class Similarity:
 
-    def __init__(self,dataMatrix, neighbourhood=100, shrink = 0, mode = None,batchSize = 100,verbose=False):
+    def __init__(self, dataMatrix, neighbourhood=100,verbose=True, shrink=0, normalize=True,
+                 mode="cosine"):
         """
-
+        Computes the cosine similarity on the columns of dataMatrix
+        If it is computed on URM=|users|x|items|, pass the URM as is.
+        If it is computed on ICM=|items|x|features|, pass the ICM transposed.
         :param dataMatrix:
         :param neighbourhood:
         :param shrink:
         :param normalize:
-        :param mode: This can be either cosine, pearson or adjusted (cosine)
-        :param batchSize:
+        :param mode:    "cosine"    computes Cosine similarity
+                        "adjusted"  computes Adjusted Cosine, removing the average of the users
+                        "pearson"   computes Pearson Correlation, removing the average of the items
+                        "jaccard"   computes Jaccard similarity for binary interactions using Tanimoto
+                        "tanimoto"  computes Tanimoto coefficient for binary interactions
+
         """
+
         super(Similarity, self).__init__()
-        self.neighbourhood = neighbourhood
+
+        self.TopK = neighbourhood
         self.shrink = shrink
-        self.verbose = verbose
-        self.batchSize = batchSize
+        self.normalize = normalize
         self.n_columns = dataMatrix.shape[1]
         self.n_rows = dataMatrix.shape[0]
-        self.adjustedCosine = False
-        self.pearsonCorrelation = False
-        self.method = mode
-
-
+        self.verbose = verbose
         self.dataMatrix = dataMatrix.copy()
+        self.mode = mode
+        self.adjusted_cosine = False
+        self.pearson_correlation = False
+        self.tanimoto_coefficient = False
 
         if mode == "adjusted":
-            self.adjustedCosine = True
+            self.adjusted_cosine = True
         elif mode == "pearson":
-            self.pearsonCorrelation = True
+            self.pearson_correlation = True
+        elif mode == "jaccard" or mode == "tanimoto":
+            self.tanimoto_coefficient = True
+            # Tanimoto has a specific kind of normalization
+            self.normalize = False
+
         elif mode == "cosine":
             pass
-
-        if self.neighbourhood == 0:
-            self.full_weights = np.zeros((self.n_rows,self.n_rows))
-
-    def normalizeData_meanReduce(self,blockSize=1000,mode="user"):
-        if mode == "normal":
-            return
-        if self.verbose:
-            print("Normalization of data started with {} mean rating".format(mode))
-        start_time = time.time()
-        mode_ = 1 if mode == "user" else 0
-        if not mode_:
-            self.dataMatrix = check_matrix(self.dataMatrix, 'csc')
         else:
-            self.dataMatrix = check_matrix(self.dataMatrix, 'csr')
-        interactionsPerVector = np.diff(self.dataMatrix.indptr)
-        sumPerVector = np.asarray(self.dataMatrix.sum(axis=mode_)).ravel()
-        sumPerVector =  np.sqrt(sumPerVector)
-        nonZeroVectors = interactionsPerVector > 0
+            raise ValueError("Cosine_Similarity: value for paramether 'mode' not recognized."
+                             " Allowed values are: 'cosine', 'pearson', 'adjusted', 'jaccard', 'tanimoto'."
+                             " Passed value was '{}'".format(mode))
 
-        vectorAverage = np.zeros_like(sumPerVector)
-        vectorAverage[nonZeroVectors] = sumPerVector[nonZeroVectors]
-        start_ = 0
-        end_   = 0
-        while end_ < self.dataMatrix.shape[1 - mode_]:
-            end_ = min(self.dataMatrix.shape[1-mode_], end_ + blockSize)
-        #    self.dataMatrix.data[self.dataMatrix.indptr[start_]:self.dataMatrix.indptr[end_]] -= 1
-            self.dataMatrix.data[self.dataMatrix.indptr[start_]:self.dataMatrix.indptr[end_]] -= \
-          (1/  np.repeat(vectorAverage[start_:end_],interactionsPerVector[start_:end_]))
-            start_ += blockSize
-        if self.verbose:
-            print("Normalization of data is completed in {} seconds".format(time.time() - start_time))
+        if self.TopK == 0:
+            self.W_dense = np.zeros((self.n_columns, self.n_columns))
 
-    def computeUUSimilarity(self):
-        # define the output csr matrix values
-        values = []
-        rows = []
-        cols = []
-        if self.verbose:
-            print("Computation of User User Similarity matrix with {} mode is started.".format((self.method)))
-        # Timer initializations
-        start_time = time.time()
-        start_time_print_batch = start_time
-        processedItems = 0
+    def applyAdjustedCosine(self):
+        """
+        Remove from every data point the average for the corresponding row
+        :return:
+        """
 
-        if self.pearsonCorrelation:
-            self.normalizeData_meanReduce()
-        if self.adjustedCosine:
-            self.normalizeData_meanReduce(mode="item")
-        
-        # self.dataMatrix = check_matrix(self.dataMatrix, 'csr')
-        # sumOfSquared = np.array(self.dataMatrix.power(2).sum(axis=1)).ravel()
-        # sumOfSquared = np.sqrt(sumOfSquared)
+        self.dataMatrix = check_matrix(self.dataMatrix, 'csr')
 
-        for rowIndex in range(self.n_rows):
-            processedItems +=1
+        interactionsPerRow = np.diff(self.dataMatrix.indptr)
 
-            #Timing show for the terminal
-            if time.time() - start_time_print_batch >= 30 or processedItems == self.n_rows:
-                rowPerSec = processedItems / (time.time() - start_time)
+        nonzeroRows = interactionsPerRow > 0
+        sumPerRow = np.asarray(self.dataMatrix.sum(axis=1)).ravel()
 
-                print("Similarity row {} ( {:2.0f} % ), {:.2f} row/sec, elapsed time {:.2f} min".format(
-                    processedItems, processedItems / self.n_rows * 100, rowPerSec,
-                                    (time.time() - start_time) / 60))
+        rowAverage = np.zeros_like(sumPerRow)
+        rowAverage[nonzeroRows] = sumPerRow[nonzeroRows] / \
+            interactionsPerRow[nonzeroRows]
 
-                sys.stdout.flush()
-                sys.stderr.flush()
+        # Split in blocks to avoid duplicating the whole data structure
+        start_row = 0
+        end_row = 0
 
-                start_time_print_batch = time.time()
+        blockSize = 1000
 
-            # All data points for a given item
-            item_data = self.dataMatrix[rowIndex,:]
-            item_data = item_data.toarray().squeeze()
-            # Compute item similarities
-            this_row_weights = self.dataMatrix.dot(item_data)
-            this_row_weights[rowIndex] = 0.0
-            if self.shrink != 0:
-                this_row_weights = this_row_weights / self.shrink
+        while end_row < self.n_rows:
 
-            if self.neighbourhood == 0:
-                self.full_weights[rowIndex,:] = this_row_weights
+            end_row = min(self.n_rows, end_row + blockSize)
 
-            else:
-                # Sort indices and select TopK
-                # Sorting is done in three steps. Faster then plain np.argsort for higher number of items
-                # - Partition the data to extract the set of relevant items
-                # - Sort only the relevant items
-                # - Get the original item index
-                relevant_items_partition = (-this_row_weights).argpartition(self.neighbourhood - 1)[0:self.neighbourhood]
-                relevant_items_partition_sorting = np.argsort(-this_row_weights[relevant_items_partition])
-                top_k_idx = relevant_items_partition[relevant_items_partition_sorting]
+            self.dataMatrix.data[self.dataMatrix.indptr[start_row]:self.dataMatrix.indptr[end_row]] -= \
+                np.repeat(rowAverage[start_row:end_row],
+                          interactionsPerRow[start_row:end_row])
 
-                # Incrementally build sparse matrix
-                values.extend(this_row_weights[top_k_idx])
-                rows.extend(np.ones(self.neighbourhood) * rowIndex)
-                cols.extend(top_k_idx)
-        if self.verbose:
-            print("Computation is completend in {} minutes".format((time.time() - start_time)/60))
+            start_row += blockSize
 
-        if self.neighbourhood== 0:
-            return self.full_weights
-
-        else:
-
-            W_sparse = sps.csr_matrix((values, (rows, cols)),
-                                      shape=(self.n_rows, self.n_rows),
-                                      dtype=np.float32)
-
-            return W_sparse
-
-    def computeIISimilarity(self):
-        # define the output csr matrix values
-        values = []
-        rows = []
-        cols = []
-        if self.verbose:
-            print("Computation of Item Item Similarity matrix with {} mode is started.".format((self.method)))
-        # Timer initializations
-        start_time = time.time()
-        start_time_print_batch = start_time
-        processedItems = 0
-
-        if self.adjustedCosine:
-            self.normalizeData_meanReduce(mode='item')
+    def applyPearsonCorrelation(self):
+        """
+        Remove from every data point the average for the corresponding column
+        :return:
+        """
 
         self.dataMatrix = check_matrix(self.dataMatrix, 'csc')
-        sumOfSquared = np.array(self.dataMatrix.power(2).sum(axis=0)).ravel()
-        sumOfSquared = np.sqrt(sumOfSquared)
 
+        interactionsPerCol = np.diff(self.dataMatrix.indptr)
+
+        nonzeroCols = interactionsPerCol > 0
+        sumPerCol = np.asarray(self.dataMatrix.sum(axis=0)).ravel()
+
+        colAverage = np.zeros_like(sumPerCol)
+        colAverage[nonzeroCols] = sumPerCol[nonzeroCols] / \
+            interactionsPerCol[nonzeroCols]
+
+        # Split in blocks to avoid duplicating the whole data structure
+        start_col = 0
+        end_col = 0
+
+        blockSize = 1000
+
+        while end_col < self.n_columns:
+
+            end_col = min(self.n_columns, end_col + blockSize)
+
+            self.dataMatrix.data[self.dataMatrix.indptr[start_col]:self.dataMatrix.indptr[end_col]] -= \
+                np.repeat(colAverage[start_col:end_col],
+                          interactionsPerCol[start_col:end_col])
+
+            start_col += blockSize
+
+    def useOnlyBooleanInteractions(self):
+
+        # Split in blocks to avoid duplicating the whole data structure
+        start_pos = 0
+        end_pos = 0
+
+        blockSize = 1000
+
+        while end_pos < len(self.dataMatrix.data):
+
+            end_pos = min(len(self.dataMatrix.data), end_pos + blockSize)
+
+            self.dataMatrix.data[start_pos:end_pos] = np.ones(
+                end_pos-start_pos)
+
+            start_pos += blockSize
+
+    def compute_similarity(self):
+
+        values = []
+        rows = []
+        cols = []
+        if self.verbose:
+            print("Computation of User User Similarity matrix with {} mode is started.".format((self.mode)))
+
+        start_time = time.time()
+        start_time_print_batch = start_time
+        processedItems = 0
+
+        if self.adjusted_cosine:
+            self.applyAdjustedCosine()
+
+        elif self.pearson_correlation:
+            self.applyPearsonCorrelation()
+
+        elif self.tanimoto_coefficient:
+            self.useOnlyBooleanInteractions()
+
+        # We explore the matrix column-wise
+        self.dataMatrix = check_matrix(self.dataMatrix, 'csc')
+
+        # Compute sum of squared values to be used in normalization
+        sumOfSquared = np.array(self.dataMatrix.power(2).sum(axis=0)).ravel()
+
+        # Tanimoto does not require the square root to be applied
+        if not self.tanimoto_coefficient:
+            sumOfSquared = np.sqrt(sumOfSquared)
+
+        # Compute all similarities for each item using vectorization
         for columnIndex in range(self.n_columns):
+
             processedItems += 1
 
-            #Timing show for the terminal
             if time.time() - start_time_print_batch >= 30 or processedItems == self.n_columns:
                 columnPerSec = processedItems / (time.time() - start_time)
 
-                print("Similarity row {} ( {:2.0f} % ), {:.2f} column/sec, elapsed time {:.2f} min".format(
-                    processedItems, processedItems / self.n_columns * 100, columnPerSec,
-                    (time.time() - start_time) / 60))
+                print("Similarity column {} ( {:2.0f} % ), {:.2f} column/sec, elapsed time {:.2f} min".format(
+                    processedItems, processedItems / self.n_columns * 100, columnPerSec, (time.time() - start_time) / 60))
 
                 sys.stdout.flush()
                 sys.stderr.flush()
@@ -185,17 +197,33 @@ class Similarity(object):
                 start_time_print_batch = time.time()
 
             # All data points for a given item
-            item_data = self.dataMatrix[:,columnIndex]
+            item_data = self.dataMatrix[:, columnIndex]
             item_data = item_data.toarray().squeeze()
+
             # Compute item similarities
             this_column_weights = self.dataMatrix.T.dot(item_data)
             this_column_weights[columnIndex] = 0.0
-            
-            if self.shrink != 0:
-                this_column_weights = this_column_weights / self.shrink
 
-            if self.neighbourhood == 0:
-                self.full_weights[:,columnIndex] = this_column_weights
+            # Apply normalization and shrinkage, ensure denominator != 0
+            if self.normalize:
+                denominator = sumOfSquared[columnIndex] * \
+                    sumOfSquared + self.shrink + 1e-6
+                this_column_weights = np.multiply(
+                    this_column_weights, 1 / denominator)
+
+            # Apply the specific denominator for Tanimoto
+            elif self.tanimoto_coefficient:
+                denominator = sumOfSquared[columnIndex] + \
+                    sumOfSquared - this_column_weights + self.shrink + 1e-6
+                this_column_weights = np.multiply(
+                    this_column_weights, 1 / denominator)
+
+            # If no normalization or tanimoto is selected, apply only shrink
+            elif self.shrink != 0:
+                this_column_weights = this_column_weights/self.shrink
+
+            if self.TopK == 0:
+                self.W_dense[:, columnIndex] = this_column_weights
 
             else:
                 # Sort indices and select TopK
@@ -204,21 +232,20 @@ class Similarity(object):
                 # - Sort only the relevant items
                 # - Get the original item index
                 relevant_items_partition = (-this_column_weights).argpartition(
-                    self.neighbourhood - 1)[0:self.neighbourhood]
+                    self.TopK-1)[0:self.TopK]
                 relevant_items_partition_sorting = np.argsort(
                     -this_column_weights[relevant_items_partition])
                 top_k_idx = relevant_items_partition[relevant_items_partition_sorting]
 
                 # Incrementally build sparse matrix
                 values.extend(this_column_weights[top_k_idx])
-                rows.extend(np.ones(self.neighbourhood) * columnIndex)
-                cols.extend(top_k_idx)
+                rows.extend(top_k_idx)
+                cols.extend(np.ones(self.TopK) * columnIndex)
+
         if self.verbose:
-            print("Computation is completend in {} minutes".format((time.time() - start_time)/60))
-
-
-        if self.neighbourhood == 0:
-            return self.full_weights
+            print("Computation is completend in {} minutes".format((time.time() - start_time) / 60))
+        if self.TopK == 0:
+            return self.W_dense
 
         else:
 

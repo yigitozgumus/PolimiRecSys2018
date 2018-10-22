@@ -18,8 +18,6 @@ class RecommenderSystem(object):
         super(RecommenderSystem, self).__init__()
         self.URM_train = None
         self.URM_test = None
-        self.sparse_weights = True
-        self.normalize = False
         # Filter topPop and Custom Items TODO
 
     def fit(self):
@@ -32,13 +30,13 @@ class RecommenderSystem(object):
 
 
     def get_user_relevant_items(self, playlist_id):
-        return self.URM_test.indices[self.URM_test.indptr[playlist_id]:self.URM_test.indptr[playlist_id + 1]]
+        return self.URM_test[playlist_id].indices
 
 
 
     def evaluateRecommendations(self,
                                 URM_test,
-                                at=10,
+                                at=0,
                                 minRatingsPerUser=1,
                                 exclude_seen=True,
                                 mode="sequential"):  # FilterTopPop Implementation TODO
@@ -52,10 +50,13 @@ class RecommenderSystem(object):
         numUsers = self.URM_test.shape[0]
         # Prune users with an insufficient number of ratings
         rows = self.URM_test.indptr
+        #print(rows)
         numRatings = np.ediff1d(rows)
         mask = numRatings >= minRatingsPerUser
+        #usersToEvaluate = np.arange(numUsers)
         usersToEvaluate = np.arange(numUsers)[mask]
         usersToEvaluate = list(usersToEvaluate)
+        #print(usersToEvaluate)
         if mode == 'sequential':
             return self.evaluateRecommendationsSequential(usersToEvaluate)
         # elif mode == 'parallel':
@@ -74,16 +75,19 @@ class RecommenderSystem(object):
         metric = Metrics()
         for test_user in usersToEvaluate:
             relevant_items = self.get_user_relevant_items(test_user)
+           # print(relevant_items)
+           # print(relevant_items.shape)
             num_eval += 1
             recommended_items = self.recommend(playlist_id=test_user,
-                                               exclude_seen=self.exclude_seen,
-                                               n=self.at)
-            is_relevant = np.isin(recommended_items, relevant_items, assume_unique=True)
-            cumPrecision += metric.precision(is_relevant)
+                                               exclude_seen=self.exclude_seen)
+            print(recommended_items)                                  
+            is_relevant = np.in1d(recommended_items, relevant_items, assume_unique=True)
+         #   print(is_relevant)
+            cumPrecision +=metric.precision(is_relevant)
             cumRecall += metric.recall(is_relevant, relevant_items)
             cumMap += metric.map(is_relevant, relevant_items)
 
-            if num_eval % 100 == 0 or num_eval == len(usersToEvaluate) - 1:
+            if num_eval % 10000 == 0 or num_eval == len(usersToEvaluate) - 1:
                 print("Processed {} ( {:.2f}% ) in {:.2f} seconds. Users per second: {:.0f}".format(
                     num_eval,
                     100.0 * float(num_eval + 1) / len(usersToEvaluate),
