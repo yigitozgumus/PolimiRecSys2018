@@ -8,7 +8,7 @@ class RecommenderSystem_SM(object):
     def __init__(self):
         super(RecommenderSystem_SM,self).__init__()
 
-    def recommend(self, playlist_id, exclude_seen=True,n=None):
+    def recommend(self, playlist_id, exclude_seen=True,n=None,export=False):
             if n == None:
                 n = self.URM_train.shape[1] - 1
 
@@ -16,7 +16,7 @@ class RecommenderSystem_SM(object):
             if self.sparse_weights:
                # user_profile = self.URM_train[playlist_id]
                 #scores = user_profile.dot(self.W_sparse).toarray().ravel()
-                 scores = self.W_sparse[playlist_id].dot( self.URM_train).toarray().ravel()
+                scores = self.W_sparse[playlist_id].dot( self.URM_train).toarray().ravel()
             # print(scores)
             else:
                # scores = self.URM_train.T.dot(self.W[playlist_id])
@@ -33,4 +33,7 @@ class RecommenderSystem_SM(object):
             relevant_items_partition = (-scores).argpartition(n)[0:n]
             relevant_items_partition_sorting = np.argsort(-scores[relevant_items_partition])
             ranking = relevant_items_partition[relevant_items_partition_sorting]
-            return str(ranking).strip("[]")
+            if not export:
+                return ranking
+            else:
+                return str(ranking).strip("[]")

@@ -17,14 +17,14 @@ class Logger(object):
             f = open(fileName,"w+")
             f.write("playlist_id,track_ids\n")
             for ind, playlist_id in enumerate(self.data['playlist_id']):
-                f.write(str(playlist_id) + ',' + model.recommend(playlist_id, n=10) + '\n');
+                f.write(str(playlist_id) + ',' + model.recommend(playlist_id, n=10,export=True) + '\n');
             f.close()
 
     def export_single_submission(data, model):
         f = open("submissions/submission-" + asctime() + ".csv", "w+")
         f.write("playlist_id,track_ids\n")
         for ind, playlist_id in enumerate(data['playlist_id']):
-            f.write(str(playlist_id) + ',' + model.recommend(playlist_id, n=10) + '\n');
+            f.write(str(playlist_id) + ',' + model.recommend(playlist_id, n=10,export=True) + '\n');
         f.close()
 
     def log_experiment(self):

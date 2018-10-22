@@ -36,7 +36,7 @@ class ItemKNNCFRecommender(RecommenderSystem,RecommenderSystem_SM):
             self.W = self.similarity.computeUUSimilarity()
             self.W = self.W.toarray()
 
-    def recommend(self,playlist_id,n=None, exclude_seen= True):
+    def recommend(self,playlist_id,n=None, exclude_seen= True,export=False):
 
         if n == None:
             n = self.URM_train.shape[1]-1
@@ -52,4 +52,7 @@ class ItemKNNCFRecommender(RecommenderSystem,RecommenderSystem_SM):
         relevant_items_partition = (-scores).argpartition(n)[0:n]
         relevant_items_partition_sorting = np.argsort( -scores[relevant_items_partition])
         ranking = relevant_items_partition[relevant_items_partition_sorting]
-        return str(ranking).strip("[]")
+        if not export:
+            return ranking
+        else:
+            return str(ranking).strip("[]")
