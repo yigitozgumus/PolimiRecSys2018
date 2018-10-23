@@ -43,7 +43,7 @@ def pipeline(fileName,exp_,log_):
 
     # export the predictions
     if exp_:
-        l.export_submissions(rec_sys)
+        l.export_experiments(rec_sys)
     if log_:
         l.log_experiment()
 

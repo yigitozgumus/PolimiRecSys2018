@@ -155,7 +155,7 @@ class Similarity:
         rows = []
         cols = []
         if self.verbose:
-            print("Computation of User User Similarity matrix with {} mode is started.".format((self.mode)))
+            print("Computation of Similarity matrix with {} mode is started.".format((self.mode)))
 
         start_time = time.time()
         start_time_print_batch = start_time
@@ -205,14 +205,14 @@ class Similarity:
             this_column_weights[columnIndex] = 0.0
 
             # Apply normalization and shrinkage, ensure denominator != 0
-            if self.normalize:
-                denominator = sumOfSquared[columnIndex] * \
-                    sumOfSquared + self.shrink + 1e-6
-                this_column_weights = np.multiply(
-                    this_column_weights, 1 / denominator)
+            # if self.normalize:
+            #     denominator = sumOfSquared[columnIndex] * \
+            #         sumOfSquared + self.shrink + 1e-6
+            #     this_column_weights = np.multiply(
+            #         this_column_weights, 1 / denominator)
 
             # Apply the specific denominator for Tanimoto
-            elif self.tanimoto_coefficient:
+            if self.tanimoto_coefficient:
                 denominator = sumOfSquared[columnIndex] + \
                     sumOfSquared - this_column_weights + self.shrink + 1e-6
                 this_column_weights = np.multiply(

@@ -11,6 +11,7 @@ class RecommenderSystem_SM(object):
         #self.sparse_weights = None
 
     def recommend(self, playlist_id, exclude_seen=True, n=None, export=False):
+        
         if n is None:
             n = self.URM_train.shape[1] - 1
 

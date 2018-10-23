@@ -1,6 +1,6 @@
 from time import asctime
 
-
+import os 
 class Logger(object):
 
     def __init__(self, data, verbose=False):
@@ -10,18 +10,20 @@ class Logger(object):
         self.submission_list = []
         self.time = asctime().replace(" ", "_")
 
-    def export_submissions(self, model_bundle):
-        for index,model in enumerate(model_bundle):
-            fileName = "submissions/sub-"+str(index)+"-" + self.time + ".csv"
+    def export_experiments(self, model_bundle):
+        index = len(list(os.listdir("./experiments"))) -2
+        for model in model_bundle:
+            fileName = "experiments/exp-"+str(index)+"-" + self.time + ".csv"
             self.submission_list.append((fileName, model))
             f = open(fileName,"w+")
             f.write("playlist_id,track_ids\n")
             for ind, playlist_id in enumerate(self.data['playlist_id']):
                 f.write(str(playlist_id) + ',' + model.recommend(playlist_id, n=10,export=True) + '\n');
             f.close()
+            index+=1
 
     def export_single_submission(data, model):
-        f = open("submissions/submission-" + asctime() + ".csv", "w+")
+        f = open("experiments/exp-" + asctime() + ".csv", "w+")
         f.write("playlist_id,track_ids\n")
         for ind, playlist_id in enumerate(data['playlist_id']):
             f.write(str(playlist_id) + ',' + model.recommend(playlist_id, n=10) + '\n');
@@ -30,5 +32,5 @@ class Logger(object):
     def log_experiment(self):
         f = open("Logs.txt", "a")
         for submission in self.submission_list:
-            f.write("\n" + submission[0] + ", " + str(submission[1]))
+            f.write("\n" + submission[0][12:] + ", " + str(submission[1]))
         f.close()
