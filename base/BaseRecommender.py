@@ -15,6 +15,10 @@ class RecommenderSystem(object):
         super(RecommenderSystem, self).__init__()
         self.URM_train = None
         self.URM_test = None
+        self.map = None
+        self.precision = None
+        self.recall = None
+        self.parameters = None
 
         # Filter topPop and Custom Items TODO
 
@@ -86,6 +90,9 @@ class RecommenderSystem(object):
             cumPrecision /= num_eval
             cumRecall /= num_eval
             cumMap /= num_eval
+            self.map = "{:.6f}".format(cumMap)
+            self.precision = "{:.6f}".format( cumPrecision)
+            self.recall = "{:.6f}".format(cumRecall)
             print("Recommender performance is: Precision = {:.4f}, Recall = {:.4f}, MAP = {:.4f}".format(
                 cumPrecision, cumRecall, cumMap))
         else:

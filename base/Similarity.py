@@ -78,7 +78,7 @@ class Similarity:
 
         nonzeroRows = interactionsPerRow > 0
         sumPerRow = np.asarray(self.dataMatrix.sum(axis=1)).ravel()
-
+        sumPerRow = np.sqrt(sumPerRow)
         rowAverage = np.zeros_like(sumPerRow)
         rowAverage[nonzeroRows] = sumPerRow[nonzeroRows] / \
             interactionsPerRow[nonzeroRows]
@@ -94,8 +94,8 @@ class Similarity:
             end_row = min(self.n_rows, end_row + blockSize)
 
             self.dataMatrix.data[self.dataMatrix.indptr[start_row]:self.dataMatrix.indptr[end_row]] -= \
-                np.repeat(rowAverage[start_row:end_row],
-                          interactionsPerRow[start_row:end_row])
+                (1/np.repeat(rowAverage[start_row:end_row],
+                          interactionsPerRow[start_row:end_row]))
 
             start_row += blockSize
 
@@ -111,7 +111,7 @@ class Similarity:
 
         nonzeroCols = interactionsPerCol > 0
         sumPerCol = np.asarray(self.dataMatrix.sum(axis=0)).ravel()
-
+        sumPerCol = np.sqrt(sumPerCol)
         colAverage = np.zeros_like(sumPerCol)
         colAverage[nonzeroCols] = sumPerCol[nonzeroCols] / \
             interactionsPerCol[nonzeroCols]

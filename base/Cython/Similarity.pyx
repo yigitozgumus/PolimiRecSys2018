@@ -137,6 +137,7 @@ cdef class Similarity:
 
 
         sumPerCol = np.array(URM.sum(axis=0), dtype=np.float64).ravel()
+        sumPerCol = np.sqrt(sumPerCol)
         interactionsPerCol = np.diff(URM.indptr)
 
 
@@ -176,6 +177,7 @@ cdef class Similarity:
         URM = check_matrix(URM, 'csr')
 
         sumPerRow = np.array(URM.sum(axis=1), dtype=np.float64).ravel()
+        sumPerRow = np.sqrt(sumPerRow)
         interactionsPerRow = np.diff(URM.indptr)
 
 
