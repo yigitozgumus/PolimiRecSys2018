@@ -12,12 +12,14 @@ import numpy as np
 class RecommenderSystem(object):
 
     def __init(self):
-        """
-        Initialization of the class
-        """
         super(RecommenderSystem, self).__init__()
         self.URM_train = None
         self.URM_test = None
+        self.map = None
+        self.precision = None
+        self.recall = None
+        self.parameters = None
+
         # Filter topPop and Custom Items TODO
 
     def fit(self):
@@ -28,15 +30,13 @@ class RecommenderSystem(object):
         scores[seen] = -np.inf
         return scores
 
-
     def get_user_relevant_items(self, playlist_id):
-        return self.URM_test[playlist_id].indices
-
-
+        return self.URM_test.indices[self.URM_test.indptr[playlist_id]:self.URM_test.indptr[playlist_id + 1]]
+        # return self.URM_train[playlist_id].indices
 
     def evaluateRecommendations(self,
                                 URM_test,
-                                at=0,
+                                at=10,
                                 minRatingsPerUser=1,
                                 exclude_seen=True,
                                 mode="sequential"):  # FilterTopPop Implementation TODO
@@ -50,23 +50,19 @@ class RecommenderSystem(object):
         numUsers = self.URM_test.shape[0]
         # Prune users with an insufficient number of ratings
         rows = self.URM_test.indptr
-        #print(rows)
+        # print(rows)
         numRatings = np.ediff1d(rows)
         mask = numRatings >= minRatingsPerUser
-        #usersToEvaluate = np.arange(numUsers)
+        usersToEvaluate = np.arange(numUsers)
+        # print(usersToEvaluate.shape)
         usersToEvaluate = np.arange(numUsers)[mask]
+        # print(usersToEvaluate.shape)
         usersToEvaluate = list(usersToEvaluate)
-        #print(usersToEvaluate)
+        # print(usersToEvaluate)
         if mode == 'sequential':
             return self.evaluateRecommendationsSequential(usersToEvaluate)
-        # elif mode == 'parallel':
-        # return self.evaluateRecommendationsParallel(usersToEvaluate)
-        # elif mode == 'batch':
-        # return self.evaluateRecommendationsBatch(usersToEvaluate)
         else:
             raise ValueError("Mode '{}' not available".format(mode))
-
-
 
     def evaluateRecommendationsSequential(self, usersToEvaluate):
         start_time = time.time()
@@ -75,15 +71,11 @@ class RecommenderSystem(object):
         metric = Metrics()
         for test_user in usersToEvaluate:
             relevant_items = self.get_user_relevant_items(test_user)
-           # print(relevant_items)
-           # print(relevant_items.shape)
             num_eval += 1
             recommended_items = self.recommend(playlist_id=test_user,
                                                exclude_seen=self.exclude_seen)
-            #print(recommended_items)                                  
             is_relevant = np.in1d(recommended_items, relevant_items, assume_unique=True)
-         #   print(is_relevant)
-            cumPrecision +=metric.precision(is_relevant)
+            cumPrecision += metric.precision(is_relevant)
             cumRecall += metric.recall(is_relevant, relevant_items)
             cumMap += metric.map(is_relevant, relevant_items)
 
@@ -94,10 +86,13 @@ class RecommenderSystem(object):
                     time.time() - start_time,
                     float(num_eval) / (time.time() - start_time)))
 
-        if num_eval >0 :
+        if num_eval > 0:
             cumPrecision /= num_eval
             cumRecall /= num_eval
             cumMap /= num_eval
+            self.map = "{:.6f}".format(cumMap)
+            self.precision = "{:.6f}".format( cumPrecision)
+            self.recall = "{:.6f}".format(cumRecall)
             print("Recommender performance is: Precision = {:.4f}, Recall = {:.4f}, MAP = {:.4f}".format(
                 cumPrecision, cumRecall, cumMap))
         else:
@@ -108,6 +103,5 @@ class RecommenderSystem(object):
         results_run["precision"] = cumPrecision
         results_run["recall"] = cumRecall
         results_run["map"] = cumMap
-
 
         return (results_run)

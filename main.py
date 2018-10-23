@@ -19,19 +19,21 @@ def main():
                         action='store_false', default=True, dest="log_switch")
     args = parser.parse_args()
     fileName = args.json
-    print(args.json)
-    print(args.exp_switch)
-    print(args.log_switch)
+   # print(args.json)
+   # print(args.exp_switch)
+   # print(args.log_switch)
     pipeline(fileName,args.exp_switch,args.log_switch)
 
 def pipeline(fileName,exp_,log_):
     clear()
     # Load the data
-    data_reader = PlaylistDataReader(verbose=True)
+    conf = Configurator(fileName)
+    
+    data_reader = PlaylistDataReader(verbose=False,)
     l = Logger(data_reader.targetData)
-    conf = Configurator(fileName,data_reader)
+    
     # Prepare the models
-    rec_sys = conf.extractModels()
+    rec_sys = conf.extractModels(data_reader)
     
     for model in rec_sys:
         # Train the models
@@ -41,7 +43,7 @@ def pipeline(fileName,exp_,log_):
 
     # export the predictions
     if exp_:
-        l.export_submissions(rec_sys)
+        l.export_experiments(rec_sys)
     if log_:
         l.log_experiment()
 

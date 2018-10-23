@@ -9,7 +9,7 @@ class Metrics(object):
     Class for the evaluation metrics
     """
     def __init__(self):
-        pass
+        super(Metrics,self).__init__()
 
     def precision(self,is_relevant):
         #is_relevant = np.in1d(recommended_items, relevant_items, assume_unique=True)
