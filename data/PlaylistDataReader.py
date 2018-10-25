@@ -43,16 +43,22 @@ def saveSparseIntoCSV(filePath, sparse_matrix, separator=","):
 
 class PlaylistDataReader(object):
 
-    def __init__(self, splitTrainTest=False,
-                 splitTrainTestValidation=[0.8, 0.1, 0.1],
+    def __init__(self,
+                 splitTrainTest=True,
+                 trainTestSplit=0.8,
                  loadPredefinedTrainTest=True,
-                 verbose=False):
+                 verbose=False,
+                 adjustSequentials=False):
         super(PlaylistDataReader, self).__init__()
         self.verbose = verbose
+        self.loadPredefined = loadPredefinedTrainTest
+        self.URM_train = None
+        self.URM_test = None
+        self.URM_all = None
 
-        if sum(splitTrainTestValidation) != 1.0 or len(splitTrainTestValidation) != 3:
-            raise ValueError("PlaylistDaraReader: splitTrainTestValidation" \
-                             " must be a probability distribution over Train, Test and Validation")
+        if trainTestSplit >= 1.0:
+            raise ValueError("PlaylistDaraReader: splitTrainTestSplit" \
+                             " must be a value smaller than one.")
 
         if verbose:
             print("PlaylistDataReader: Data is loading. . .")
@@ -70,69 +76,46 @@ class PlaylistDataReader(object):
         except FileNotFoundError:
             print("PlaylistDataReader: train.csv or tracks.csv or target_playlists.csv not.")
 
-        if not loadPredefinedTrainTest:
-            pass
-        else:
+        if self.loadPredefined:
             try:
                 self.URM_train = sps.load_npz(dataSubfolder + "URM_train.npz")
                 self.URM_test = sps.load_npz(dataSubfolder + "URM_test.npz")
-                self.URM_validation = sps.load_npz(dataSubfolder + "URM_validation.npz")
                 return
             except FileNotFoundError:
-                print("PlaylistDataReader: URM_train or URM_test or URM_validation not.Found. Building new ones\n")
-                splitTrainTest = True
-                # TODO
-                #self.URM_all = loadCSVintoSparse(train_path)
-                self.trainData['popularity'] = 1
-
-                interaction = np.array(self.trainData['popularity'])
-                rows = np.array(self.trainData['playlist_id'])
-                cols = np.array(self.trainData['track_id'])
-                self.URM_all = sps.csr_matrix((interaction, (rows, cols)))
+                print("PlaylistDataReader: URM_train or URM_test not.Found. Building new ones")
+                if adjustSequentials:
+                    self.trainData['popularity'] = 3
+                    sequentials = self.targetData.loc[:4999, 'playlist_id']
+                    # apply the ratings
+                    for seq in sequentials:
+                        length = len(self.trainData[self.trainData['playlist_id'] == seq])
+                        self.trainData.loc[self.trainData['playlist_id'] == seq, 'popularity'] = np.linspace(5, 1,
+                                                                                                             length)
+                    interaction = np.array(self.trainData['popularity'])
+                    rows = np.array(self.trainData['playlist_id'])
+                    cols = np.array(self.trainData['track_id'])
+                    self.URM_all = sps.csr_matrix((interaction, (rows, cols)))
+                else:
+                    self.trainData['popularity'] = 1
+                    interaction = np.array(self.trainData['popularity'])
+                    rows = np.array(self.trainData['playlist_id'])
+                    cols = np.array(self.trainData['track_id'])
+                    self.URM_all = sps.csr_matrix((interaction, (rows, cols)))
 
         if splitTrainTest:
             self.URM_all = self.URM_all.tocoo()
             numInteractions = len(self.URM_all.data)
-            split = np.random.choice([1, 2, 3], numInteractions, p=splitTrainTestValidation)
 
-            trainMask = (split == 1)
-            interaction = self.URM_all.data[trainMask]
-            row = self.URM_all.row[trainMask]
-            col = self.URM_all.col[trainMask]
-            self.URM_train = sps.coo_matrix((interaction, (row, col)))
-            self.URM_train - self.URM_train.tocsr()
-
-            testMask = (split == 2)
-            interaction = self.URM_all.data[testMask]
-            row = self.URM_all.row[testMask]
-            col = self.URM_all.col[testMask]
-            self.URM_test = sps.coo_matrix((interaction, (row, col)))
-            self.URM_test - self.URM_test.tocsr()
-
-            #
-            validationMask = (split == 3)
-            interaction = self.URM_all.data[validationMask]
-            row = self.URM_all.row[validationMask]
-            col = self.URM_all.col[validationMask]
-            self.URM_validation = sps.coo_matrix((interaction, (row, col)))
-            self.URM_validation - self.URM_validation.tocsr()
-
+            trainMask = np.random.choice([True, False], numInteractions, p=[trainTestSplit, 1 - trainTestSplit])
+            self.URM_train = sps.coo_matrix(
+                (self.URM_all.data[trainMask], (self.URM_all.row[trainMask], self.URM_all.col[trainMask])))
+            testMask = np.logical_not(trainMask)
+            self.URM_test = sps.coo_matrix(
+                (self.URM_all.data[testMask], (self.URM_all.row[testMask], self.URM_all.col[testMask])))
 
             del self.URM_all
-
             print("PlaylistDataReader: saving URM_train and URM_test")
             sps.save_npz(dataSubfolder + "URM_train.npz", self.URM_train)
             sps.save_npz(dataSubfolder + "URM_test.npz", self.URM_test)
-            sps.save_npz(dataSubfolder + "URM_validation.npz", self.URM_validation)
-
         if verbose:
             print("PlaylistDataReader: Data loading is complete")
-
-    def get_URM_train(self):
-        return self.URM_train
-
-    def get_URM_test(self):
-        return self.URM_test
-
-    def get_URM_validation(self):
-        return self.URM_validation
