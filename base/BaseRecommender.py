@@ -4,7 +4,7 @@
 """
 import time
 
-from base.Metrics import Metrics
+from base.Metrics import precision, recall, map
 from base.RecommenderUtils import check_matrix
 import numpy as np
 
@@ -34,12 +34,13 @@ class RecommenderSystem(object):
         return self.URM_test.indices[self.URM_test.indptr[playlist_id]:self.URM_test.indptr[playlist_id + 1]]
         # return self.URM_train[playlist_id].indices
 
-    def evaluateRecommendations(self,
-                                URM_test,
-                                at=10,
-                                minRatingsPerUser=1,
-                                exclude_seen=True,
-                                mode="sequential"):  # FilterTopPop Implementation TODO
+    def evaluate_recommendations(self,
+                                 URM_test,
+                                 at=10,
+                                 minRatingsPerUser=1,
+                                 exclude_seen=True,
+                                 mode="sequential"):  # FilterTopPop Implementation TODO
+
         URM_test_new = check_matrix(URM_test, format='csr')
         self.URM_test = check_matrix(URM_test_new, format='csr')
         self.URM_train = check_matrix(self.URM_train, format='csr')
@@ -52,32 +53,30 @@ class RecommenderSystem(object):
         rows = self.URM_test.indptr
         # print(rows)
         numRatings = np.ediff1d(rows)
-        mask = numRatings >= minRatingsPerUser
-        usersToEvaluate = np.arange(numUsers)
+        mask = minRatingsPerUser <= numRatings
         # print(usersToEvaluate.shape)
         usersToEvaluate = np.arange(numUsers)[mask]
         # print(usersToEvaluate.shape)
         usersToEvaluate = list(usersToEvaluate)
         # print(usersToEvaluate)
         if mode == 'sequential':
-            return self.evaluateRecommendationsSequential(usersToEvaluate)
+            return self.evaluate_recommendations_sequential(usersToEvaluate)
         else:
             raise ValueError("Mode '{}' not available".format(mode))
 
-    def evaluateRecommendationsSequential(self, usersToEvaluate):
+    def evaluate_recommendations_sequential(self, usersToEvaluate):
         start_time = time.time()
-        cumPrecision, cumRecall, cumMap = 0.0, 0.0, 0.0
+        cum_precision, cum_recall, cum_map = 0.0, 0.0, 0.0
         num_eval = 0
-        metric = Metrics()
         for test_user in usersToEvaluate:
             relevant_items = self.get_user_relevant_items(test_user)
             num_eval += 1
             recommended_items = self.recommend(playlist_id=test_user,
                                                exclude_seen=self.exclude_seen)
             is_relevant = np.in1d(recommended_items, relevant_items, assume_unique=True)
-            cumPrecision += metric.precision(is_relevant)
-            cumRecall += metric.recall(is_relevant, relevant_items)
-            cumMap += metric.map(is_relevant, relevant_items)
+            cum_precision += precision(is_relevant)
+            cum_recall += recall(is_relevant, relevant_items)
+            cum_map += map(is_relevant, relevant_items)
 
             if num_eval % 10000 == 0 or num_eval == len(usersToEvaluate) - 1:
                 print("Processed {} ( {:.2f}% ) in {:.2f} seconds. Users per second: {:.0f}".format(
@@ -87,21 +86,17 @@ class RecommenderSystem(object):
                     float(num_eval) / (time.time() - start_time)))
 
         if num_eval > 0:
-            cumPrecision /= num_eval
-            cumRecall /= num_eval
-            cumMap /= num_eval
-            self.map = "{:.6f}".format(cumMap)
-            self.precision = "{:.6f}".format( cumPrecision)
-            self.recall = "{:.6f}".format(cumRecall)
+            cum_precision /= num_eval
+            cum_recall /= num_eval
+            cum_map /= num_eval
+            self.map = "{:.6f}".format(cum_map)
+            self.precision = "{:.6f}".format(cum_precision)
+            self.recall = "{:.6f}".format(cum_recall)
             print("Recommender performance is: Precision = {:.4f}, Recall = {:.4f}, MAP = {:.4f}".format(
-                cumPrecision, cumRecall, cumMap))
+                cum_precision, cum_recall, cum_map))
         else:
             print("WARNING: No users had a sufficient number of relevant items")
 
-        results_run = {}
-
-        results_run["precision"] = cumPrecision
-        results_run["recall"] = cumRecall
-        results_run["map"] = cumMap
+        results_run = {"precision": cum_precision, "recall": cum_recall, "map": cum_map}
 
         return (results_run)

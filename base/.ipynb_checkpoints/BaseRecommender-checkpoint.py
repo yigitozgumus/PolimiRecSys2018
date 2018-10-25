@@ -83,9 +83,9 @@ class RecommenderSystem(object):
             print(recommended_items)                                  
             is_relevant = np.in1d(recommended_items, relevant_items, assume_unique=True)
          #   print(is_relevant)
-            cumPrecision +=metric.precision(is_relevant)
-            cumRecall += metric.recall(is_relevant, relevant_items)
-            cumMap += metric.map(is_relevant, relevant_items)
+            cumPrecision += precision(is_relevant)
+            cumRecall += recall(is_relevant, relevant_items)
+            cumMap += map(is_relevant, relevant_items)
 
             if num_eval % 10000 == 0 or num_eval == len(usersToEvaluate) - 1:
                 print("Processed {} ( {:.2f}% ) in {:.2f} seconds. Users per second: {:.0f}".format(

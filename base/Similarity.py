@@ -162,8 +162,6 @@ class Similarity:
         start_time_print_batch = start_time
         processedItems = 0
 
-
-
         if self.adjusted_cosine:
             self.applyAdjustedCosine()
 
@@ -207,12 +205,12 @@ class Similarity:
             this_column_weights = self.dataMatrix.T.dot(item_data)
             this_column_weights[columnIndex] = 0.0
 
-            # Apply normalization and shrinkage, ensure denominator != 0
-            # if self.normalize:
-            #     denominator = sumOfSquared[columnIndex] * \
-            #         sumOfSquared + self.shrink + 1e-6
-            #     this_column_weights = np.multiply(
-            #         this_column_weights, 1 / denominator)
+            #Apply normalization and shrinkage, ensure denominator != 0
+            if self.normalize:
+                denominator = sumOfSquared[columnIndex] * \
+                    sumOfSquared + self.shrink + 1e-6
+                this_column_weights = np.multiply(
+                    this_column_weights, 1 / denominator)
 
             # Apply the specific denominator for Tanimoto
             if self.tanimoto_coefficient:
@@ -220,11 +218,9 @@ class Similarity:
                     sumOfSquared - this_column_weights + self.shrink + 1e-6
                 this_column_weights = np.multiply(
                     this_column_weights, 1 / denominator)
-
             # If no normalization or tanimoto is selected, apply only shrink
             elif self.shrink != 0:
                 this_column_weights = this_column_weights/self.shrink
-
             if self.TopK == 0:
                 self.W_dense[:, columnIndex] = this_column_weights
 

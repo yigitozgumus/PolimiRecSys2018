@@ -111,12 +111,9 @@ cdef class Similarity:
         Set to 1 all data points
         :return:
         """
-
         cdef long index
-
         for index in range(len(URM.data)):
             URM.data[index] = 1
-
         return URM
 
 
@@ -132,29 +129,20 @@ cdef class Similarity:
         cdef long colIndex, innerIndex, start_pos, end_pos
         cdef double colAverage
 
-
         URM = check_matrix(URM, 'csc')
-
-
         sumPerCol = np.array(URM.sum(axis=0), dtype=np.float64).ravel()
         sumPerCol = np.sqrt(sumPerCol)
         interactionsPerCol = np.diff(URM.indptr)
-
 
         #Remove for every row the corresponding average
         for colIndex in range(self.n_items):
 
             if interactionsPerCol[colIndex]>0:
-
                 colAverage = sumPerCol[colIndex] / interactionsPerCol[colIndex]
-
                 start_pos = URM.indptr[colIndex]
                 end_pos = URM.indptr[colIndex+1]
-
                 innerIndex = start_pos
-
                 while innerIndex < end_pos:
-
                     URM.data[innerIndex] -= colAverage
                     innerIndex+=1
 
@@ -185,36 +173,21 @@ cdef class Similarity:
         for rowIndex in range(self.n_users):
 
             if interactionsPerRow[rowIndex]>0:
-
                 rowAverage = sumPerRow[rowIndex] / interactionsPerRow[rowIndex]
-
                 start_pos = URM.indptr[rowIndex]
                 end_pos = URM.indptr[rowIndex+1]
-
                 innerIndex = start_pos
-
                 while innerIndex < end_pos:
-
                     URM.data[innerIndex] -= rowAverage
                     innerIndex+=1
 
-
         return URM
-
-
-
-
 
     cdef int[:] getUsersThatRatedItem(self, long item_id):
         return self.item_to_user_rows[self.item_to_user_col_ptr[item_id]:self.item_to_user_col_ptr[item_id+1]]
 
     cdef int[:] getItemsRatedByUser(self, long user_id):
         return self.user_to_item_cols[self.user_to_item_row_ptr[user_id]:self.user_to_item_row_ptr[user_id+1]]
-
-
-
-
-
 
 
     cdef double[:] computeItemSimilarities(self, long item_id_input):
@@ -248,17 +221,13 @@ cdef class Similarity:
         # Much faster than np.zeros(self.n_items)
         cdef array[double] template_zero = array('d')
         cdef array[double] result = clone(template_zero, self.n_items, zero=True)
-
         cdef long user_index, user_id, item_index, item_id_second
-
         cdef int[:] users_that_rated_item = self.getUsersThatRatedItem(item_id_input)
         cdef int[:] items_rated_by_user
-
         cdef double rating_item_input, rating_item_second
 
         # Get users that rated the items
         for user_index in range(len(users_that_rated_item)):
-
             user_id = users_that_rated_item[user_index]
             rating_item_input = self.item_to_user_data[self.item_to_user_col_ptr[item_id_input]+user_index]
 
@@ -266,14 +235,12 @@ cdef class Similarity:
             items_rated_by_user = self.getItemsRatedByUser(user_id)
 
             for item_index in range(len(items_rated_by_user)):
-
                 item_id_second = items_rated_by_user[item_index]
 
                 # Do not compute the similarity on the diagonal
                 if item_id_second != item_id_input:
                     # Increment similairty
                     rating_item_second = self.user_to_item_data[self.user_to_item_row_ptr[user_id]+item_index]
-
                     result[item_id_second] += rating_item_input*rating_item_second
 
         return result
@@ -287,15 +254,12 @@ cdef class Similarity:
 
         cdef int itemIndex, innerItemIndex
         cdef long long topKItemIndex
-
         cdef long long[:] top_k_idx
 
         # Declare numpy data type to use vetor indexing and simplify the topK selection code
         cdef np.ndarray[long, ndim=1] top_k_partition, top_k_partition_sorting
         cdef np.ndarray[np.float64_t, ndim=1] this_item_weights_np
-
         cdef double[:] this_item_weights
-
         cdef long processedItems = 0
 
         # Data structure to incrementally build sparse matrix
@@ -333,18 +297,14 @@ cdef class Similarity:
                 for innerItemIndex in range(self.n_items):
                     this_item_weights[innerItemIndex] /= self.sumOfSquared[itemIndex] * self.sumOfSquared[innerItemIndex]\
                                                          + self.shrink + 1e-6
-
             # Apply the specific denominator for Tanimoto
             elif self.tanimoto_coefficient:
                 for innerItemIndex in range(self.n_items):
                     this_item_weights[innerItemIndex] /= self.sumOfSquared[itemIndex] + self.sumOfSquared[innerItemIndex] -\
                                                          this_item_weights[innerItemIndex] + self.shrink + 1e-6
-
             elif self.shrink != 0:
                 for innerItemIndex in range(self.n_items):
                     this_item_weights[innerItemIndex] /= self.shrink
-
-
             if self.TopK == 0:
 
                 for innerItemIndex in range(self.n_items):

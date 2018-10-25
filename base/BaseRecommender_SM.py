@@ -1,14 +1,14 @@
 import numpy as np
 import time
 
-from base.Metrics import Metrics
+
 from base.RecommenderUtils import check_matrix
 
 
 class RecommenderSystem_SM(object):
     def __init__(self):
         super(RecommenderSystem_SM, self).__init__()
-        #self.sparse_weights = None
+        # self.sparse_weights = None
 
     def recommend(self, playlist_id, exclude_seen=True, n=None, export=False):
         
@@ -17,10 +17,6 @@ class RecommenderSystem_SM(object):
 
         # compute the scores using the dot product
         if self.sparse_weights:
-            #user_profile = self.URM_train[playlist_id]
-            #scores = user_profile.T.dot(self.W_sparse).toarray().ravel()
-            #print(self.W_sparse[playlist_id].shape)
-            #print(self.URM_train.shape)
             scores = self.W_sparse[playlist_id].dot(self.URM_train).toarray().ravel()
             # print(scores)
         else:
