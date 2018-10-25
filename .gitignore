@@ -5,5 +5,7 @@ __pycache__/
 submissions
 Analysis
 archived
-.vscode
 .vscode/settings.json
+experiments
+Logs.md
+build
