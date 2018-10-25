@@ -33,11 +33,6 @@ class Logger(object):
     def log_experiment(self):
         f = open("Logs.md", "a")
         for submission in self.submission_list:
-            f.write("\n|[" + submission[0] + "](" + submission[1]+ ")|" + \
-                             submission[2] + "|" +\
-                             str(submission[3]) + "|" + \
-                             submission[4] + "|" + \
-                             submission[5]+ "|" + \
-                             submission[6] + "|" + \
-                             submission[7] + "||" )
+            f.write("\n|[" + submission[0] + "](" + submission[1]+ ")|" + "|".join(list(map(str,submission[2:]))) + "||")
+
         f.close()

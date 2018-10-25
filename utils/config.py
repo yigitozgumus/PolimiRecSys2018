@@ -1,22 +1,24 @@
 import json
 from bunch import Bunch
 import os
-import pandas as pd
 from subprocess import call
 from models.KNN.User_KNN_CFRecommender import UserKNNCFRecommender
 from models.KNN.Item_KNN_CFRecommender import ItemKNNCFRecommender
+
 
 # define clear function
 def clear():
     # check and make call for specific operating system
     _ = call('clear' if os.name == 'posix' else 'cls')
 
+
 class Configurator(object):
-    def __init__(self,jsonFile):
+    def __init__(self, jsonFile):
         self.dataFile = jsonFile
         self.configs = self.process_config(self.dataFile)
 
-    def get_config_from_json(self,json_file):
+    @staticmethod
+    def get_config_from_json(json_file):
         """
         Get the config from a json file
         :param json_file:
@@ -31,14 +33,13 @@ class Configurator(object):
 
         return config, config_dict
 
-
-    def process_config(self,json_file):
+    def process_config(self, json_file):
         configs, _ = self.get_config_from_json(json_file)
         # config.summary_dir = os.path.join("../experiments", config.exp_name, "summary/")
         # config.checkpoint_dir = os.path.join("../experiments", config.exp_name, "checkpoint/")
         return configs
 
-    def extractModels(self,dataReader):
+    def extract_models(self, dataReader):
         print("The models are being extracted from the config file")
         recsys = list()
         models = list(self.configs.models)
@@ -54,8 +55,3 @@ class Configurator(object):
                                                    verbose=model["verbose"],
                                                    similarity_mode=model["similarity_mode"]))
         return recsys
-
-
-
-        
-
