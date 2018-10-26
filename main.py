@@ -11,31 +11,73 @@ def main():
                         default=True, dest="exp_switch")
     parser.add_argument("--log", "-l", help="Whether you want to log it or not",
                         action='store_false', default=True, dest="log_switch")
+    parser.add_argument("--logFile","-lf", help="To open a specific log file to track specific experiment")
     args = parser.parse_args()
     file_name = args.json
-    pipeline(file_name, args.exp_switch, args.log_switch)
+    logFile = None
+    if not args.logFile is None:
+        logFile = args.logFile
+    pipeline_stable(file_name, args.exp_switch, args.log_switch, logFile)
+    pipeline_dev(file_name, args.exp_switch, args.log_switch,logFile)
 
 
-def pipeline(fileName, exp_, log_):
+def pipeline_stable(fileName, exp_, log_, logFile=None):
     clear()
     # Load the data
     conf = Configurator(fileName)
 
     data_reader = PlaylistDataReader(adjustSequentials=True)
-    l = Logger(data_reader.targetData)
+    l = Logger(data_reader.targetData, logFile)
     # Prepare the models
     rec_sys = conf.extract_models(data_reader)
+
     for model in rec_sys:
         # Train the models
         model.fit()
         # make prediction
-        model.evaluate_recommendations(data_reader.URM_test, at=10, exclude_seen=True)
+        model.evaluate_recommendations(
+            data_reader.URM_test, at=10, exclude_seen=True)
 
-    # export the predictions
+    #export the predictions
     if exp_:
         l.export_experiments(rec_sys)
     if log_:
         l.log_experiment()
+
+def pipeline_dev(fileName, exp_, log_, logFile=None):
+    clear()
+    # Load the data
+    conf = Configurator(fileName)
+
+    data_reader = PlaylistDataReader(adjustSequentials=True)
+    l = Logger(data_reader.targetData, logFile)
+    # Prepare the models
+    rec_sys = conf.extract_models(data_reader)
+
+    # Shrink exp
+    for sh in conf.configs.shrink:
+        for nh in conf.configs.neighbourhood:
+            for model in rec_sys:
+                # Train the models
+                model.fit(shrink = sh,k = nh)
+                # make prediction
+                model.evaluate_recommendations(data_reader.URM_test, at=10, exclude_seen=True)
+                if exp_:
+                    l.export_experiments(rec_sys)
+                if log_:
+                    l.log_experiment()
+    # for model in rec_sys:
+    #     # Train the models
+    #     model.fit()
+    #     # make prediction
+    #     model.evaluate_recommendations(
+    #         data_reader.URM_test, at=10, exclude_seen=True)
+
+    # export the predictions
+    # if exp_:
+    #     l.export_experiments(rec_sys)
+    # if log_:
+    #     l.log_experiment()
 
 
 if __name__ == "__main__":

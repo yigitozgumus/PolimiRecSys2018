@@ -1,12 +1,16 @@
 {
  "models": [
  	
- 	{
- 		"model_name": "item_knn_cf",
-        "sparse_weights": true,
-        "verbose": false,
-        "similarity_mode": "cosine"
- 		
- 	}
- ]
+ 	
+     {
+         "model_name": "user_knn_cf",
+         "sparse_weights": true,
+         "verbose": false,
+         "similarity_mode": "cosine",
+         "normalize" : true
+
+     }
+ ],
+ "shrink" : [0, 10, 50, 100, 250, 500],
+ "neighbourhood" : [0, 10, 25, 50, 100, 250 ,500]
 }
