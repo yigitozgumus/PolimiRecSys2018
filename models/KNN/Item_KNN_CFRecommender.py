@@ -20,16 +20,18 @@ class ItemKNNCFRecommender(RecommenderSystem,RecommenderSystem_SM):
         representation = "Item KNN Collaborative Filtering "
         return representation
 
-    def fit(self,k=50,shrink=100):
+    def fit(self,k=50,shrink=100,normalize= False):
         self.k = k
         self.shrink = shrink
+        self.normalize = normalize
         self.similarity = Similarity(self.URM_train,
         shrink=shrink,
         verbose=self.verbose,
         neighbourhood=k,
-        mode=self.similarity_mode)
-        self.parameters = self.parameters = "sparse_weights= {0}, verbose= {1}, similarity= {2}".format(
-            self.sparse_weights, self.verbose, self.similarity_mode)
+        mode=self.similarity_mode,
+        normalize = self.normalize)
+        self.parameters = self.parameters = "sparse_weights= {0}, verbose= {1}, similarity= {2}, shrink= {3}, neighbourhood={4}".format(
+            self.sparse_weights, self.verbose, self.similarity_mode,self.shrink, self.k)
         if self.sparse_weights:
             self.W_sparse = self.similarity.compute_similarity()
         else:
@@ -37,37 +39,38 @@ class ItemKNNCFRecommender(RecommenderSystem,RecommenderSystem_SM):
             self.W = self.W.toarray()
 
 
-    def recommend(self, playlist_id, n=None, exclude_seen=True, filterTopPop = False, filterCustomItems = False,export = False):
+    def recommend(self, 
+                playlist_id, 
+                n=None, 
+                exclude_seen=True, 
+                filterTopPop = False, 
+                filterCustomItems = False,
+                export = False):
         
         if n==None:
             n=self.URM_train.shape[1]-1
-
-
         # compute the scores using the dot product
         if self.sparse_weights:
             user_profile = self.URM_train[playlist_id]
-
             scores = user_profile.dot(self.W_sparse).toarray().ravel()
 
         else:
-
             user_profile = self.URM_train.indices[self.URM_train.indptr[playlist_id]:self.URM_train.indptr[playlist_id + 1]]
             user_ratings = self.URM_train.data[self.URM_train.indptr[playlist_id]:self.URM_train.indptr[playlist_id + 1]]
-
             relevant_weights = self.W[user_profile]
             scores = relevant_weights.T.dot(user_ratings)
 
-        # if self.normalize:
-        #     # normalization will keep the scores in the same range
-        #     # of value of the ratings in dataset
-        #     rated = user_profile.copy()
-        #     rated.data = np.ones_like(rated.data)
-        #     if self.sparse_weights:
-        #         den = rated.dot(self.W_sparse).toarray().ravel()
-        #     else:
-        #         den = rated.dot(self.W).ravel()
-        #     den[np.abs(den) < 1e-6] = 1.0  # to avoid NaNs
-        #     scores /= den
+        if self.normalize:
+            # normalization will keep the scores in the same range
+            # of value of the ratings in dataset
+            rated = user_profile.copy()
+            rated.data = np.ones_like(rated.data)
+            if self.sparse_weights:
+                den = rated.dot(self.W_sparse).toarray().ravel()
+            else:
+                den = rated.dot(self.W).ravel()
+            den[np.abs(den) < 1e-6] = 1.0  # to avoid NaNs
+            scores /= den
 
         if exclude_seen:
             scores = self._filter_seen_on_scores(playlist_id, scores)

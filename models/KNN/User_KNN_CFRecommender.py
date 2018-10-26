@@ -25,17 +25,19 @@ class UserKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
         representation = "User KNN Collaborative Filtering " 
         return representation
 
-    def fit(self, k=100, shrink=100):
+    def fit(self, k=100, shrink=100,normalize= False):
         self.k = k
         self.shrink = shrink
-        #self.normalize = normalize
+        self.normalize = normalize
         self.similarity = Similarity(
             self.URM_train.T,
             shrink=shrink,
             verbose=self.verbose,
             neighbourhood=k,
-            mode=self.similarity_mode)
-        self.parameters = "sparse_weights= {0}, verbose= {1}, similarity= {2}".format(self.sparse_weights,self.verbose, self.similarity_mode)
+            mode=self.similarity_mode,
+            normalize= self.normalize)
+        self.parameters = "sparse_weights= {0}, verbose= {1}, similarity= {2}, shrink= {3}, neighbourhood={4}".format(
+            self.sparse_weights, self.verbose, self.similarity_mode, self.shrink, self.k)
 
         if self.sparse_weights:
             self.W_sparse = self.similarity.compute_similarity()
