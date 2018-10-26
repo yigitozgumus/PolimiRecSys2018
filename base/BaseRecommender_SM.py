@@ -27,6 +27,22 @@ class RecommenderSystem_SM(object):
                            self.URM_train.indptr[playlist_id]:self.URM_train.indptr[playlist_id + 1]]
             relevant_weights = self.W[user_profile]
             scores = relevant_weights.T.dot(user_ratings)
+       
+        if self.normalize:
+            # normalization will keep the scores in the same range
+            # of value of the ratings in dataset
+            user_profile = self.URM_train[playlist_id]
+
+            rated = user_profile.copy()
+            rated.data = np.ones_like(rated.data)
+            if self.sparse_weights:
+                print(rated.shape)
+                print(self.W_sparse.shape)
+                den = rated.dot(self.W_sparse).toarray().ravel()
+            else:
+                den = rated.dot(self.W).ravel()
+            den[np.abs(den) < 1e-6] = 1.0  # to avoid NaNs
+            scores /= den
 
         if exclude_seen:
             scores = self._filter_seen_on_scores(playlist_id, scores)

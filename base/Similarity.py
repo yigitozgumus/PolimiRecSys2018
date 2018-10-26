@@ -71,15 +71,13 @@ class Similarity:
         Remove from every data point the average for the corresponding row
         :return:
         """
-
-
         self.dataMatrix = check_matrix(self.dataMatrix, 'csr')
-
         interactionsPerRow = np.diff(self.dataMatrix.indptr)
-
         nonzeroRows = interactionsPerRow > 0
         sumPerRow = np.asarray(self.dataMatrix.sum(axis=1)).ravel()
+
         sumPerRow = np.sqrt(sumPerRow)
+
         rowAverage = np.zeros_like(sumPerRow)
         rowAverage[nonzeroRows] = sumPerRow[nonzeroRows] / \
             interactionsPerRow[nonzeroRows]
@@ -87,17 +85,13 @@ class Similarity:
         # Split in blocks to avoid duplicating the whole data structure
         start_row = 0
         end_row = 0
-
         blockSize = 1000
 
         while end_row < self.n_rows:
-
             end_row = min(self.n_rows, end_row + blockSize)
-
             self.dataMatrix.data[self.dataMatrix.indptr[start_row]:self.dataMatrix.indptr[end_row]] -= \
                 (1/np.repeat(rowAverage[start_row:end_row],
                           interactionsPerRow[start_row:end_row]))
-
             start_row += blockSize
 
     def applyPearsonCorrelation(self):
@@ -105,32 +99,26 @@ class Similarity:
         Remove from every data point the average for the corresponding column
         :return:
         """
-
         self.dataMatrix = check_matrix(self.dataMatrix, 'csc')
-
         interactionsPerCol = np.diff(self.dataMatrix.indptr)
-
         nonzeroCols = interactionsPerCol > 0
         sumPerCol = np.asarray(self.dataMatrix.sum(axis=0)).ravel()
+
         sumPerCol = np.sqrt(sumPerCol)
+
         colAverage = np.zeros_like(sumPerCol)
         colAverage[nonzeroCols] = sumPerCol[nonzeroCols] / \
             interactionsPerCol[nonzeroCols]
-
         # Split in blocks to avoid duplicating the whole data structure
         start_col = 0
         end_col = 0
-
         blockSize = 1000
 
         while end_col < self.n_columns:
-
             end_col = min(self.n_columns, end_col + blockSize)
-
             self.dataMatrix.data[self.dataMatrix.indptr[start_col]:self.dataMatrix.indptr[end_col]] -= \
                 np.repeat(colAverage[start_col:end_col],
                           interactionsPerCol[start_col:end_col])
-
             start_col += blockSize
 
     def useOnlyBooleanInteractions(self):
@@ -138,16 +126,11 @@ class Similarity:
         # Split in blocks to avoid duplicating the whole data structure
         start_pos = 0
         end_pos = 0
-
         blockSize = 1000
-
         while end_pos < len(self.dataMatrix.data):
-
             end_pos = min(len(self.dataMatrix.data), end_pos + blockSize)
-
             self.dataMatrix.data[start_pos:end_pos] = np.ones(
                 end_pos-start_pos)
-
             start_pos += blockSize
 
     def compute_similarity(self):
@@ -164,37 +147,27 @@ class Similarity:
 
         if self.adjusted_cosine:
             self.applyAdjustedCosine()
-
         elif self.pearson_correlation:
             self.applyPearsonCorrelation()
-
         elif self.tanimoto_coefficient:
             self.useOnlyBooleanInteractions()
 
         # We explore the matrix column-wise
         self.dataMatrix = check_matrix(self.dataMatrix, 'csc')
-
         # Compute sum of squared values to be used in normalization
         sumOfSquared = np.array(self.dataMatrix.power(2).sum(axis=0)).ravel()
-
         # Tanimoto does not require the square root to be applied
         if not self.tanimoto_coefficient:
             sumOfSquared = np.sqrt(sumOfSquared)
-
         # Compute all similarities for each item using vectorization
         for columnIndex in range(self.n_columns):
-
             processedItems += 1
-
             if time.time() - start_time_print_batch >= 30 or processedItems == self.n_columns:
                 columnPerSec = processedItems / (time.time() - start_time)
-
                 print("Similarity column {} ( {:2.0f} % ), {:.2f} column/sec, elapsed time {:.2f} min".format(
                     processedItems, processedItems / self.n_columns * 100, columnPerSec, (time.time() - start_time) / 60))
-
                 sys.stdout.flush()
                 sys.stderr.flush()
-
                 start_time_print_batch = time.time()
 
             # All data points for a given item
@@ -225,11 +198,6 @@ class Similarity:
                 self.W_dense[:, columnIndex] = this_column_weights
 
             else:
-                # Sort indices and select TopK
-                # Sorting is done in three steps. Faster then plain np.argsort for higher number of items
-                # - Partition the data to extract the set of relevant items
-                # - Sort only the relevant items
-                # - Get the original item index
                 relevant_items_partition = (-this_column_weights).argpartition(
                     self.TopK-1)[0:self.TopK]
                 relevant_items_partition_sorting = np.argsort(
