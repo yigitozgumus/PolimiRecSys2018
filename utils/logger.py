@@ -3,7 +3,7 @@ from pathlib import Path
 import os 
 class Logger(object):
 
-    def __init__(self, data, verbose=False, logFile=None):
+    def __init__(self, data, logFile, verbose=False):
         super(Logger, self).__init__()
         self.verbose = verbose
         self.logFile = logFile
@@ -14,6 +14,7 @@ class Logger(object):
 
     def export_experiments(self, model_bundle):
         index = len(list(os.listdir("./experiments"))) -2
+        self.submission_list = []
         for model in model_bundle:
             filePath = "experiments/exp-"+str(index) + ".csv"
             fileName = "exp-" + str(index) + ".csv"
@@ -34,7 +35,7 @@ class Logger(object):
 
     def createLogFile(self,filename):
         f = open(self.dir + filename,"w+")
-        f.write("playlist_id,track_ids\n")
+        f.write("# Experiment Logs\n")
         f.write(
             "| Experiment Name | Date | Model Name | MAP | Precision | Recall | Parameters |Submission|\n")
         f.write(
@@ -49,7 +50,7 @@ class Logger(object):
             if logFile.is_file():
                 f = open(self.dir + self.logFile, "a")
             else:
-                createLogFile(self.logFile)
+                self.createLogFile(self.logFile)
                 f = open(self.dir + self.logFile, "a")
         for submission in self.submission_list:
             f.write("\n|[" + submission[0] + "](" + submission[1]+ ")|" + "|".join(list(map(str,submission[2:]))) + "||")

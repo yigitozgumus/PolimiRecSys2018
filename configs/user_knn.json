@@ -10,7 +10,43 @@
          "normalize" : true
 
      }
+     ,
+     {
+         "model_name": "user_knn_cf",
+         "sparse_weights": true,
+         "verbose": false,
+         "similarity_mode": "pearson",
+         "normalize": true
+
+     }
+     ,
+     {
+         "model_name": "user_knn_cf",
+         "sparse_weights": true,
+         "verbose": false,
+         "similarity_mode": "adjusted",
+         "normalize": true
+
+     }
+     ,
+     {
+         "model_name": "user_knn_cf",
+         "sparse_weights": true,
+         "verbose": false,
+         "similarity_mode": "jaccard",
+         "normalize": true
+
+     }
+     ,
+     {
+         "model_name": "user_knn_cf",
+         "sparse_weights": true,
+         "verbose": false,
+         "similarity_mode": "tanimoto",
+         "normalize": true
+
+     }
  ],
- "shrink" : [0, 10, 50, 100, 250, 500],
- "neighbourhood" : [0, 10, 25, 50, 100, 250 ,500]
+ "shrink" : [ 100, 250, 500],
+ "neighbourhood" : [ 50, 100, 250 ,500]
 }

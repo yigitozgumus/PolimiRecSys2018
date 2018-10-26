@@ -17,11 +17,11 @@ def main():
     logFile = None
     if not args.logFile is None:
         logFile = args.logFile
-    pipeline_stable(file_name, args.exp_switch, args.log_switch, logFile)
+    #pipeline_stable(file_name, args.exp_switch, args.log_switch, logFile)
     pipeline_dev(file_name, args.exp_switch, args.log_switch,logFile)
 
 
-def pipeline_stable(fileName, exp_, log_, logFile=None):
+def pipeline_stable(fileName, exp_, log_, logFile):
     clear()
     # Load the data
     conf = Configurator(fileName)
@@ -44,16 +44,17 @@ def pipeline_stable(fileName, exp_, log_, logFile=None):
     if log_:
         l.log_experiment()
 
-def pipeline_dev(fileName, exp_, log_, logFile=None):
+def pipeline_dev(fileName, exp_, log_, logFile):
     clear()
     # Load the data
     conf = Configurator(fileName)
 
     data_reader = PlaylistDataReader(adjustSequentials=True)
-    l = Logger(data_reader.targetData, logFile)
+    l = Logger(data_reader.targetData,logFile)
     # Prepare the models
     rec_sys = conf.extract_models(data_reader)
 
+    l.log_experiment()
     # Shrink exp
     for sh in conf.configs.shrink:
         for nh in conf.configs.neighbourhood:
@@ -62,22 +63,10 @@ def pipeline_dev(fileName, exp_, log_, logFile=None):
                 model.fit(shrink = sh,k = nh)
                 # make prediction
                 model.evaluate_recommendations(data_reader.URM_test, at=10, exclude_seen=True)
-                if exp_:
-                    l.export_experiments(rec_sys)
-                if log_:
-                    l.log_experiment()
-    # for model in rec_sys:
-    #     # Train the models
-    #     model.fit()
-    #     # make prediction
-    #     model.evaluate_recommendations(
-    #         data_reader.URM_test, at=10, exclude_seen=True)
-
-    # export the predictions
-    # if exp_:
-    #     l.export_experiments(rec_sys)
-    # if log_:
-    #     l.log_experiment()
+            if exp_:
+                l.export_experiments(rec_sys)
+            if log_:
+                l.log_experiment()
 
 
 if __name__ == "__main__":
