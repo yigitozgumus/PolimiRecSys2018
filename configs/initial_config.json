@@ -5,24 +5,6 @@
         "sparse_weights": true,
 	"verbose" : false,
 	"similarity_mode" : "cosine"
- 	},
- 	{
- 	"model_name": "user_knn_cf",
-        "sparse_weights": true,
-        "verbose": false,
-        "similarity_mode": "pearson"		
- 	},
- 	{
- 	"model_name": "item_knn_cf",
-        "sparse_weights": true,
-        "verbose" : false,
-        "similarity_mode" : "cosine"		
- 	},
- 	{
- 	"model_name": "item_knn_cf",
-        "sparse_weights": true,
-        "verbose" : false,
-        "similarity_mode" : "adjusted"	
  	}
  ]
 }

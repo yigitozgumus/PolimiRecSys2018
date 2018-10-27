@@ -17,8 +17,8 @@ def main():
     logFile = None
     if not args.logFile is None:
         logFile = args.logFile
-    #pipeline_stable(file_name, args.exp_switch, args.log_switch, logFile)
-    pipeline_dev(file_name, args.exp_switch, args.log_switch,logFile)
+    pipeline_stable(file_name, args.exp_switch, args.log_switch, logFile)
+    #pipeline_dev(file_name, args.exp_switch, args.log_switch,logFile)
 
 
 def pipeline_stable(fileName, exp_, log_, logFile):

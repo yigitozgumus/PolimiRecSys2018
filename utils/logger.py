@@ -39,7 +39,7 @@ class Logger(object):
         f.write(
             "| Experiment Name | Date | Model Name | MAP | Precision | Recall | Parameters |Submission|\n")
         f.write(
-            "|---              |---   |---         |---  |---        |---     |---         |---      |\n")
+            "|---              |---   |---         |---  |---        |---     |---         |---      |")
         f.close()
 
     def log_experiment(self):
