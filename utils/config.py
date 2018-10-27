@@ -2,6 +2,8 @@ import json
 from bunch import Bunch
 import os
 from subprocess import call
+
+from models.KNN.Item_KNN_CBFRecommender import ItemKNNCBFRecommender
 from models.KNN.User_KNN_CFRecommender import UserKNNCFRecommender
 from models.KNN.Item_KNN_CFRecommender import ItemKNNCFRecommender
 
@@ -54,4 +56,12 @@ class Configurator(object):
                                                    sparse_weights=model["sparse_weights"],
                                                    verbose=model["verbose"],
                                                    similarity_mode=model["similarity_mode"]))
+            elif model["model_name"] == "item_knn_cbf":
+                recsys.append(ItemKNNCBFRecommender(dataReader.URM_train,
+                                                    dataReader.trainData,
+                                                    dataReader.trackData,
+                                                    sparse_weights=model["sparse_weights"],
+                                                    verbose=model["verbose"],
+                                                    similarity_mode=model["similarity_mode"],
+                                                    useTrackPopularity=model["useTrackPopularity"]))
         return recsys

@@ -13,22 +13,24 @@ from base.RecommenderUtils import check_matrix
 
 class UserKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
 
-    def __init__(self, URM_train, sparse_weights=True,verbose=True, similarity_mode="cosine"):
+    def __init__(self, URM_train, sparse_weights=True,verbose=True, similarity_mode="cosine",normalize= False):
         super(UserKNNCFRecommender, self).__init__()
         self.verbose = verbose
         self.URM_train = check_matrix(URM_train, 'csr')
         self.sparse_weights = sparse_weights
         self.similarity_mode = similarity_mode
         self.parameters = None
+        self.normalize = normalize
 
     def __str__(self):
         representation = "User KNN Collaborative Filtering " 
         return representation
 
-    def fit(self, k=100, shrink=100,normalize= False):
+    def fit(self, k=100, shrink=100):
         self.k = k
+
         self.shrink = shrink
-        self.normalize = normalize
+
         self.similarity = Similarity(
             self.URM_train.T,
             shrink=shrink,
@@ -36,8 +38,9 @@ class UserKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
             neighbourhood=k,
             mode=self.similarity_mode,
             normalize= self.normalize)
-        self.parameters = "sparse_weights= {0}, verbose= {1}, similarity= {2}, shrink= {3}, neighbourhood={4}".format(
-            self.sparse_weights, self.verbose, self.similarity_mode, self.shrink, self.k)
+
+        self.parameters = "sparse_weights= {0}, verbose= {1}, similarity= {2}, shrink= {3}, neighbourhood={4}, normalize= {5}".format(
+            self.sparse_weights, self.verbose, self.similarity_mode, self.shrink, self.k, self.normalize)
 
         if self.sparse_weights:
             self.W_sparse = self.similarity.compute_similarity()
