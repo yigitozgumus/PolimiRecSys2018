@@ -35,7 +35,7 @@ class ItemKNNCBFRecommender(RecommenderSystem, RecommenderSystem_SM):
         representation = "Item KNN Content Based Filtering "
         return representation
 
-    def fit(self, k=100, shrink=100):
+    def fit(self, k=250, shrink=100):
         self.k = k
         self.shrink = shrink
 
