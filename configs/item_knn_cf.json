@@ -7,7 +7,7 @@
          "sparse_weights": true,
          "verbose": false,
          "similarity_mode": "cosine",
-         "normalize" : true
+         "normalize": false
 
      }
      ,
@@ -16,7 +16,7 @@
          "sparse_weights": true,
          "verbose": false,
          "similarity_mode": "pearson",
-         "normalize": true
+         "normalize": false
 
      }
      ,
@@ -25,7 +25,7 @@
          "sparse_weights": true,
          "verbose": false,
          "similarity_mode": "adjusted",
-         "normalize": true
+         "normalize": false
 
      }
      ,
@@ -34,7 +34,7 @@
          "sparse_weights": true,
          "verbose": false,
          "similarity_mode": "jaccard",
-         "normalize": true
+         "normalize": false
 
      }
      ,
@@ -43,7 +43,7 @@
          "sparse_weights": true,
          "verbose": false,
          "similarity_mode": "tanimoto",
-         "normalize": true
+         "normalize": false
 
      }
  ],

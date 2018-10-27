@@ -7,7 +7,7 @@
          "sparse_weights": true,
          "verbose": false,
          "similarity_mode": "cosine",
-         "normalize" : false,
+         "normalize": true,
          "useTrackPopularity": true
 
      }
@@ -17,7 +17,7 @@
          "sparse_weights": true,
          "verbose": false,
          "similarity_mode": "pearson",
-         "normalize": false,
+         "normalize": true,
          "useTrackPopularity": true
 
      }
@@ -27,7 +27,7 @@
          "sparse_weights": true,
          "verbose": false,
          "similarity_mode": "adjusted",
-         "normalize": false,
+         "normalize": true,
          "useTrackPopularity": true
 
      }
@@ -37,7 +37,7 @@
          "sparse_weights": true,
          "verbose": false,
          "similarity_mode": "jaccard",
-         "normalize": false,
+         "normalize": true,
          "useTrackPopularity": true
 
      }
@@ -47,7 +47,7 @@
          "sparse_weights": true,
          "verbose": false,
          "similarity_mode": "tanimoto",
-         "normalize": false,
+         "normalize": true,
          "useTrackPopularity": true
 
      }
@@ -57,6 +57,6 @@
  "neighbourhood" : [ 50, 100, 250 ,500],
 
   "dataReader": {
-      "adjustSequentials": true
+      "adjustSequentials": false
   }
 }
