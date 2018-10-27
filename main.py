@@ -25,18 +25,14 @@ def pipeline_stable(fileName, exp_, log_, logFile):
     clear()
     # Load the data
     conf = Configurator(fileName)
-
-    data_reader = PlaylistDataReader(adjustSequentials=True)
+    data_reader = PlaylistDataReader(adjustSequentials=conf.configs.dataReader["adjustSequentials"])
     l = Logger(data_reader.targetData, logFile)
     # Prepare the models
     rec_sys = conf.extract_models(data_reader)
 
     for model in rec_sys:
-        # Train the models
-        model.fit()
-        # make prediction
-        model.evaluate_recommendations(
-            data_reader.URM_test, at=10, exclude_seen=True)
+        model.fit() # Train the models
+        model.evaluate_recommendations(data_reader.URM_test, at=10, exclude_seen=True) # make prediction
     #export the predictions
     if exp_:
         l.export_experiments(rec_sys)
