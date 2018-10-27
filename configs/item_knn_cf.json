@@ -3,7 +3,7 @@
  	
  	
      {
-         "model_name": "user_knn_cf",
+         "model_name": "item_knn_cf",
          "sparse_weights": true,
          "verbose": false,
          "similarity_mode": "cosine",
@@ -12,7 +12,7 @@
      }
      ,
      {
-         "model_name": "user_knn_cf",
+         "model_name": "item_knn_cf",
          "sparse_weights": true,
          "verbose": false,
          "similarity_mode": "pearson",
@@ -21,7 +21,7 @@
      }
      ,
      {
-         "model_name": "user_knn_cf",
+         "model_name": "item_knn_cf",
          "sparse_weights": true,
          "verbose": false,
          "similarity_mode": "adjusted",
@@ -30,7 +30,7 @@
      }
      ,
      {
-         "model_name": "user_knn_cf",
+         "model_name": "item_knn_cf",
          "sparse_weights": true,
          "verbose": false,
          "similarity_mode": "jaccard",
@@ -39,7 +39,7 @@
      }
      ,
      {
-         "model_name": "user_knn_cf",
+         "model_name": "item_knn_cf",
          "sparse_weights": true,
          "verbose": false,
          "similarity_mode": "tanimoto",
@@ -47,8 +47,8 @@
 
      }
  ],
- "shrink" : [ 100, 250, 500],
- "neighbourhood" : [ 50, 100, 250 ,500],
+ "shrink" : [ 100],
+ "neighbourhood" : [250 ],
   "dataReader": {
       "adjustSequentials": true
   }

@@ -1,0 +1,21 @@
+{
+    "models": [
+        {
+            "model_name": "user_knn_cf",
+            "sparse_weights": true,
+            "verbose": false,
+            "similarity_mode": "cosine",
+            "normalize": true
+
+        }
+    ],
+    
+    "shrink": [],
+
+    "neighbourhood": [],
+
+    "dataReader": {
+        "adjustSequentials": false,
+    }
+}
+
