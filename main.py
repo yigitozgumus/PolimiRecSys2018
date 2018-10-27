@@ -11,7 +11,7 @@ def main():
                         default=True, dest="exp_switch")
     parser.add_argument("--log", "-l", help="Whether you want to log it or not",
                         action='store_false', default=True, dest="log_switch")
-    parser.add_argument("--logFile","-lf", help="To open a specific log file to track specific experiment")
+    parser.add_argument("--logFile","-lf",metavar="L", help="To open a specific log file to track specific experiment")
     args = parser.parse_args()
     file_name = args.json
     logFile = None
@@ -37,7 +37,6 @@ def pipeline_stable(fileName, exp_, log_, logFile):
         # make prediction
         model.evaluate_recommendations(
             data_reader.URM_test, at=10, exclude_seen=True)
-
     #export the predictions
     if exp_:
         l.export_experiments(rec_sys)
