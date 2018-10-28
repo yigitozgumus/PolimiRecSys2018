@@ -8,7 +8,10 @@
          "verbose": false,
          "similarity_mode": "cosine",
          "normalize": true,
-         "useTrackPopularity": true
+         "useTrackPopularity": true,
+         "useAlbumPopularity": false,
+         "useArtistPopularity": true,
+         "normalizeFeatures": true
 
      }
      ,
@@ -18,7 +21,10 @@
          "verbose": false,
          "similarity_mode": "pearson",
          "normalize": true,
-         "useTrackPopularity": true
+         "useTrackPopularity": true,
+         "useAlbumPopularity": false,
+         "useArtistPopularity": true,
+         "normalizeFeatures": true
 
      }
      ,
@@ -28,7 +34,10 @@
          "verbose": false,
          "similarity_mode": "adjusted",
          "normalize": true,
-         "useTrackPopularity": true
+         "useTrackPopularity": true,
+         "useAlbumPopularity": false,
+         "useArtistPopularity": true,
+         "normalizeFeatures": true
 
      }
      ,
@@ -38,7 +47,10 @@
          "verbose": false,
          "similarity_mode": "jaccard",
          "normalize": true,
-         "useTrackPopularity": true
+         "useTrackPopularity": true,
+         "useAlbumPopularity": false,
+         "useArtistPopularity": true,
+         "normalizeFeatures": true
 
      }
      ,
@@ -48,7 +60,10 @@
          "verbose": false,
          "similarity_mode": "tanimoto",
          "normalize": true,
-         "useTrackPopularity": true
+         "useTrackPopularity": true,
+         "useAlbumPopularity": false,
+         "useArtistPopularity": true,
+         "normalizeFeatures": true
 
      }
  ],

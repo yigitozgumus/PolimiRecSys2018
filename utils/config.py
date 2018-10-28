@@ -6,6 +6,7 @@ from subprocess import call
 from models.KNN.Item_KNN_CBFRecommender import ItemKNNCBFRecommender
 from models.KNN.User_KNN_CFRecommender import UserKNNCFRecommender
 from models.KNN.Item_KNN_CFRecommender import ItemKNNCFRecommender
+from models.linear.Slim import Slim
 
 
 # define clear function
@@ -63,5 +64,10 @@ class Configurator(object):
                                                     sparse_weights=model["sparse_weights"],
                                                     verbose=model["verbose"],
                                                     similarity_mode=model["similarity_mode"],
-                                                    useTrackPopularity=model["useTrackPopularity"]))
+                                                    useTrackPopularity=model["useTrackPopularity"],
+                                                    useAlbumPopularity=model["useAlbumPopularity"],
+                                                    useArtistPopularity=model["useArtistPopularity"],
+                                                    normalizeFeatures=model["normalize"]))
+            elif model["model_name"] == "slim":
+                recsys.append(Slim(dataReader.URM_train))
         return recsys

@@ -1,0 +1,13 @@
+{
+    "models": [
+
+        {
+            "model_name": "slim"
+        }
+    ],
+    "shrink": [100, 250, 500],
+    "neighbourhood": [50, 100, 250, 500],
+    "dataReader": {
+        "adjustSequentials": false
+    }
+}

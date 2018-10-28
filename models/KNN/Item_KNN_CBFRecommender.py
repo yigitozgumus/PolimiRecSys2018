@@ -5,7 +5,7 @@ from base.BaseRecommender import RecommenderSystem
 from base.BaseRecommender_SM import RecommenderSystem_SM
 from base.RecommenderUtils import check_matrix
 from base.Similarity import Similarity
-from base.Preprocess import extractTrackPopularity
+from base.Preprocess import Preprocess
 
 
 class ItemKNNCBFRecommender(RecommenderSystem, RecommenderSystem_SM):
@@ -15,9 +15,12 @@ class ItemKNNCBFRecommender(RecommenderSystem, RecommenderSystem_SM):
                  trackData,
                  sparse_weights=True,
                  verbose=False,
-                 similarity_mode="cosise",
+                 similarity_mode="cosine",
                  normalize= False,
-                 useTrackPopularity=False):
+                 useTrackPopularity=False,
+                 useAlbumPopularity=False,
+                 useArtistPopularity=False,
+                 normalizeFeatures=False):
         super(ItemKNNCBFRecommender, self).__init__()
         self.URM_train = check_matrix(URM_train, 'csr')
         self.ICM = None
@@ -26,10 +29,14 @@ class ItemKNNCBFRecommender(RecommenderSystem, RecommenderSystem_SM):
         self.similarity_mode = similarity_mode
         self.normalize = normalize
         self.parameters = None
-        if useTrackPopularity:
-            self.ICM = extractTrackPopularity(trainData,trackData)
-        else:
-            self.ICM = sps.coo_matrix(trackData)
+        self.featureExtractor = Preprocess(trainData,
+                                           trackData,
+                                            useTrackPopularity,
+                                           useAlbumPopularity,
+                                           useArtistPopularity,
+                                           normalizeFeatures)
+        self.ICM = self.featureExtractor.pipeline()
+
 
     def __str__(self):
         representation = "Item KNN Content Based Filtering "
