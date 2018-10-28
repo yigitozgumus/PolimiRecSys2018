@@ -35,8 +35,6 @@ class RecommenderSystem_SM(object):
             rated = user_profile.copy()
             rated.data = np.ones_like(rated.data)
             if self.sparse_weights:
-                print(rated.shape)
-                print(self.W_sparse.shape)
                 den = rated.dot(self.W_sparse).toarray().ravel()
             else:
                 den = rated.dot(self.W).ravel()

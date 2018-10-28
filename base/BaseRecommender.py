@@ -19,6 +19,7 @@ class RecommenderSystem(object):
         self.precision = None
         self.recall = None
         self.parameters = None
+        self.sparse_weights = True
 
         # Filter topPop and Custom Items TODO
 
