@@ -39,7 +39,8 @@ class UserKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
             mode=self.similarity_mode,
             normalize= self.normalize)
 
-        self.parameters = "sparse_weights= {0}, verbose= {1}, similarity= {2}, shrink= {3}, neighbourhood={4}, normalize= {5}".format(
+        self.parameters = "sparse_weights= {0}, verbose= {1}, similarity= {2}, shrink= {3}, neighbourhood={4}, " \
+                          "normalize= {5}".format(
             self.sparse_weights, self.verbose, self.similarity_mode, self.shrink, self.k, self.normalize)
 
         if self.sparse_weights:

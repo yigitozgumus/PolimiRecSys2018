@@ -16,7 +16,7 @@ class ItemKNNCBFRecommender(RecommenderSystem, RecommenderSystem_SM):
                  sparse_weights=True,
                  verbose=False,
                  similarity_mode="cosine",
-                 normalize= False,
+                 normalize=False,
                  useTrackPopularity=False,
                  useAlbumPopularity=False,
                  useArtistPopularity=False,
@@ -31,12 +31,11 @@ class ItemKNNCBFRecommender(RecommenderSystem, RecommenderSystem_SM):
         self.parameters = None
         self.featureExtractor = Preprocess(trainData,
                                            trackData,
-                                            useTrackPopularity,
+                                           useTrackPopularity,
                                            useAlbumPopularity,
                                            useArtistPopularity,
                                            normalizeFeatures)
         self.ICM = self.featureExtractor.pipeline()
-
 
     def __str__(self):
         representation = "Item KNN Content Based Filtering "
@@ -46,16 +45,16 @@ class ItemKNNCBFRecommender(RecommenderSystem, RecommenderSystem_SM):
         self.k = k
         self.shrink = shrink
 
-        self.similarity = Similarity(
-            self.ICM.T,
-            shrink=shrink,
-            verbose=self.verbose,
-            neighbourhood=k,
-            mode=self.similarity_mode,
-            normalize=self.normalize
-        )
-        self.parameters = "sparse_weights= {0}, verbose= {1}, similarity= {2}, shrink= {3}, neighbourhood={4}, normalize= {5}".format(
-            self.sparse_weights, self.verbose, self.similarity_mode, self.shrink, self.k,self.normalize)
+        self.similarity = Similarity(self.ICM.T,
+                                     shrink=shrink,
+                                     verbose=self.verbose,
+                                     neighbourhood=k,
+                                     mode=self.similarity_mode,
+                                     normalize=self.normalize
+                                     )
+        self.parameters = "sparse_weights= {0}, verbose= {1}, similarity= {2}, shrink= {3}, neighbourhood={4}, " \
+                          "normalize= {5}".format(
+            self.sparse_weights, self.verbose, self.similarity_mode, self.shrink, self.k, self.normalize)
 
         if self.sparse_weights:
             self.W_sparse = self.similarity.compute_similarity()

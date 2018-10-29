@@ -1,4 +1,4 @@
-import time,sys
+import time, sys
 
 import numpy as np
 import scipy.sparse as sps
@@ -11,7 +11,7 @@ from base.BaseRecommender import RecommenderSystem
 
 class Slim(RecommenderSystem, RecommenderSystem_SM):
 
-    def __init__(self, URM_train,sparse_weights = True,normalize=True):
+    def __init__(self, URM_train, sparse_weights=True, normalize=True):
         super(Slim, self).__init__()
         self.URM_train = URM_train
         self.W_sparse = None
@@ -24,14 +24,14 @@ class Slim(RecommenderSystem, RecommenderSystem_SM):
             self.l1_penalty, self.l2_penalty, self.positive_only
         )
 
-    def fit(self, l1_penalty=0.1, l2_penalty=0.1, positive_only=True, topK=100):
+    def fit(self, l1_penalty=0.01, l2_penalty=0.01, positive_only=True, topK=100):
         self.l1_penalty = l1_penalty
         self.l2_penalty = l2_penalty
         self.positive_only = positive_only
         self.l1_ratio = self.l1_penalty / (self.l1_penalty + self.l2_penalty)
         self.topK = topK
         self.parameters = "sparse_weights= {0},normalize= {1}, l1_penalty= {2}, l2_penalty= {3}, positive_only= {4}".format(
-            self.sparse_weights, self.normalize,self.l1_penalty, self.l2_penalty, self.positive_only)
+            self.sparse_weights, self.normalize, self.l1_penalty, self.l2_penalty, self.positive_only)
 
         X = check_matrix(self.URM_train, 'csc', dtype=np.float32)
 
@@ -61,10 +61,11 @@ class Slim(RecommenderSystem, RecommenderSystem_SM):
             bak = X.data[startptr: endptr].copy()
             X.data[startptr: endptr] = 0.0
             # fit one ElasticNet model per column
+            # TODO
             self.model.fit(X, y)
 
             relevant_items_partition = (-self.model.coef_).argpartition(self.topK)[0:self.topK]
-            relevant_items_partition_sorting = np.argsort( -self.model.coef_[relevant_items_partition])
+            relevant_items_partition_sorting = np.argsort(-self.model.coef_[relevant_items_partition])
             ranking = relevant_items_partition[relevant_items_partition_sorting]
 
             notZerosMask = self.model.coef_[ranking] > 0.0
