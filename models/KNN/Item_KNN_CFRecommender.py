@@ -15,6 +15,7 @@ class ItemKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
         self.verbose = verbose
         self.similarity_mode = similarity_mode
         self.normalize = normalize
+        
 
     def __str__(self):
         representation = "Item KNN Collaborative Filtering "

@@ -6,7 +6,7 @@ from subprocess import call
 from models.KNN.Item_KNN_CBFRecommender import ItemKNNCBFRecommender
 from models.KNN.User_KNN_CFRecommender import UserKNNCFRecommender
 from models.KNN.Item_KNN_CFRecommender import ItemKNNCFRecommender
-from models.linear.Slim import Slim
+from linear.Slim import Slim
 
 
 # define clear function

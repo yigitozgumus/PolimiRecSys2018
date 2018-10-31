@@ -17,8 +17,8 @@ def main():
     logFile = None
     if not args.logFile is None:
         logFile = args.logFile
-    pipeline_stable(file_name, args.exp_switch, args.log_switch, logFile)
-    #pipeline_dev(file_name, args.exp_switch, args.log_switch,logFile)
+    #pipeline_stable(file_name, args.exp_switch, args.log_switch, logFile)
+    pipeline_dev(file_name, args.exp_switch, args.log_switch,logFile)
 
 
 def pipeline_stable(fileName, exp_, log_, logFile):
@@ -44,7 +44,7 @@ def pipeline_dev(fileName, exp_, log_, logFile):
     # Load the data
     conf = Configurator(fileName)
 
-    data_reader = PlaylistDataReader(adjustSequentials=True)
+    data_reader = PlaylistDataReader(adjustSequentials=conf.configs.dataReader["adjustSequentials"])
     l = Logger(data_reader.targetData,logFile)
     # Prepare the models
     rec_sys = conf.extract_models(data_reader)
@@ -54,10 +54,9 @@ def pipeline_dev(fileName, exp_, log_, logFile):
     for sh in conf.configs.shrink:
         for nh in conf.configs.neighbourhood:
             for model in rec_sys:
-                # Train the models
-                model.fit(shrink = sh,k = nh)
-                # make prediction
-                model.evaluate_recommendations(data_reader.URM_test, at=10, exclude_seen=True)
+                model.fit(shrink=sh, k=nh)  # Train the models
+                model.evaluate_recommendations(
+                    data_reader.URM_test, at=10, exclude_seen=True)  # make prediction
             if exp_:
                 l.export_experiments(rec_sys)
             if log_:

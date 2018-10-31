@@ -1,43 +1,6 @@
 {
  "models": [
- 	
- 	
-     {
-         "model_name": "item_knn_cf",
-         "sparse_weights": true,
-         "verbose": false,
-         "similarity_mode": "cosine",
-         "normalize": false
 
-     }
-     ,
-     {
-         "model_name": "item_knn_cf",
-         "sparse_weights": true,
-         "verbose": false,
-         "similarity_mode": "pearson",
-         "normalize": false
-
-     }
-     ,
-     {
-         "model_name": "item_knn_cf",
-         "sparse_weights": true,
-         "verbose": false,
-         "similarity_mode": "adjusted",
-         "normalize": false
-
-     }
-     ,
-     {
-         "model_name": "item_knn_cf",
-         "sparse_weights": true,
-         "verbose": false,
-         "similarity_mode": "jaccard",
-         "normalize": false
-
-     }
-     ,
      {
          "model_name": "item_knn_cf",
          "sparse_weights": true,
@@ -48,8 +11,8 @@
      }
  ],
  "shrink" : [ 100],
- "neighbourhood" : [250 ],
+ "neighbourhood" : [100 ],
   "dataReader": {
-      "adjustSequentials": true
+      "adjustSequentials": false
   }
 }

@@ -5,65 +5,96 @@
  		"model_name": "user_knn_cf",
         "sparse_weights": true,
         "verbose": false,
-        "similarity_mode": "cosine"
+        "similarity_mode": "cosine",
+          "normalize": true
      },
      {
          "model_name": "user_knn_cf",
          "sparse_weights": true,
          "verbose": false,
-         "similarity_mode": "pearson"
+         "similarity_mode": "pearson",
 
+
+        "normalize": true},
+     {
+         "model_name": "user_knn_cf",
+         "sparse_weights": true,
+         "verbose": false,
+         "similarity_mode": "tanimoto",
+          "normalize": true
+
+     },
+    {
+        "model_name": "item_knn_cf",
+        "sparse_weights": true,
+        "verbose": false,
+        "similarity_mode": "cosine",
+
+        "normalize": true},
+    {
+        "model_name": "item_knn_cf",
+        "sparse_weights": true,
+        "verbose": false,
+        "similarity_mode": "adjusted",
+          "normalize": true
+    },
+    {
+        "model_name": "item_knn_cf",
+        "sparse_weights": true,
+        "verbose": false,
+        "similarity_mode": "tanimoto",
+
+        "normalize": true}
+   ,
+   {
+ 		"model_name": "user_knn_cf",
+        "sparse_weights": true,
+        "verbose": false,
+        "similarity_mode": "cosine",
+        "normalize": false
      },
      {
          "model_name": "user_knn_cf",
          "sparse_weights": true,
          "verbose": false,
-         "similarity_mode": "adjusted"
+         "similarity_mode": "pearson",
 
-     },
+
+        "normalize": false},
      {
          "model_name": "user_knn_cf",
          "sparse_weights": true,
          "verbose": false,
-         "similarity_mode": "tanimoto"
+         "similarity_mode": "tanimoto",
+          "normalize": false
 
      },
     {
-        "model_name": "user_knn_cf",
+        "model_name": "item_knn_cf",
         "sparse_weights": true,
         "verbose": false,
-        "similarity_mode": "jaccard"
+        "similarity_mode": "cosine",
+
+        "normalize": false},
+    {
+        "model_name": "item_knn_cf",
+        "sparse_weights": true,
+        "verbose": false,
+        "similarity_mode": "adjusted",
+          "normalize": false
     },
     {
         "model_name": "item_knn_cf",
         "sparse_weights": true,
         "verbose": false,
-        "similarity_mode": "cosine"
-    },
-    {
-        "model_name": "item_knn_cf",
-        "sparse_weights": true,
-        "verbose": false,
-        "similarity_mode": "pearson"
-    },
-    {
-        "model_name": "item_knn_cf",
-        "sparse_weights": true,
-        "verbose": false,
-        "similarity_mode": "adjusted"
-    },
-    {
-        "model_name": "item_knn_cf",
-        "sparse_weights": true,
-        "verbose": false,
-        "similarity_mode": "tanimoto"
-    },
-    {
-        "model_name": "item_knn_cf",
-        "sparse_weights": true,
-        "verbose": false,
-        "similarity_mode": "jaccard"
-    }
-     
- ]
+        "similarity_mode": "tanimoto",
+
+        "normalize": false}
+ ],
+  "dataReader": {
+      "adjustSequentials": true
+  },
+   "shrink": [100, 250],
+
+   "neighbourhood": [ 100, 250]
 }
