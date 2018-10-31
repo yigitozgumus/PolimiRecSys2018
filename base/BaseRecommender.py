@@ -11,7 +11,7 @@ import numpy as np
 
 class RecommenderSystem(object):
 
-    def __init(self):
+    def __init__(self):
         super(RecommenderSystem, self).__init__()
         self.URM_train = None
         self.URM_test = None

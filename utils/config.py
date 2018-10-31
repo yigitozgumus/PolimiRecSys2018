@@ -3,10 +3,11 @@ from bunch import Bunch
 import os
 from subprocess import call
 
+from models.Slim_BPR.Cython.Slim_BPR_Cython import Slim_BPR_Recommender_Cython
 from models.KNN.Item_KNN_CBFRecommender import ItemKNNCBFRecommender
 from models.KNN.User_KNN_CFRecommender import UserKNNCFRecommender
 from models.KNN.Item_KNN_CFRecommender import ItemKNNCFRecommender
-from linear.Slim import Slim
+from models.Slim_BPR.Slim_BPR import Slim_BPR_Recommender_Python
 
 
 # define clear function
@@ -68,6 +69,17 @@ class Configurator(object):
                                                     useAlbumPopularity=model["useAlbumPopularity"],
                                                     useArtistPopularity=model["useArtistPopularity"],
                                                     normalizeFeatures=model["normalize"]))
-            elif model["model_name"] == "slim":
-                recsys.append(Slim(dataReader.URM_train))
+            elif model["model_name"] == "slim_bpr_python":
+                recsys.append(Slim_BPR_Recommender_Python(dataReader.URM_train,
+                                                          positive_threshold=model["positive_threshold"],
+                                                          sparse_weights= model["sparse_weights"]
+                                                          ))
+            elif model["model_name"] == "slim_bpr_cython":
+                recsys.append(Slim_BPR_Recommender_Cython(dataReader.URM_train,
+                                                          positive_threshold=model["positive_threshold"],
+                                                          recompile_cython=model["recompile_cython"],
+                                                          sparse_weights= model["sparse_weights"],
+                                                          symmetric= model["symmetric"],
+                                                          sgd_mode= model["sgd_mode"]
+                                                          ))
         return recsys

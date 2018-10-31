@@ -1,0 +1,20 @@
+{
+    "models": [
+        {
+            "model_name": "slim_bpr_cython",
+            "sparse_weights": false,
+            "positive_threshold": 1,
+            "recompile_cython": false,
+            "symmetric": true,
+            "sgd_mode": "adagrad"
+        }
+    ],
+
+    "shrink": [],
+
+    "neighbourhood": [],
+
+    "dataReader": {
+        "adjustSequentials": false
+    }
+}
