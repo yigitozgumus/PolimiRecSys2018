@@ -30,6 +30,11 @@ class Slim_BPR_Recommender_Python(BPR_Sampling, RecommenderSystem, RecommenderSy
         self.URM_mask = self.URM_train.copy()
         self.URM_mask.data = self.URM_mask.data >= self.positive_threshold
         self.URM_mask.eliminate_zeros()
+        self.parameters = None
+
+    def __str__(self):
+        representation = "Slim BPR implementation Python"
+        return representation
 
     def updateSimilarityMatrix(self):
         if self.topK != False:
@@ -134,6 +139,7 @@ class Slim_BPR_Recommender_Python(BPR_Sampling, RecommenderSystem, RecommenderSy
             lambda_j=0.00025,
             learning_rate=0.05,
             topK=False):
+        self.parameters = "positive_threshold={0}, sparse_weights={1}".format(self.positive_threshold, self.sparse_weights)
 
         if self.sparse_weights:
             self.S = sps.csr_matrix((self.num_items, self.num_items), dtype=np.float32)

@@ -10,7 +10,13 @@
         }
     ],
 
+    "shrink": [],
+
+    "neighbourhood": [],
+
+    "sgd_mode" : [2,3,4,5,10,20,25],
+
     "dataReader": {
-        "adjustSequentials": true
+        "adjustSequentials": false
     }
 }

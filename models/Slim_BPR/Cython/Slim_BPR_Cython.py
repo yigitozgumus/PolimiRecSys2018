@@ -3,7 +3,7 @@ import os, sys
 import numpy as np
 
 from models.Slim_BPR.Slim_BPR import Slim_BPR_Recommender_Python
-
+from models.Slim_BPR.Cython.Slim_BPR_Cython_Epoch import Slim_BPR_Cython_Epoch
 
 class Slim_BPR_Recommender_Cython(Slim_BPR_Recommender_Python):
     def __init__(self, URM_train, positive_threshold=4,
@@ -14,6 +14,7 @@ class Slim_BPR_Recommender_Cython(Slim_BPR_Recommender_Python):
                                                           sparse_weights=sparse_weights)
         self.sgd_mode = sgd_mode
         self.symmetric = symmetric
+        self.parameters = None
 
         if not sparse_weights:
             num_items = URM_train.shape[1]
@@ -28,6 +29,10 @@ class Slim_BPR_Recommender_Cython(Slim_BPR_Recommender_Python):
             self.runCompilationScript()
             print("Compilation Complete")
 
+    def __str__(self):
+        representation = "Slim BPR implementation Cython"
+        return representation
+
     def fit(self, epochs=30,
             URM_test=None,
             filterTopPop=False,
@@ -35,11 +40,19 @@ class Slim_BPR_Recommender_Cython(Slim_BPR_Recommender_Python):
             batch_size=1000,
             validate_every_N_epochs=1,
             start_validation_after_N_epochs=0,
-            lambda_i=0.0,
+            lambda_i=0.007,
             lambda_j=0.0,
-            learning_rate=0.01,
-            topK=200,
+            learning_rate=0.0005,
+            topK=250,
             sgd_mode='adagrad'):
+        self.parameters = "positive_threshold= {0}, sparse_weights= {1}, symmetric= {2},sgd_mode= {3}, lambda_i={4}, lambda_j={5}, learning_rate={6}, topK={7}".format(self.positive_threshold,
+                                                                                                              self.sparse_weights,
+                                                                                                              self.symmetric,
+                                                                                                              self.sgd_mode,
+                                                                                                              lambda_i,
+                                                                                                              lambda_j,
+                                                                                                              learning_rate,
+                                                                                                              topK)
 
         # Select only positive interactions
         URM_train_positive = self.URM_train.copy()
@@ -49,7 +62,6 @@ class Slim_BPR_Recommender_Cython(Slim_BPR_Recommender_Python):
 
         self.sgd_mode = sgd_mode
         # Import compiled module
-        from models.Slim_BPR.Cython.Slim_BPR_Cython_Epoch import Slim_BPR_Cython_Epoch
 
         self.cythonEpoch = Slim_BPR_Cython_Epoch(self.URM_mask,
                                                  sparse_weights=self.sparse_weights,
