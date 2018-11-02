@@ -2,13 +2,20 @@ import json
 from bunch import Bunch
 import os
 from subprocess import call
-
+#
+# from models.MatrixFactorization.AsymmetricSVD import AsySVD
+# from models.MatrixFactorization.MatrixFactorization_RMSE import FunkSVD
 from models.Slim_BPR.Cython.Slim_BPR_Cython import Slim_BPR_Recommender_Cython
 from models.KNN.Item_KNN_CBFRecommender import ItemKNNCBFRecommender
 from models.KNN.User_KNN_CFRecommender import UserKNNCFRecommender
 from models.KNN.Item_KNN_CFRecommender import ItemKNNCFRecommender
 from models.Slim_BPR.Slim_BPR import Slim_BPR_Recommender_Python
-
+from models.MatrixFactorization.FunkSVD import FunkSVD
+from models.MatrixFactorization.AsymmetricSVD import AsySVD
+from models.MatrixFactorization.IALS import IALS_numpy
+from models.MatrixFactorization.BPRMF import BPRMF
+#from models.MatrixFactorization.MatrixFactorization_RMSE import FunkSVD, AsySVD, BPRMF
+from models.MatrixFactorization.Cython.MF_BPR_Cython import MF_BPR_Cython
 
 # define clear function
 def clear():
@@ -52,12 +59,14 @@ class Configurator(object):
                 recsys.append(UserKNNCFRecommender(dataReader.URM_train,
                                                    sparse_weights=model["sparse_weights"],
                                                    verbose=model["verbose"],
-                                                   similarity_mode=model["similarity_mode"]))
+                                                   similarity_mode=model["similarity_mode"],
+                                                   normalize=model["normalize"]))
             elif model["model_name"] == "item_knn_cf":
                 recsys.append(ItemKNNCFRecommender(dataReader.URM_train,
                                                    sparse_weights=model["sparse_weights"],
                                                    verbose=model["verbose"],
-                                                   similarity_mode=model["similarity_mode"]))
+                                                   similarity_mode=model["similarity_mode"],
+                                                   normalize=model["normalize"]))
             elif model["model_name"] == "item_knn_cbf":
                 recsys.append(ItemKNNCBFRecommender(dataReader.URM_train,
                                                     dataReader.trainData,
@@ -82,4 +91,19 @@ class Configurator(object):
                                                           symmetric= model["symmetric"],
                                                           sgd_mode= model["sgd_mode"]
                                                           ))
+            elif model["model_name"] == "funksvd":
+                recsys.append(FunkSVD(dataReader.URM_train))
+
+            elif model["model_name"] == "asysvd":
+                recsys.append(AsySVD(dataReader.URM_train))
+
+            elif model["model_name"] == "mf_bpr_cython":
+                recsys.append(MF_BPR_Cython(dataReader.URM_train,
+                                            recompile_cython=model["recompile_cython"]))
+            elif model["model_name"] == "ials_numpy":
+                recsys.append(IALS_numpy())
+            elif model["model_name"] == "bprmf":
+                recsys.append(BPRMF())
+
+
         return recsys

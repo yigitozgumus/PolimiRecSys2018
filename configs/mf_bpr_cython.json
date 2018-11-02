@@ -1,16 +1,12 @@
 {
     "models": [
         {
-            "model_name": "slim_bpr_cython",
-            "sparse_weights": false,
-            "positive_threshold": 1,
-            "recompile_cython": false,
-            "symmetric": true,
-            "sgd_mode": "adagrad"
+            "model_name": "ials",
+            "recompile_cython": true
         }
     ],
 
     "dataReader": {
-        "adjustSequentials": true
+        "adjustSequentials": false
     }
 }

@@ -13,6 +13,6 @@
  "shrink" : [ 100],
  "neighbourhood" : [100 ],
   "dataReader": {
-      "adjustSequentials": false
+      "adjustSequentials": true
   }
 }

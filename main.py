@@ -31,7 +31,8 @@ def pipeline_stable(fileName, exp_, log_, logFile):
     rec_sys = conf.extract_models(data_reader)
 
     for model in rec_sys:
-        model.fit() # Train the models
+        #model.fit()
+        model.fit(data_reader.URM_train) # Train the models
         model.evaluate_recommendations(data_reader.URM_test, at=10, exclude_seen=True) # make prediction
     #export the predictions
     if exp_:
