@@ -5,37 +5,24 @@ from base.BaseRecommender import RecommenderSystem
 from base.BaseRecommender_SM import RecommenderSystem_SM
 from base.RecommenderUtils import check_matrix
 from base.Similarity import Similarity
-from base.Preprocess import Preprocess
 
 
 class ItemKNNCBFRecommender(RecommenderSystem, RecommenderSystem_SM):
 
     def __init__(self, URM_train,
-                 trainData,
-                 trackData,
+                 ICM,
                  sparse_weights=True,
                  verbose=False,
                  similarity_mode="cosine",
-                 normalize=False,
-                 useTrackPopularity=False,
-                 useAlbumPopularity=False,
-                 useArtistPopularity=False,
-                 normalizeFeatures=False):
+                 normalize=False,):
         super(ItemKNNCBFRecommender, self).__init__()
         self.URM_train = check_matrix(URM_train, 'csr')
-        self.ICM = None
+        self.ICM = ICM
         self.sparse_weights = sparse_weights
         self.verbose = verbose
         self.similarity_mode = similarity_mode
         self.normalize = normalize
         self.parameters = None
-        self.featureExtractor = Preprocess(trainData,
-                                           trackData,
-                                           useTrackPopularity,
-                                           useAlbumPopularity,
-                                           useArtistPopularity,
-                                           normalizeFeatures)
-        self.ICM = self.featureExtractor.pipeline()
 
     def __str__(self):
         representation = "Item KNN Content Based Filtering "

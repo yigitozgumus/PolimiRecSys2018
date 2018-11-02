@@ -13,14 +13,22 @@ from base.RecommenderUtils import check_matrix
 
 class UserKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
 
-    def __init__(self, URM_train, sparse_weights=True,verbose=True, similarity_mode="cosine",normalize= False):
+    def __init__(self, URM_train, 
+                     UCM, 
+                     sparse_weights=True,
+                     verbose=True, 
+                     similarity_mode="cosine",
+                     normalize= False,
+                     use_UCM = False):
         super(UserKNNCFRecommender, self).__init__()
         self.verbose = verbose
         self.URM_train = check_matrix(URM_train, 'csr')
+        self.UCM = UCM
         self.sparse_weights = sparse_weights
         self.similarity_mode = similarity_mode
         self.parameters = None
         self.normalize = normalize
+        self.choice = use_UCM
 
     def __str__(self):
         representation = "User KNN Collaborative Filtering " 
@@ -32,7 +40,7 @@ class UserKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
         self.shrink = shrink
 
         self.similarity = Similarity(
-            self.URM_train.T,
+            self.UCM.T,
             shrink=shrink,
             verbose=self.verbose,
             neighbourhood=k,
@@ -50,18 +58,14 @@ class UserKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
             self.W = self.W.toarray()
 
     def recommend(self, playlist_id, exclude_seen=True, n=None, export=False):
-
         if n is None:
             n = self.URM_train.shape[1] - 1
-
         # compute the scores using the dot product
         if self.sparse_weights:
-            scores = self.W_sparse[playlist_id].dot(
-                self.URM_train).toarray().ravel()
+            scores = self.W_sparse[playlist_id].dot(self.URM_train).toarray().ravel()
             # print(scores)
         else:
             scores = self.URM_train.T.dot(self.W[playlist_id])
-
         if self.normalize:
             # normalization will keep the scores in the same range
             # of value of the ratings in dataset
@@ -69,14 +73,13 @@ class UserKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
             rated = user_profile.copy()
             rated.data = np.ones_like(rated.data)
             if self.sparse_weights:
-                print(rated.shape)
-                print(self.W_sparse.shape)
+               # print(rated.shape)
+               # print(self.W_sparse.shape)
                 den = rated.dot(self.W_sparse).toarray().ravel()
             else:
                 den = rated.dot(self.W).ravel()
             den[np.abs(den) < 1e-6] = 1.0  # to avoid NaNs
             scores /= den
-
         if exclude_seen:
             scores = self._filter_seen_on_scores(playlist_id, scores)
 

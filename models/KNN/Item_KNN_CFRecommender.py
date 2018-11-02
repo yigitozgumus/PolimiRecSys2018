@@ -16,7 +16,6 @@ class ItemKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
         self.similarity_mode = similarity_mode
         self.normalize = normalize
 
-
     def __str__(self):
         representation = "Item KNN Collaborative Filtering "
         return representation
@@ -24,12 +23,13 @@ class ItemKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
     def fit(self, k=100, shrink=100):
         self.k = k
         self.shrink = shrink
-        self.similarity = Similarity(self.URM_train,
-                                     shrink=shrink,
-                                     verbose=self.verbose,
-                                     neighbourhood=k,
-                                     mode=self.similarity_mode,
-                                     normalize=self.normalize)
+        self.similarity = Similarity(
+            self.URM_train,
+            shrink=shrink,
+            verbose=self.verbose,
+            neighbourhood=k,
+            mode=self.similarity_mode,
+            normalize=self.normalize)
         self.parameters = "sparse_weights= {0}, verbose= {1}, similarity= {2}, shrink= {3}, neighbourhood={4}, normalize={5}".format(
             self.sparse_weights, self.verbose, self.similarity_mode, self.shrink, self.k, self.normalize)
         if self.sparse_weights:
