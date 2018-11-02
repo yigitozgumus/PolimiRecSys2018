@@ -1,51 +1,13 @@
 import numpy as np
 import scipy.sparse as sps
 import pandas as pd
-
-
-def loadCSVintoSparse(filePath, header=True, separator=","):
-    values, rows, cols = [], [], []
-
-    fileHandle = open(filePath, "r")
-    numCells = 0
-
-    if header:
-        fileHandle.readline()
-
-    for line in fileHandle:
-        numCells += 1
-        if (numCells % 100000 == 0):
-            print("Processed {} cells".format(numCells))
-
-        if (len(line)) > 1:
-            line = line.split(separator)
-
-            line[-1] = line[-1].replace("\n", "")
-            rows.append(int(line[0]))
-            cols.append(int(line[1]))
-            values.append(float(1))
-
-    fileHandle.close()
-
-    return sps.csr_matrix((values, (rows, cols)), dtype=np.float32)
-
-
-def saveSparseIntoCSV(filePath, sparse_matrix, separator=","):
-    sparse_matrix = sparse_matrix.tocoo()
-
-    fileHandle = open(filePath, "w")
-
-    for index in range(len(sparse_matrix.data)):
-        fileHandle.write("{row}{separator}{col}{separator}{value}\n".format(
-            row=sparse_matrix.row[index], col=sparse_matrix.col[index], value=sparse_matrix.data[index],
-            separator=separator))
+from sklearn import feature_extraction
+from sklearn.preprocessing import MultiLabelBinarizer, normalize
 
 
 class PlaylistDataReader(object):
 
     def __init__(self,
-                 splitTrainTest=True,
-                 trainTestSplit=0.8,
                  loadPredefinedTrainTest=True,
                  verbose=False,
                  adjustSequentials=False):
@@ -55,72 +17,153 @@ class PlaylistDataReader(object):
         self.URM_train = None
         self.URM_test = None
         self.URM_all = None
-
-        if trainTestSplit >= 1.0:
-            raise ValueError("PlaylistDaraReader: splitTrainTestSplit" \
-                             " must be a value smaller than one.")
-
+        self.ICM = None
+        self.UCM = None
+        self.adjust = adjustSequentials
         if verbose:
             print("PlaylistDataReader: Data is loading. . .")
-
-        dataSubfolder = "./data/"
+        self.dataSubfolder = "./data/"
         train_path = "./data/train.csv"
         track_path = "./data/tracks.csv"
         target_path = "./data/target_playlists.csv"
-
         try:
-            self.trainData = pd.read_csv(dataSubfolder + "train.csv")
-            self.trackData = pd.read_csv(dataSubfolder + "tracks.csv")
-            self.targetData = pd.read_csv(dataSubfolder + "target_playlists.csv")
-
+            self.trainData = pd.read_csv(self.dataSubfolder + "train.csv")
+            self.trackData = pd.read_csv(self.dataSubfolder + "tracks.csv")
+            self.targetData = pd.read_csv(self.dataSubfolder + "target_playlists.csv")
         except FileNotFoundError:
             print("PlaylistDataReader: train.csv or tracks.csv or target_playlists.csv not.")
+        return
 
-        if self.loadPredefined:
-            try:
-                self.URM_train = sps.load_npz(dataSubfolder + "URM_train.npz")
-                self.URM_test = sps.load_npz(dataSubfolder + "URM_test.npz")
-                return
-            except FileNotFoundError:
-                print("PlaylistDataReader: URM_train or URM_test not.Found. Building new ones")
-                if adjustSequentials:
-                    self.trainData['popularity'] = 3
-                    sequentials = self.targetData.loc[:4999, 'playlist_id']
-                    # apply the ratings
-                    for seq in sequentials:
-                        length = len(self.trainData[self.trainData['playlist_id'] == seq])
-                        self.trainData.loc[self.trainData['playlist_id'] == seq, 'popularity'] = np.linspace(5, 1,
-                                                                                                             length)
-                    interaction = np.array(self.trainData['popularity'])
-                    rows = np.array(self.trainData['playlist_id'])
-                    cols = np.array(self.trainData['track_id'])
-                    self.URM_all = sps.csr_matrix((interaction, (rows, cols)))
-                else:
-                    self.trainData['popularity'] = 1
-                    interaction = np.array(self.trainData['popularity'])
-                    rows = np.array(self.trainData['playlist_id'])
-                    cols = np.array(self.trainData['track_id'])
-                    self.URM_all = sps.csr_matrix((interaction, (rows, cols)))
+        ## Attribute Methods
 
-        if splitTrainTest:
-            self.URM_all = self.URM_all.tocoo()
-            numInteractions = len(self.URM_all.data)
-            df_test = []
-            for p in self.trainData.playlist_id.unique():
-                if p in self.targetData.playlist_id.values:
-                    df_test.extend(self.trainData[self.trainData.playlist_id == p].index)
-            df_test = np.array(df_test).ravel()
-            split_mask = np.random.choice([True,False],len(df_test),p=[1-trainTestSplit,trainTestSplit])
-            df_test_final = df_test[split_mask]
-            test_mask = np.zeros((numInteractions,1),dtype=bool).ravel()
-            test_mask[df_test_final] = True
-            self.URM_test = sps.coo_matrix((self.URM_all.data[test_mask], (self.URM_all.row[test_mask], self.URM_all.col[test_mask])))
-            train_mask = np.logical_not(test_mask)
-            self.URM_train = sps.coo_matrix((self.URM_all.data[train_mask], (self.URM_all.row[train_mask], self.URM_all.col[train_mask])))
+    def get_trackData(self):
+        return self.trackData
 
-            del self.URM_all
-            print("PlaylistDataReader: saving URM_train and URM_test")
-            sps.save_npz(dataSubfolder + "URM_train.npz", self.URM_train)
-            sps.save_npz(dataSubfolder + "URM_test.npz", self.URM_test)
-        if verbose:
+    def get_tracks(self):
+        tracks = self.trackData['track_id'].unique()
+        return np.sort(tracks)
+
+    def get_playlists(self):
+        playlists = self.trainData['playlist_id'].unique()
+        return np.sort(playlists)
+
+    def get_target_playlists(self):
+        target_playlists = self.targetData['playlist_id'].unique()
+        return np.sort(target_playlists)
+
+    def get_artists(self):
+        artists = self.trackData['artist_id'].unique()
+        return np.sort(artists)
+
+    def get_albums(self):
+        albums = self.trackData['album_id'].unique()
+        return np.sort(albums)
+
+    def get_URM_train(self):
+        if self.URM_train is None:
+            raise TypeError("URM_train is not built")
+        else:
+            return self.URM_train
+
+    def get_URM_test(self):
+        if self.URM_test is None:
+            raise TypeError("URM_test is not built")
+        else:
+            return self.URM_test
+
+    def get_ICM(self):
+        if self.ICM is None:
+            raise TypeError("ICM is not built")
+        else:
+            return self.ICM
+    def get_UCM(self):
+        if self.UCM is None:
+            raise TypeError("UCM is not built")
+        else:
+            return self.UCM
+
+    def build_URM(self):
+        print("PlaylistDataReader: URM Matrix is being built...")
+        # if self.loadPredefined:
+        #     try:
+        #         self.URM_train = sps.load_npz(self.dataSubfolder + "URM_train.npz")
+        #         self.URM_test = sps.load_npz(self.dataSubfolder + "URM_test.npz")
+        #         print("URM's are imported from the saved data.")
+        #         return
+        #     except FileNotFoundError:
+        #         print("PlaylistDataReader: URM_train or URM_test not.Found. Building new ones")
+        if self.adjust:
+            self.trainData['popularity'] = 3
+            sequentials = self.targetData.loc[:4999, 'playlist_id']
+            # apply the ratings
+            for seq in sequentials:
+                length = len(self.trainData[self.trainData['playlist_id'] == seq])
+                self.trainData.loc[self.trainData['playlist_id'] == seq, 'popularity'] = np.linspace(5, 1, length)
+            interaction = np.array(self.trainData['popularity'])
+            rows = np.array(self.trainData['playlist_id'])
+            cols = np.array(self.trainData['track_id'])
+            self.URM_all = sps.csr_matrix((interaction, (rows, cols)))
+        else:
+            self.trainData['popularity'] = 1
+            interaction = np.array(self.trainData['popularity'])
+            rows = np.array(self.trainData['playlist_id'])
+            cols = np.array(self.trainData['track_id'])
+            self.URM_all = sps.csr_matrix((interaction, (rows, cols)))
+        print("PlaylistDataReader: URM matrix built completed")
+        return
+    
+    def build_UCM(self):
+        print("PlaylistDataReader: UCM Matrix is being built...")
+        UCM_tfidf = feature_extraction.text.TfidfTransformer().fit_transform(self.URM_all.T)
+        UCM_tfidf = UCM_tfidf.T
+        self.UCM = UCM_tfidf
+        print("PlaylistDataReader: UCM matrix built completed")
+        return
+
+    def build_ICM(self):
+        print("PlaylistDataReader: ICM Matrix is being built...")
+        # artists
+        df_artists = self.trackData.reindex(columns=["track_id", "artist_id"])
+        df_artists.sort_values(by="track_id", inplace=True)
+        artist_list = [[a] for a in df_artists["artist_id"]]
+        icm_artists = MultiLabelBinarizer(
+            classes=self.get_artists(), sparse_output=True).fit_transform(artist_list)
+        icm_artists_csr = icm_artists.tocsr()
+        # albums
+        df_albums = self.trackData.reindex(columns=["track_id", "album_id"])
+        df_albums.sort_values(by="track_id", inplace=True)
+        album_list = [[b] for b in df_albums["album_id"]]
+        icm_albums = MultiLabelBinarizer(
+            classes=self.get_albums(), sparse_output=True).fit_transform(album_list)
+        icm_albums_csr = icm_albums.tocsr()
+        ICM = sps.hstack((icm_artists_csr, icm_albums_csr))
+        ICM_tfidf = feature_extraction.text.TfidfTransformer().fit_transform(ICM)
+        ICM_tfidf = normalize(ICM_tfidf, axis=0, norm='l2')
+        self.ICM = ICM_tfidf.tocsr()
+        print("PlaylistDataReader: ICM matrix built completed")
+        return
+
+    def split(self):
+        print("PlaylistDataReader: URM_train and URM_test are being built...")
+        self.URM_all = self.URM_all.tocoo()
+        numInteractions = len(self.URM_all.data)
+        df_test = []
+        for p in self.trainData.playlist_id.unique():
+            if p in self.targetData.playlist_id.values:
+                df_test.extend(self.trainData[self.trainData.playlist_id == p].index)
+        df_test = np.array(df_test).ravel()
+        split_mask = np.random.choice([True, False], len(df_test), p=[0.2, 0.8])
+        df_test_final = df_test[split_mask]
+        test_mask = np.zeros((numInteractions, 1), dtype=bool).ravel()
+        test_mask[df_test_final] = True
+        self.URM_test = sps.coo_matrix(
+            (self.URM_all.data[test_mask], (self.URM_all.row[test_mask], self.URM_all.col[test_mask])))
+        train_mask = np.logical_not(test_mask)
+        self.URM_train = sps.coo_matrix(
+            (self.URM_all.data[train_mask], (self.URM_all.row[train_mask], self.URM_all.col[train_mask])))
+        print("PlaylistDataReader: saving URM_train and URM_test")
+        sps.save_npz(self.dataSubfolder + "URM_train.npz", self.URM_train)
+        sps.save_npz(self.dataSubfolder + "URM_test.npz", self.URM_test)
+        if self.verbose:
             print("PlaylistDataReader: Data loading is complete")
+        return
