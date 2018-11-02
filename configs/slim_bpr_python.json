@@ -1,0 +1,18 @@
+{
+    "models": [
+        {
+            "model_name": "slim_bpr_python",
+            "sparse_weights": true,
+            "positive_threshold": 1
+
+        }
+    ],
+
+    "shrink": [],
+
+    "neighbourhood": [],
+
+    "dataReader": {
+        "adjustSequentials": false
+    }
+}

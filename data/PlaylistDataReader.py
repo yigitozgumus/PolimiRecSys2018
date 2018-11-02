@@ -105,17 +105,22 @@ class PlaylistDataReader(object):
         if splitTrainTest:
             self.URM_all = self.URM_all.tocoo()
             numInteractions = len(self.URM_all.data)
-
-            trainMask = np.random.choice([True, False], numInteractions, p=[trainTestSplit, 1 - trainTestSplit])
-            self.URM_train = sps.coo_matrix(
-                (self.URM_all.data[trainMask], (self.URM_all.row[trainMask], self.URM_all.col[trainMask])))
-            testMask = np.logical_not(trainMask)
-            self.URM_test = sps.coo_matrix(
-                (self.URM_all.data[testMask], (self.URM_all.row[testMask], self.URM_all.col[testMask])))
+            df_test = []
+            for p in self.trainData.playlist_id.unique():
+                if p in self.targetData.playlist_id.values:
+                    df_test.extend(self.trainData[self.trainData.playlist_id == p].index)
+            df_test = np.array(df_test).ravel()
+            split_mask = np.random.choice([True,False],len(df_test),p=[1-trainTestSplit,trainTestSplit])
+            df_test_final = df_test[split_mask]
+            test_mask = np.zeros((numInteractions,1),dtype=bool).ravel()
+            test_mask[df_test_final] = True
+            self.URM_test = sps.coo_matrix((self.URM_all.data[test_mask], (self.URM_all.row[test_mask], self.URM_all.col[test_mask])))
+            train_mask = np.logical_not(test_mask)
+            self.URM_train = sps.coo_matrix((self.URM_all.data[train_mask], (self.URM_all.row[train_mask], self.URM_all.col[train_mask])))
 
             del self.URM_all
             print("PlaylistDataReader: saving URM_train and URM_test")
-            #sps.save_npz(dataSubfolder + "URM_train.npz", self.URM_train)
-            #sps.save_npz(dataSubfolder + "URM_test.npz", self.URM_test)
+            sps.save_npz(dataSubfolder + "URM_train.npz", self.URM_train)
+            sps.save_npz(dataSubfolder + "URM_test.npz", self.URM_test)
         if verbose:
             print("PlaylistDataReader: Data loading is complete")

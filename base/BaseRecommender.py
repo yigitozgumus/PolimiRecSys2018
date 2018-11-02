@@ -11,7 +11,7 @@ import numpy as np
 
 class RecommenderSystem(object):
 
-    def __init(self):
+    def __init__(self):
         super(RecommenderSystem, self).__init__()
         self.URM_train = None
         self.URM_test = None
@@ -44,7 +44,7 @@ class RecommenderSystem(object):
 
         URM_test_new = check_matrix(URM_test, format='csr')
         self.URM_test = check_matrix(URM_test_new, format='csr')
-        self.URM_train = check_matrix(self.URM_train, format='csr')
+       # self.URM_train = check_matrix(self.URM_train, format='csr')
         self.at = at
         self.minRatingsPerUser = minRatingsPerUser
         self.exclude_seen = exclude_seen

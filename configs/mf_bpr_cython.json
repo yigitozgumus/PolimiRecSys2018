@@ -1,0 +1,12 @@
+{
+    "models": [
+        {
+            "model_name": "ials",
+            "recompile_cython": true
+        }
+    ],
+
+    "dataReader": {
+        "adjustSequentials": false
+    }
+}
