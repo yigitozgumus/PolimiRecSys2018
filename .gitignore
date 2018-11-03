@@ -7,5 +7,6 @@ Analysis
 archived
 .vscode/settings.json
 experiments
-Logs.md
+Logs/
 build
+**.npz
