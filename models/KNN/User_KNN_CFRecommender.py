@@ -34,7 +34,7 @@ class UserKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
         representation = "User KNN Collaborative Filtering " 
         return representation
 
-    def fit(self, k=100, shrink=100):
+    def fit(self, k=250, shrink=100):
         self.k = k
 
         self.shrink = shrink
