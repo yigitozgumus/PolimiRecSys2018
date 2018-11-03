@@ -41,7 +41,7 @@ class ItemKNNCBFRecommender(RecommenderSystem, RecommenderSystem_SM):
                                      )
         self.parameters = "sparse_weights= {0}, verbose= {1}, similarity= {2}, shrink= {3}, neighbourhood={4}, " \
                           "normalize= {5}".format(
-            self.sparse_weights, self.verbose, self.similarity_mode, self.shrink, self.k, self.normalize)
+                              self.sparse_weights, self.verbose, self.similarity_mode, self.shrink, self.k, self.normalize)
 
         if self.sparse_weights:
             self.W_sparse = self.similarity.compute_similarity()

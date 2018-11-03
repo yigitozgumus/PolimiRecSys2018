@@ -4,6 +4,7 @@ from base.RecommenderUtils import check_matrix
 from base.BaseRecommender import RecommenderSystem
 import models.MatrixFactorization.Cython.MF_RMSE as mf
 
+
 class AsySVD(RecommenderSystem):
     '''
     AsymmetricSVD model
@@ -40,10 +41,10 @@ class AsySVD(RecommenderSystem):
         self.lrate_decay = lrate_decay
         self.rnd_seed = rnd_seed
         self.parameters = "num_factors={}, lrate={}, reg={}, iters={}, init_mean={}, " \
-               "init_std={}, lrate_decay={}, rnd_seed={}".format(
-            self.num_factors, self.lrate, self.reg, self.iters, self.init_mean, self.init_std, self.lrate_decay,
-            self.rnd_seed
-        )
+            "init_std={}, lrate_decay={}, rnd_seed={}".format(
+                self.num_factors, self.lrate, self.reg, self.iters, self.init_mean, self.init_std, self.lrate_decay,
+                self.rnd_seed
+            )
 
     def __str__(self):
         return "Asymmetric SVD Implementation"
@@ -52,13 +53,14 @@ class AsySVD(RecommenderSystem):
         self.dataset = R
         R = check_matrix(R, 'csr', dtype=np.float32)
         self.X, self.Y = mf.AsySVD_sgd(R, self.num_factors, self.lrate, self.reg, self.iters, self.init_mean,
-                                    self.init_std,
-                                    self.lrate_decay, self.rnd_seed)
+                                       self.init_std,
+                                       self.lrate_decay, self.rnd_seed)
         # precompute the user factors
         M = R.shape[0]
-        self.U = np.vstack([mf.AsySVD_compute_user_factors(R[i], self.Y) for i in range(M)])
+        self.U = np.vstack(
+            [mf.AsySVD_compute_user_factors(R[i], self.Y) for i in range(M)])
 
-    def recommend(self, playlist_id, n=None, exclude_seen=True,export =False):
+    def recommend(self, playlist_id, n=None, exclude_seen=True, export=False):
         scores = np.dot(self.X, self.U[playlist_id].T)
         ranking = scores.argsort()[::-1]
         # rank items
@@ -69,15 +71,13 @@ class AsySVD(RecommenderSystem):
         else:
             return str(ranking[:n]).strip("[]")
 
-
     def _get_user_ratings(self, playlist_id):
-        self.dataset = check_matrix(self.dataset,"csr")
+        self.dataset = check_matrix(self.dataset, "csr")
         return self.dataset[playlist_id]
 
     def _get_item_ratings(self, track_id):
-        self.dataset= check_matrix(self.dataset,"csc")
+        self.dataset = check_matrix(self.dataset, "csc")
         return self.dataset[:, track_id]
-
 
     def _filter_seen(self, user_id, ranking):
         user_profile = self._get_user_ratings(user_id)

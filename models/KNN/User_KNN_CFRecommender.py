@@ -40,7 +40,7 @@ class UserKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
         self.shrink = shrink
 
         self.similarity = Similarity(
-            self.UCM.T,
+            self.URM_train.T,
             shrink=shrink,
             verbose=self.verbose,
             neighbourhood=k,

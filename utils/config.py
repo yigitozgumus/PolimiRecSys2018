@@ -2,11 +2,12 @@ import json
 from bunch import Bunch
 import os
 from subprocess import call
-#
+
 from models.Slim_BPR.Cython.Slim_BPR_Cython import Slim_BPR_Recommender_Cython
 from models.KNN.Item_KNN_CBFRecommender import ItemKNNCBFRecommender
 from models.KNN.User_KNN_CFRecommender import UserKNNCFRecommender
 from models.KNN.Item_KNN_CFRecommender import ItemKNNCFRecommender
+from models.hybrid.UserItemAverage_Recommender import UserItemAvgRecommender
 from models.Slim_BPR.Slim_BPR import Slim_BPR_Recommender_Python
 from models.MatrixFactorization.FunkSVD import FunkSVD
 from models.MatrixFactorization.AsymmetricSVD import AsySVD
@@ -97,6 +98,16 @@ class Configurator(object):
                 recsys.append(IALS_numpy())
             elif model["model_name"] == "bprmf":
                 recsys.append(BPRMF())
+            elif model["model_name"] == "user_item_avg":
+                recsys.append(UserItemAvgRecommender(dataReader.get_URM_train(),
+                                                      dataReader.get_UCM(),
+                                                      dataReader.get_ICM(),
+                                                      sparse_weights=model["sparse_weights"],
+                                                      verbose=model["verbose"],
+                                                      similarity_mode=model["similarity_mode"],
+                                                      normalize=model["normalize"],
+                                                      alpha= model["alpha"]
+                                                      ))
         print("Configurator: Models are extracted")
 
         return recsys
