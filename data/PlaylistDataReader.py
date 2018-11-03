@@ -110,14 +110,16 @@ class PlaylistDataReader(object):
             cols = np.array(self.trainData['track_id'])
             self.URM_all = sps.csr_matrix((interaction, (rows, cols)))
         print("PlaylistDataReader: URM matrix built completed")
+        print("PlaylistDataReader: shape is {}".format(self.URM_all.shape))
         return
-    
+
     def build_UCM(self):
         print("PlaylistDataReader: UCM Matrix is being built...")
         UCM_tfidf = feature_extraction.text.TfidfTransformer().fit_transform(self.URM_all.T)
         UCM_tfidf = UCM_tfidf.T
         self.UCM = UCM_tfidf
         print("PlaylistDataReader: UCM matrix built completed")
+        print("PlaylistDataReader: shape is {}".format(self.UCM.shape))
         return
 
     def build_ICM(self):
@@ -141,6 +143,7 @@ class PlaylistDataReader(object):
         ICM_tfidf = normalize(ICM_tfidf, axis=0, norm='l2')
         self.ICM = ICM_tfidf.tocsr()
         print("PlaylistDataReader: ICM matrix built completed")
+        print("PlaylistDataReader: shape is {}".format(self.ICM.shape))
         return
 
     def split(self):
