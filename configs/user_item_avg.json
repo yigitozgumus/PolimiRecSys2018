@@ -1,18 +1,18 @@
 {
  "models": [    
      {
-         "model_name": "user_knn_cf",
+         "model_name": "user_item_avg",
          "sparse_weights": true,
          "verbose": false,
-         "similarity_mode": "jaccard",
+         "similarity_mode": "tanimoto",
          "normalize": false,
-         "use_UCM" : true
+         "alpha": 0.666
 
      }
  ],
  "shrink" : [ 100, 250, 500],
  "neighbourhood" : [ 50, 100, 250 ,500],
   "dataReader": {
-      "adjustSequentials": false
+      "adjustSequentials": true
   }
 }
