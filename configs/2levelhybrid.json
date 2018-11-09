@@ -1,0 +1,18 @@
+{
+    "models": [
+        {
+            "model_name": "2levelhybrid",
+            "sparse_weights": true,
+            "positive_threshold": 1,
+            "similarity_mode": "jaccard",
+            "verbose": false,
+            "normalize": false,
+            "alpha": 0.18,
+            "avg": 0.666
+        }
+    ],
+
+    "dataReader": {
+        "adjustSequentials": false
+    }
+}

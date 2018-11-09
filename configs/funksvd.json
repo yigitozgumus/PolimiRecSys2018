@@ -1,0 +1,20 @@
+{
+    "models": [
+    {
+        "model_name": "ials_numpy",
+        "sparse_weights": true,
+        "verbose": false,
+        "similarity_mode": "cosine",
+        "normalize": true
+    }
+
+],
+
+    "shrink": [],
+
+    "neighbourhood": [],
+
+    "dataReader": {
+        "adjustSequentials": false
+    }
+}
