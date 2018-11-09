@@ -2,6 +2,7 @@ import numpy as np
 import scipy.sparse as sps
 import time
 import os
+from sklearn import feature_extraction
 
 
 def check_matrix(X, format='csc', dtype=np.float32):
@@ -22,6 +23,11 @@ def check_matrix(X, format='csc', dtype=np.float32):
     else:
         return X.astype(dtype)
 
+
+def extract_UCM(URM_train):
+    URM_tfidf = feature_extraction.text.TfidfTransformer().fit_transform(URM_train.T)
+    URM_tfidf = URM_tfidf.T
+    return URM_tfidf
 
 def similarityMatrixTopK(item_weights, forceSparseOutput=True, k=100, verbose=False, inplace=True):
     """

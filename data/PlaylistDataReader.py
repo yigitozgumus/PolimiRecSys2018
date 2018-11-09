@@ -23,15 +23,9 @@ class PlaylistDataReader(object):
         if verbose:
             print("PlaylistDataReader: Data is loading. . .")
         self.dataSubfolder = "./data/"
-        train_path = "./data/train.csv"
-        track_path = "./data/tracks.csv"
-        target_path = "./data/target_playlists.csv"
-        try:
-            self.trainData = pd.read_csv(self.dataSubfolder + "train.csv")
-            self.trackData = pd.read_csv(self.dataSubfolder + "tracks.csv")
-            self.targetData = pd.read_csv(self.dataSubfolder + "target_playlists.csv")
-        except FileNotFoundError:
-            print("PlaylistDataReader: train.csv or tracks.csv or target_playlists.csv not.")
+        self.trainData = pd.read_csv(self.dataSubfolder + "train.csv")
+        self.trackData = pd.read_csv(self.dataSubfolder + "tracks.csv")
+        self.targetData = pd.read_csv(self.dataSubfolder + "target_playlists.csv")
         return
 
         ## Attribute Methods
@@ -151,11 +145,20 @@ class PlaylistDataReader(object):
         self.URM_all = self.URM_all.tocoo()
         numInteractions = len(self.URM_all.data)
         df_test = []
-        for p in self.trainData.playlist_id.unique():
-            if p in self.targetData.playlist_id.values:
-                df_test.extend(self.trainData[self.trainData.playlist_id == p].index)
+        split_mask = []
+       # np.random.seed(seed=666)
+
+        for p in self.targetData.playlist_id.values:
+            values = self.trainData[self.trainData.playlist_id == p].index
+            # guarantee to get songs from every playlist
+            masked = np.random.choice([True,False],len(values),p=[0.2,0.8])
+            while(sum(masked) == 0):
+                masked = np.random.choice([True,False],len(values),p=[0.2,0.8])
+            split_mask.extend(masked)
+            df_test.extend(values)
         df_test = np.array(df_test).ravel()
-        split_mask = np.random.choice([True, False], len(df_test), p=[0.2, 0.8])
+        split_mask = np.array(split_mask).ravel()
+        #split_mask = np.random.choice([True, False], len(df_test), p=[0.2, 0.8])
         df_test_final = df_test[split_mask]
         test_mask = np.zeros((numInteractions, 1), dtype=bool).ravel()
         test_mask[df_test_final] = True
@@ -164,9 +167,9 @@ class PlaylistDataReader(object):
         train_mask = np.logical_not(test_mask)
         self.URM_train = sps.coo_matrix(
             (self.URM_all.data[train_mask], (self.URM_all.row[train_mask], self.URM_all.col[train_mask])))
-        print("PlaylistDataReader: saving URM_train and URM_test")
-        sps.save_npz(self.dataSubfolder + "URM_train.npz", self.URM_train)
-        sps.save_npz(self.dataSubfolder + "URM_test.npz", self.URM_test)
+        # print("PlaylistDataReader: saving URM_train and URM_test")
+        # sps.save_npz(self.dataSubfolder + "URM_train.npz", self.URM_train)
+        # sps.save_npz(self.dataSubfolder + "URM_test.npz", self.URM_test)
         if self.verbose:
             print("PlaylistDataReader: Data loading is complete")
         return

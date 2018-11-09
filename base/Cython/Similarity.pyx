@@ -15,7 +15,7 @@ import time, sys
 import numpy as np
 cimport numpy as np
 from cpython.array cimport array, clone
-
+from tqdm import tqdm
 
 
 import scipy.sparse as sps
@@ -274,19 +274,19 @@ cdef class Similarity:
         start_time = time.time()
 
         # Compute all similarities for each item
-        for itemIndex in range(self.n_items):
+        for itemIndex in tqdm(range(self.n_items)):
 
             processedItems += 1
 
-            if processedItems % 10000==0 or processedItems==self.n_items:
-
-                itemPerSec = processedItems/(time.time()-start_time)
-
-                print("Similarity column {} ( {:2.0f} % ), {:.2f} column/sec, elapsed time {:.2f} min".format(
-                    processedItems, processedItems*1.0/self.n_items*100, itemPerSec, (time.time()-start_time) / 60))
-
-                sys.stdout.flush()
-                sys.stderr.flush()
+            # if processedItems % 10000==0 or processedItems==self.n_items:
+            #
+            #     itemPerSec = processedItems/(time.time()-start_time)
+            #
+            #     print("Similarity column {} ( {:2.0f} % ), {:.2f} column/sec, elapsed time {:.2f} min".format(
+            #         processedItems, processedItems*1.0/self.n_items*100, itemPerSec, (time.time()-start_time) / 60))
+            #
+            #     sys.stdout.flush()
+            #     sys.stderr.flush()
 
 
             this_item_weights = self.computeItemSimilarities(itemIndex)

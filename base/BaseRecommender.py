@@ -1,14 +1,9 @@
-"""
 
-@author: Semsi Yigit Ozgumus
-"""
 import time
-
+from tqdm import tqdm
 from base.Metrics import precision, recall, map
 from base.RecommenderUtils import check_matrix
 import numpy as np
-
-
 class RecommenderSystem(object):
 
     def __init__(self):
@@ -20,13 +15,13 @@ class RecommenderSystem(object):
         self.recall = None
         self.parameters = None
         self.sparse_weights = True
-
         # Filter topPop and Custom Items TODO
 
     def fit(self):
         pass
 
-    def _filter_seen_on_scores(self, playlist_id, scores):
+    def filter_seen_on_scores(self, playlist_id, scores):
+        self.URM_train = check_matrix(self.URM_train,"csr")
         seen = self.URM_train.indices[self.URM_train.indptr[playlist_id]:self.URM_train.indptr[playlist_id + 1]]
         scores[seen] = -np.inf
         return scores
@@ -69,7 +64,8 @@ class RecommenderSystem(object):
         start_time = time.time()
         cum_precision, cum_recall, cum_map = 0.0, 0.0, 0.0
         num_eval = 0
-        for test_user in usersToEvaluate:
+        print("Recommender System: Evaluation for the Test set begins")
+        for test_user in tqdm(usersToEvaluate):
             relevant_items = self.get_user_relevant_items(test_user)
             num_eval += 1
             recommended_items = self.recommend(playlist_id=test_user,
@@ -79,12 +75,12 @@ class RecommenderSystem(object):
             cum_recall += recall(is_relevant, relevant_items)
             cum_map += map(is_relevant, relevant_items)
 
-            if num_eval % 10000 == 0 or num_eval == len(usersToEvaluate) - 1:
-                print("Processed {} ( {:.2f}% ) in {:.2f} seconds. Users per second: {:.0f}".format(
-                    num_eval,
-                    100.0 * float(num_eval + 1) / len(usersToEvaluate),
-                    time.time() - start_time,
-                    float(num_eval) / (time.time() - start_time)))
+            # if num_eval % 1000 == 0 or num_eval == len(usersToEvaluate) - 1:
+            #     print("Processed {} ( {:.2f}% ) in {:.2f} seconds. Users per second: {:.0f}".format(
+            #         num_eval,
+            #         100.0 * float(num_eval + 1) / len(usersToEvaluate),
+            #         time.time() - start_time,
+            #         float(num_eval) / (time.time() - start_time)))
 
         if num_eval > 0:
             cum_precision /= num_eval

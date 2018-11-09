@@ -38,7 +38,7 @@ class RecommenderSystem_SM(object):
             scores /= den
 
         if exclude_seen:
-            scores = self._filter_seen_on_scores(playlist_id, scores)
+            scores = self.filter_seen_on_scores(playlist_id, scores)
 
         relevant_items_partition = (-scores).argpartition(n)[0:n]
         relevant_items_partition_sorting = np.argsort(

@@ -14,6 +14,7 @@ from models.MatrixFactorization.AsymmetricSVD import AsySVD
 from models.MatrixFactorization.IALS import IALS_numpy
 from models.MatrixFactorization.BPRMF import BPRMF
 from models.MatrixFactorization.Cython.MF_BPR_Cython import MF_BPR_Cython
+from models.hybrid.TwoLevel_Hybrid_Recommender import TwoLevelHybridRecommender
 
 # define clear function
 def clear():
@@ -108,6 +109,17 @@ class Configurator(object):
                                                       normalize=model["normalize"],
                                                       alpha= model["alpha"]
                                                       ))
+            elif model["model_name"] == "2levelhybrid":
+                recsys.append(TwoLevelHybridRecommender(dataReader.get_URM_train(),
+                                                        dataReader.get_UCM(),
+                                                        dataReader.get_ICM(),
+                                                        sparse_weights=model["sparse_weights"],
+                                                        verbose=model["verbose"],
+                                                        similarity_mode=model["similarity_mode"],
+                                                        normalize=model["normalize"],
+                                                        alpha=model["alpha"],
+                                                        avg=model["avg"]
+                                                        ))
         print("Configurator: Models are extracted")
 
         return recsys
