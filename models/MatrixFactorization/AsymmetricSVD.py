@@ -52,9 +52,7 @@ class AsySVD(RecommenderSystem):
     def fit(self, R):
         self.dataset = R
         R = check_matrix(R, 'csr', dtype=np.float32)
-        self.X, self.Y = mf.AsySVD_sgd(R, self.num_factors, self.lrate, self.reg, self.iters, self.init_mean,
-                                       self.init_std,
-                                       self.lrate_decay, self.rnd_seed)
+        self.X, self.Y = mf.AsySVD_sgd(R, self.num_factors, self.lrate, self.reg, self.iters, self.init_mean,self.init_std,self.lrate_decay, self.rnd_seed)
         # precompute the user factors
         M = R.shape[0]
         self.U = np.vstack(
@@ -79,8 +77,8 @@ class AsySVD(RecommenderSystem):
         self.dataset = check_matrix(self.dataset, "csc")
         return self.dataset[:, track_id]
 
-    def _filter_seen(self, user_id, ranking):
-        user_profile = self._get_user_ratings(user_id)
+    def _filter_seen(self, playlist_id, ranking):
+        user_profile = self._get_user_ratings(playlist_id)
         seen = user_profile.indices
         unseen_mask = np.in1d(ranking, seen, assume_unique=True, invert=True)
         return ranking[unseen_mask]

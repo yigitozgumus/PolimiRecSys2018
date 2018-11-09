@@ -7,7 +7,7 @@ from models.Slim_BPR.Cython.Slim_BPR_Cython_Epoch import Slim_BPR_Cython_Epoch
 
 
 class Slim_BPR_Recommender_Cython(Slim_BPR_Recommender_Python):
-    def __init__(self, URM_train, positive_threshold=4,
+    def __init__(self, URM_train, positive_threshold=1,
                  recompile_cython=False, sparse_weights=False,
                  symmetric=True, sgd_mode='adagrad'):
         super(Slim_BPR_Recommender_Cython, self).__init__(URM_train,
@@ -44,7 +44,7 @@ class Slim_BPR_Recommender_Cython(Slim_BPR_Recommender_Python):
             lambda_i=0.0,
             lambda_j=0.0,
             learning_rate=0.01,
-            topK=200,
+            topK=500,
             sgd_mode='adagrad'):
 
         self.parameters = "positive_threshold= {0}, sparse_weights= {1}, symmetric= {2},sgd_mode= {3}, lambda_i={4}, " \
@@ -78,7 +78,7 @@ class Slim_BPR_Recommender_Cython(Slim_BPR_Recommender_Python):
                                                  sgd_mode=sgd_mode)
 
         # Cal super.fit to start training
-        super(Slim_BPR_Recommender_Cython, self).fit_alreadyInitialized(
+        result = super(Slim_BPR_Recommender_Cython, self).fit_alreadyInitialized(
             epochs=epochs,
             URM_test=URM_test,
             filterTopPop=filterTopPop,
@@ -90,6 +90,7 @@ class Slim_BPR_Recommender_Cython(Slim_BPR_Recommender_Python):
             lambda_j=lambda_j,
             learning_rate=learning_rate,
             topK=topK)
+        return result
 
     def runCompilationScript(self):
         # Run compile script setting the working directory to ensure the compiled file are contained in the

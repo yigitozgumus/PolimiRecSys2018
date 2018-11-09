@@ -75,8 +75,7 @@ class MF_BPR_Cython(RecommenderSystem):
                 self.W = self.cythonEpoch.get_W()
                 self.H = self.cythonEpoch.get_H()
 
-                results_run = self.evaluate_recommendations(URM_test, filterTopPop=filterTopPop,
-                                                           minRatingsPerUser=minRatingsPerUser, filterCustomItems=filterCustomItems)
+                results_run = self.evaluate_recommendations(URM_test)
 
                 self.writeCurrentConfig(currentEpoch, results_run)
                 print("Epoch {} of {} complete in {:.2f} minutes".format(currentEpoch+1, epochs,
@@ -134,7 +133,7 @@ class MF_BPR_Cython(RecommenderSystem):
         sys.stdout.flush()
 
 
-    def recommendBatch(self, users_in_batch, n=None, exclude_seen=True, filterTopPop = False, filterCustomItems = False):
+    def recommendBatch(self, users_in_batch, n=None, exclude_seen=True):
 
         # compute the scores using the dot product
         user_profile_batch = self.URM_train[users_in_batch]
@@ -169,7 +168,7 @@ class MF_BPR_Cython(RecommenderSystem):
         if self.normalize:
             raise ValueError("Not implemented")
         if exclude_seen:
-            scores = self._filter_seen_on_scores(playlist_id, scores_array)
+            scores = self.filter_seen_on_scores(playlist_id, scores_array)
         if filterTopPop:
             scores = self._filter_TopPop_on_scores(scores_array)
         if filterCustomItems:

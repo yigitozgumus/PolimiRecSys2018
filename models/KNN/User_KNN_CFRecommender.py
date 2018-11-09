@@ -8,8 +8,7 @@ except ImportError:
 
 from base.BaseRecommender import RecommenderSystem
 from base.BaseRecommender_SM import RecommenderSystem_SM
-from base.RecommenderUtils import check_matrix
-
+from base.RecommenderUtils import check_matrix, extract_UCM
 
 class UserKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
 
@@ -34,23 +33,24 @@ class UserKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
         representation = "User KNN Collaborative Filtering " 
         return representation
 
-    def fit(self, k=250, shrink=100):
+    def fit(self, k=250, shrink=50):
         self.k = k
 
         self.shrink = shrink
-
+#       test = extract_UCM(self.URM_train)
         self.similarity = Similarity(
             self.URM_train.T,
             shrink=shrink,
             verbose=self.verbose,
             neighbourhood=k,
             mode=self.similarity_mode,
-            normalize= self.normalize)
+            normalize=self.normalize)
+#        self.similarity = jaccard_similarity(self.URM_train.T,)
 
         self.parameters = "sparse_weights= {0}, verbose= {1}, similarity= {2}, shrink= {3}, neighbourhood={4}, " \
                           "normalize= {5}".format(
             self.sparse_weights, self.verbose, self.similarity_mode, self.shrink, self.k, self.normalize)
-
+        print("UserKNNCFRecommender: model fitting begins")
         if self.sparse_weights:
             self.W_sparse = self.similarity.compute_similarity()
         else:
@@ -81,7 +81,7 @@ class UserKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
             den[np.abs(den) < 1e-6] = 1.0  # to avoid NaNs
             scores /= den
         if exclude_seen:
-            scores = self._filter_seen_on_scores(playlist_id, scores)
+            scores = self.filter_seen_on_scores(playlist_id, scores)
 
         relevant_items_partition = (-scores).argpartition(n)[0:n]
         relevant_items_partition_sorting = np.argsort(

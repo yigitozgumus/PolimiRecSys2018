@@ -21,11 +21,11 @@ class IALS_numpy(RecommenderSystem):
 
     # TODO: Add support for multiple confidence scaling functions (e.g. linear and log scaling)
     def __init__(self,
-                 num_factors=150,
+                 num_factors=50,
                  reg=0.015,
-                 iters=40,
+                 iters=30,
                  scaling='log',
-                 alpha=50,
+                 alpha=40,
                  epsilon=1.0,
                  init_mean=0.0,
                  init_std=0.1,
