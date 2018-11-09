@@ -9,7 +9,7 @@ except ImportError:
 from base.BaseRecommender import RecommenderSystem
 from base.BaseRecommender_SM import RecommenderSystem_SM
 from base.RecommenderUtils import check_matrix
-
+from sklearn import feature_extraction
 
 class UserItemAvgRecommender(RecommenderSystem, RecommenderSystem_SM):
 
@@ -41,6 +41,10 @@ class UserItemAvgRecommender(RecommenderSystem, RecommenderSystem_SM):
         self.shrink = shrink
         if not alpha is None:
             self.alpha = alpha
+        self.URM_train_T = self.URM_train.T
+        URM_tfidf_T = feature_extraction.text.TfidfTransformer().fit_transform(self.URM_train_T)
+        URM_tfidf = URM_tfidf_T.T
+        self.URM_tfidf_csr = URM_tfidf.tocsr()
         print("UserItemAvgRecommender: Model fitting begins" )
         self.similarity_ucm = Similarity(self.UCM.T, shrink=shrink,
                                          verbose=self.verbose,
@@ -69,8 +73,8 @@ class UserItemAvgRecommender(RecommenderSystem, RecommenderSystem_SM):
             n = self.URM_train.shape[1] - 1
         # Compute the scores using the dot product
         if self.sparse_weights:
-            scores_ucm = self.W_sparse_UCM[playlist_id].dot(self.URM_train).toarray().ravel()
-            scores_icm = self.URM_train[playlist_id].dot(self.W_sparse_ICM).toarray().ravel()
+            scores_ucm = self.W_sparse_UCM[playlist_id].dot(self.URM_tfidf_csr).toarray().ravel()
+            scores_icm = self.URM_tfidf_csr[playlist_id].dot(self.W_sparse_ICM).toarray().ravel()
             scores = self.alpha * scores_ucm + (1 - self.alpha) * scores_icm
         else:
             scores_ucm = self.URM_train.T.dot(self.W_UCM[playlist_id])

@@ -31,7 +31,7 @@ class ItemKNNCBFRecommender(RecommenderSystem, RecommenderSystem_SM):
     def fit(self, k=250, shrink=100):
         self.k = k
         self.shrink = shrink
-
+        print("ItemKNNCBFRecommender: Model fitting begins")
         self.similarity = Similarity(self.ICM.T,
                                      shrink=shrink,
                                      verbose=self.verbose,
