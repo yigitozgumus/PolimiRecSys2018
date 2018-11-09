@@ -1,7 +1,7 @@
 {
     "models": [
     {
-        "model_name": "ials_numpy",
+        "model_name": "asysvd",
         "sparse_weights": true,
         "verbose": false,
         "similarity_mode": "cosine",

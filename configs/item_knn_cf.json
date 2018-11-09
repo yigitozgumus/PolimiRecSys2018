@@ -5,7 +5,7 @@
          "model_name": "item_knn_cf",
          "sparse_weights": true,
          "verbose": false,
-         "similarity_mode": "tanimoto",
+         "similarity_mode": "jaccard",
          "normalize": false
 
      }
@@ -13,6 +13,6 @@
  "shrink" : [ 100],
  "neighbourhood" : [100 ],
   "dataReader": {
-      "adjustSequentials": true
+      "adjustSequentials": false
   }
 }

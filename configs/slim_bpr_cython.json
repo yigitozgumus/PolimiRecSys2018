@@ -11,6 +11,6 @@
     ],
 
     "dataReader": {
-        "adjustSequentials": true
+        "adjustSequentials": false
     }
 }

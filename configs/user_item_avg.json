@@ -4,15 +4,16 @@
          "model_name": "user_item_avg",
          "sparse_weights": true,
          "verbose": false,
-         "similarity_mode": "tanimoto",
+         "similarity_mode": "jaccard",
          "normalize": false,
-         "alpha": 0.666
+         "alpha": 0.165
 
      }
  ],
+  "alpha" : [0.15, 0.16, 0.17,0.18,0.19, 0.20, 0.21, 0.22, 0.23, 0.24, 0.25],
  "shrink" : [ 100, 250, 500],
  "neighbourhood" : [ 50, 100, 250 ,500],
   "dataReader": {
-      "adjustSequentials": true
+      "adjustSequentials": false
   }
 }
