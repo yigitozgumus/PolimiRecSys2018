@@ -41,9 +41,9 @@ class Slim_BPR_Recommender_Cython(Slim_BPR_Recommender_Python):
             batch_size=1000,
             validate_every_N_epochs=1,
             start_validation_after_N_epochs=0,
-            lambda_i=0.0,
-            lambda_j=0.0,
-            learning_rate=0.01,
+            lambda_i=0.0025,
+            lambda_j=0.00025,
+            learning_rate=0.05,
             topK=500,
             sgd_mode='adagrad'):
 
@@ -127,7 +127,7 @@ class Slim_BPR_Recommender_Cython(Slim_BPR_Recommender_Python):
     def epochIteration(self):
         self.cythonEpoch.epochIteration_Cython()
 
-    def writeCurrentConfig(self, currentEpoch, results_run, logFile):
+    def writeCurrentConfig(self, currentEpoch, results_run):
         current_config = {'learn_rate': self.learning_rate,
                           'topK_similarity': self.topK,
                           'epoch': currentEpoch,

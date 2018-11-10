@@ -30,6 +30,8 @@ def main():
         pipeline_dev(file_name, args.exp_switch, args.log_switch, logFile)
     elif mode == 3:
         pipeline_mf(file_name, args.exp_switch, args.log_switch, logFile)
+    elif mode == 4:
+        pipeline_weighted(file_name, args.exp_switch, args.log_switch, logFile)
 
 
 def pipeline_mf(fileName, exp_, log_, logFile):
@@ -44,7 +46,7 @@ def pipeline_mf(fileName, exp_, log_, logFile):
     l = Logger(data_reader.targetData, logFile)
     rec_sys = conf.extract_models(data_reader)
     for model in rec_sys:
-        model.fit(data_reader.get_URM_test())  # Train the models
+        model.fit(data_reader.get_URM_train())  # Train the models
         model.evaluate_recommendations(
             data_reader.URM_test, at=10, exclude_seen=True)  # make prediction
     if exp_:
@@ -61,7 +63,7 @@ def pipeline_stable(fileName, exp_, log_, logFile):
     data_reader.build_URM()
     data_reader.build_UCM()
     data_reader.build_ICM()
-    data_reader.split()
+    data_reader.split(divide_two=False)
     l = Logger(data_reader.targetData, logFile)
     rec_sys = conf.extract_models(data_reader)
     for model in rec_sys:
@@ -99,6 +101,8 @@ def pipeline_dev(fileName, exp_, log_, logFile):
         if log_:
             l.log_experiment()
 
+def pipeline_weighted(fileName,exp_,log_,logFile):
+    pass
 
 if __name__ == "__main__":
     main()

@@ -1,5 +1,7 @@
 import numpy as np
 
+from tversky import tversky_similarity
+
 try:
     from base.Cython.Similarity import Similarity
 except ImportError:
@@ -46,24 +48,31 @@ class UserItemAvgRecommender(RecommenderSystem, RecommenderSystem_SM):
         URM_tfidf = URM_tfidf_T.T
         self.URM_tfidf_csr = URM_tfidf.tocsr()
         print("UserItemAvgRecommender: Model fitting begins" )
-        self.similarity_ucm = Similarity(self.UCM.T, shrink=shrink,
-                                         verbose=self.verbose,
-                                         neighbourhood=k * 2,
-                                         mode=self.similarity_mode,
-                                         normalize=self.normalize)
-        self.similarity_icm = Similarity(self.ICM.T, shrink=shrink,
-                                         verbose=self.verbose,
-                                         neighbourhood=k,
-                                         mode=self.similarity_mode,
-                                         normalize=self.normalize)
+        if self.similarity_mode != "tversky":
+            # UCM creates a waaay unstable model
+            self.similarity_ucm = Similarity(self.URM_train.T, shrink=0,
+                                             verbose=self.verbose,
+                                             neighbourhood=k * 2 ,
+                                             mode=self.similarity_mode,
+                                             normalize=self.normalize)
+            self.similarity_icm = Similarity(self.ICM.T, shrink=shrink,
+                                             verbose=self.verbose,
+                                             neighbourhood=k,
+                                             mode=self.similarity_mode,
+                                             normalize=self.normalize)
+        else:
+            self.W_sparse_UCM = tversky_similarity(self.UCM, k =k)
+            self.W_sparse_UCM = check_matrix(self.W_sparse_UCM, "csr")
+            self.W_sparse_ICM = tversky_similarity(self.ICM, k=k)
+            self.W_sparse_ICM = check_matrix(self.W_sparse_ICM,"csr")
         self.parameters = "sparse_weights= {0}, verbose= {1}, similarity= {2},shrink= {3}, neighbourhood={4},normalize= {5}, alpha= {6}".format(
             self.sparse_weights, self.verbose, self.similarity_mode, self.shrink, self.k, self.normalize, self.alpha)
 
-        if self.sparse_weights:
-            self.W_sparse_UCM = self.similarity_ucm.compute_similarity()
-            self.W_sparse_ICM = self.similarity_icm.compute_similarity()
-        else:
-            self.W_UCM = self.similarity_ucm.compute_similarity()
+        if self.sparse_weights and self.similarity_mode != "tversky":
+           self.W_sparse_UCM = self.similarity_ucm.compute_similarity()
+           self.W_sparse_ICM = self.similarity_icm.compute_similarity()
+        elif not self.sparse_weights:
+           # self.W_UCM = self.similarity_ucm.compute_similarity()
             self.W_ICM = self.similarity_icm.compute_similarity()
             self.W_UCM = self.W_UCM.toarray()
             self.W_ICM = self.W_ICM.toarray()
@@ -73,8 +82,8 @@ class UserItemAvgRecommender(RecommenderSystem, RecommenderSystem_SM):
             n = self.URM_train.shape[1] - 1
         # Compute the scores using the dot product
         if self.sparse_weights:
-            scores_ucm = self.W_sparse_UCM[playlist_id].dot(self.URM_tfidf_csr).toarray().ravel()
-            scores_icm = self.URM_tfidf_csr[playlist_id].dot(self.W_sparse_ICM).toarray().ravel()
+            scores_ucm = self.W_sparse_UCM[playlist_id].dot(self.URM_train).toarray().ravel()
+            scores_icm = self.URM_train[playlist_id].dot(self.W_sparse_ICM).toarray().ravel()
             scores = self.alpha * scores_ucm + (1 - self.alpha) * scores_icm
         else:
             scores_ucm = self.URM_train.T.dot(self.W_UCM[playlist_id])

@@ -6,7 +6,7 @@ class RecommenderSystem_SM(object):
         super(RecommenderSystem_SM, self).__init__()
         # self.sparse_weights = None
 
-    def recommend(self, playlist_id, exclude_seen=True, n=None, export=False):
+    def recommend(self, playlist_id, exclude_seen=True, n=None, filterTopPop=False, export=False):
 
         if n is None:
             n = self.URM_train.shape[1] - 1
@@ -39,6 +39,8 @@ class RecommenderSystem_SM(object):
 
         if exclude_seen:
             scores = self.filter_seen_on_scores(playlist_id, scores)
+        if filterTopPop:
+            scores = self._filter_TopPop_on_scores(scores)
 
         relevant_items_partition = (-scores).argpartition(n)[0:n]
         relevant_items_partition_sorting = np.argsort(

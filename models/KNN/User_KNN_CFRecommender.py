@@ -1,5 +1,8 @@
 import numpy as np
 
+from base.Similarity_mark2.tversky import tanimoto_similarity, tversky_similarity
+from base.Similarity_mark2.s_plus import dice_similarity, s_plus_similarity, p3alpha_similarity
+
 try:
     from base.Cython.Similarity import Similarity
 except ImportError:
@@ -9,6 +12,7 @@ except ImportError:
 from base.BaseRecommender import RecommenderSystem
 from base.BaseRecommender_SM import RecommenderSystem_SM
 from base.RecommenderUtils import check_matrix, extract_UCM
+from sklearn import feature_extraction
 
 class UserKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
 
@@ -33,37 +37,39 @@ class UserKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
         representation = "User KNN Collaborative Filtering " 
         return representation
 
-    def fit(self, k=250, shrink=50):
+    def fit(self, k=250, shrink=100):
         self.k = k
 
         self.shrink = shrink
-#       test = extract_UCM(self.URM_train)
-        self.similarity = Similarity(
-            self.URM_train.T,
-            shrink=shrink,
-            verbose=self.verbose,
-            neighbourhood=k,
-            mode=self.similarity_mode,
-            normalize=self.normalize)
-#        self.similarity = jaccard_similarity(self.URM_train.T,)
-
+        if self.similarity_mode != "tversky":
+            self.similarity = Similarity(
+                self.URM_train.T,
+                shrink=shrink,
+                verbose=self.verbose,
+                neighbourhood=k,
+                mode=self.similarity_mode,
+                normalize=self.normalize)
+        else:
+            self.W_sparse = tversky_similarity(self.URM_train, k =k)
+            self.W_sparse = check_matrix(self.W_sparse, "csr")
         self.parameters = "sparse_weights= {0}, verbose= {1}, similarity= {2}, shrink= {3}, neighbourhood={4}, " \
                           "normalize= {5}".format(
             self.sparse_weights, self.verbose, self.similarity_mode, self.shrink, self.k, self.normalize)
         print("UserKNNCFRecommender: model fitting begins")
-        if self.sparse_weights:
+        if self.sparse_weights and self.similarity_mode != "tversky":
             self.W_sparse = self.similarity.compute_similarity()
-        else:
+        elif not self.sparse_weights:
             self.W = self.similarity.compute_similarity()
             self.W = self.W.toarray()
 
-    def recommend(self, playlist_id, exclude_seen=True, n=None, export=False):
+
+    def recommend(self, playlist_id, exclude_seen=True, n=None,filterTopPop=False, export=False):
         if n is None:
             n = self.URM_train.shape[1] - 1
+
         # compute the scores using the dot product
         if self.sparse_weights:
             scores = self.W_sparse[playlist_id].dot(self.URM_train).toarray().ravel()
-            # print(scores)
         else:
             scores = self.URM_train.T.dot(self.W[playlist_id])
         if self.normalize:
@@ -82,10 +88,11 @@ class UserKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
             scores /= den
         if exclude_seen:
             scores = self.filter_seen_on_scores(playlist_id, scores)
+        if filterTopPop:
+            scores = self._filter_TopPop_on_scores(scores)
 
         relevant_items_partition = (-scores).argpartition(n)[0:n]
-        relevant_items_partition_sorting = np.argsort(
-            -scores[relevant_items_partition])
+        relevant_items_partition_sorting = np.argsort(-scores[relevant_items_partition])
         ranking = relevant_items_partition[relevant_items_partition_sorting]
         if not export:
             return ranking

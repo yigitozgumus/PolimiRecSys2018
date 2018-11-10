@@ -3,7 +3,7 @@ import scipy.sparse as sps
 import pandas as pd
 from sklearn import feature_extraction
 from sklearn.preprocessing import MultiLabelBinarizer, normalize
-
+from sklearn.utils import shuffle
 
 class PlaylistDataReader(object):
 
@@ -98,11 +98,9 @@ class PlaylistDataReader(object):
             cols = np.array(self.trainData['track_id'])
             self.URM_all = sps.csr_matrix((interaction, (rows, cols)))
         else:
-            self.trainData['popularity'] = 1
-            interaction = np.array(self.trainData['popularity'])
-            rows = np.array(self.trainData['playlist_id'])
-            cols = np.array(self.trainData['track_id'])
-            self.URM_all = sps.csr_matrix((interaction, (rows, cols)))
+            grouped = self.trainData.groupby('playlist_id', as_index=True).apply(lambda x: list(x['track_id']))
+            matrix = MultiLabelBinarizer(classes=self.get_tracks(), sparse_output=True).fit_transform(grouped)
+            self.URM_all = matrix.tocsr()
         print("PlaylistDataReader: URM matrix built completed")
         print("PlaylistDataReader: shape is {}".format(self.URM_all.shape))
         return
@@ -140,14 +138,18 @@ class PlaylistDataReader(object):
         print("PlaylistDataReader: shape is {}".format(self.ICM.shape))
         return
 
-    def split(self):
+    def split(self,divide_two = False):
         print("PlaylistDataReader: URM_train and URM_test are being built...")
         self.URM_all = self.URM_all.tocoo()
         numInteractions = len(self.URM_all.data)
         df_test = []
         split_mask = []
-       # np.random.seed(seed=666)
-
+        # Divide the test set in half
+        test_set_length = len(self.targetData.playlist_id.values)
+        divider_mask = shuffle(np.array([True] * (int(test_set_length / 2)) + [False] * int(test_set_length / 2)),
+                               random_state=666)
+        divider_mask = np.logical_not(divider_mask)
+        test_list = self.targetData.playlist_id.values[divider_mask]
         for p in self.targetData.playlist_id.values:
             values = self.trainData[self.trainData.playlist_id == p].index
             # guarantee to get songs from every playlist
@@ -162,11 +164,14 @@ class PlaylistDataReader(object):
         df_test_final = df_test[split_mask]
         test_mask = np.zeros((numInteractions, 1), dtype=bool).ravel()
         test_mask[df_test_final] = True
-        self.URM_test = sps.coo_matrix(
-            (self.URM_all.data[test_mask], (self.URM_all.row[test_mask], self.URM_all.col[test_mask])))
+        self.URM_test = sps.coo_matrix((self.URM_all.data[test_mask], (self.URM_all.row[test_mask], self.URM_all.col[test_mask])))
         train_mask = np.logical_not(test_mask)
-        self.URM_train = sps.coo_matrix(
-            (self.URM_all.data[train_mask], (self.URM_all.row[train_mask], self.URM_all.col[train_mask])))
+        self.URM_train = sps.coo_matrix((self.URM_all.data[train_mask], (self.URM_all.row[train_mask], self.URM_all.col[train_mask])))
+        if divide_two:
+            # Delete the songs of half of the playlists
+            self.URM_test = self.URM_test.todense()
+            self.URM_test[test_list,:] = 0
+            self.URM_test = sps.coo_matrix(self.URM_test)
         # print("PlaylistDataReader: saving URM_train and URM_test")
         # sps.save_npz(self.dataSubfolder + "URM_train.npz", self.URM_train)
         # sps.save_npz(self.dataSubfolder + "URM_test.npz", self.URM_test)

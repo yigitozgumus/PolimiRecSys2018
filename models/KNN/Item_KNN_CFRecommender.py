@@ -4,7 +4,9 @@ from base.BaseRecommender import RecommenderSystem
 from base.BaseRecommender_SM import RecommenderSystem_SM
 from base.RecommenderUtils import check_matrix
 from base.Similarity import Similarity
-import base.Similarity_mark2.s_plus as splus
+from sklearn import feature_extraction
+
+from base.Similarity_mark2.tversky import tversky_similarity
 
 
 class ItemKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
@@ -24,18 +26,25 @@ class ItemKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
     def fit(self, k=250, shrink=100):
         self.k = k
         self.shrink = shrink
-        self.similarity = Similarity(
-            self.URM_train,
-            shrink=shrink,
-            verbose=self.verbose,
-            neighbourhood=k,
-            mode=self.similarity_mode,
-            normalize=self.normalize)
-
+        if self.similarity_mode != "tversky":
+            self.similarity = Similarity(
+                self.URM_train,
+                shrink=shrink,
+                verbose=self.verbose,
+                neighbourhood=k,
+                mode=self.similarity_mode,
+                normalize=self.normalize)
+        else:
+            self.W_sparse = tversky_similarity(self.URM_train.T,k=k)
+            self.W_sparse = check_matrix(self.W_sparse,"csr")
         self.parameters = "sparse_weights= {0}, verbose= {1}, similarity= {2}, shrink= {3}, neighbourhood={4}, normalize={5}".format(
             self.sparse_weights, self.verbose, self.similarity_mode, self.shrink, self.k, self.normalize)
-        if self.sparse_weights:
+        if self.sparse_weights and self.similarity_mode != "tversky":
             self.W_sparse = self.similarity.compute_similarity()
-        else:
+        elif not self.sparse_weights:
             self.W = self.similarity.compute_similarity()
             self.W = self.W.toarray()
+        self.URM_train_T = self.URM_train.T
+        URM_tfidf_T = feature_extraction.text.TfidfTransformer().fit_transform(self.URM_train_T)
+        URM_tfidf = URM_tfidf_T.T
+        self.URM_tfidf_csr = URM_tfidf.tocsr()

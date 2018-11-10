@@ -66,7 +66,7 @@ class FunkSVD(RecommenderSystem):
             self.lrate_decay,
             self.rnd_seed)
 
-    def recommendBatch(self, users_in_batch, n=None, exclude_seen=True, filterTopPop=False, filterCustomItems=False):
+    def recommendBatch(self, users_in_batch, n=None, exclude_seen=True):
 
         # compute the scores using the dot product
         user_profile_batch = self.URM_train[users_in_batch]
@@ -92,7 +92,7 @@ class FunkSVD(RecommenderSystem):
             ranking[row_index] = relevant_items_partition[relevant_items_partition_sorting]
         return ranking
 
-    def recommend(self, user_id, n=None, exclude_seen=True, filterTopPop=False, filterCustomItems=False):
+    def recommend(self, user_id, n=None, exclude_seen=True):
 
         if n == None:
             n = self.URM_train.shape[1] - 1

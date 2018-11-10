@@ -10,3 +10,5 @@ experiments
 Logs/
 build
 **.npz
+**.sql
+

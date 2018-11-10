@@ -44,7 +44,7 @@ class BPR_Sampling(object):
         self.eligibleUsers = []
         self.userSeenItems = dict()
         # Select only positive interactions
-        URM_train_positive = self.URM_train.multiply(self.URM_train == positive_threshold)
+        URM_train_positive = self.URM_train.multiply(self.URM_train > positive_threshold)
         for playlist_id in range(self.num_users):
             if URM_train_positive[playlist_id].nnz > 0:
                 self.eligibleUsers = np.append(self.eligibleUsers,playlist_id)

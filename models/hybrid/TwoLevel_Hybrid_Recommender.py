@@ -56,6 +56,7 @@ class TwoLevelHybridRecommender(RecommenderSystem, RecommenderSystem_SM):
                                          normalize=self.normalize)
         # Compute the similarity for the Slim
         self.similarity_slim = Slim_BPR_Recommender_Cython(self.URM_train)
+
         # Add the parameters for the log
         self.parameters = "sparse_weights= {0}, verbose= {1}, similarity= {2}," \
                           "shrink= {3}, neighbourhood= {4}, normalize= {5}," \
