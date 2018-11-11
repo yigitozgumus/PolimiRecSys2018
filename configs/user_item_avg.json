@@ -1,4 +1,4 @@
-{
+{    
  "models": [    
      {
          "model_name": "user_item_avg",
@@ -7,12 +7,10 @@
          "similarity_mode": "jaccard",
          "normalize": false,
          "alpha": 0.165
-
      }
  ],
-  "alpha" : [0.15, 0.16, 0.17,0.18,0.19, 0.20, 0.21, 0.22, 0.23, 0.24, 0.25],
- "shrink" : [ 100, 250, 500],
- "neighbourhood" : [ 50, 100, 250 ,500],
+"alpha": [0.121,0.122,0.123,0.124,0.125,0.126,0.127,0.128,0.129,0.161,0.162,0.163,0.164,0.165,0.166,0.167,0.168,0.169],
+     "neighbourhood" : [ 50, 100, 250 ,500],
   "dataReader": {
       "adjustSequentials": false
   }

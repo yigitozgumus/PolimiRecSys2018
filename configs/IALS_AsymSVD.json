@@ -4,8 +4,8 @@
         "model_name": "ials_numpy",
         "sparse_weights": true,
         "verbose": false,
-        "similarity_mode": "cosine",
-        "normalize": true
+        "similarity_mode": "tanimoto",
+        "normalize": false
     }
 
 ],
@@ -15,6 +15,6 @@
     "neighbourhood": [],
 
     "dataReader": {
-        "adjustSequentials": false
+        "adjustSequentials": true
     }
 }

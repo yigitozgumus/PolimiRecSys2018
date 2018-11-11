@@ -9,7 +9,7 @@ from base.BaseRecommender_SM import RecommenderSystem_SM
 from models.Slim_BPR.BPR_Sampling import BPR_Sampling
 from base.RecommenderUtils import check_matrix
 from scipy.special import expit
-
+from tqdm import tqdm
 
 def sigmoidFunction(x):
     return 1 / (1 + np.exp(-x))
@@ -208,12 +208,10 @@ class Slim_BPR_Recommender_Python(BPR_Sampling, RecommenderSystem, RecommenderSy
                 self.updateSimilarityMatrix()
                 results_run = self.evaluate_recommendations(URM_test)
                 self.writeCurrentConfig(currentEpoch, results_run)
-                print("Epoch {} of {} complete in {:.2f} minutes".format(currentEpoch + 1, epochs,
-                                                                         float(time.time() - start_time_epoch) / 60))
+                print("Epoch {} of {} complete in {:.2f} minutes".format(currentEpoch + 1, epochs,float(time.time() - start_time_epoch) / 60))
             # Fit with no validation
             else:
-                print("Epoch {} of {} complete in {:.2f} minutes".format(currentEpoch + 1, epochs,
-                                                                         float(time.time() - start_time_epoch) / 60))
+                print("Epoch {} of {} complete in {:.2f} minutes".format(currentEpoch + 1, epochs,float(time.time() - start_time_epoch) / 60))
         self.updateSimilarityMatrix()
         print("Fit completed in {:.2f} minutes".format(float(time.time() - start_time_train) / 60))
         sys.stdout.flush()

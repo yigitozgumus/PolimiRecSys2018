@@ -11,7 +11,7 @@ class BPRMF(RecommenderSystem):
 
     # TODO: add global effects
     def __init__(self,
-                 num_factors=50,
+                 num_factors=30,
                  lrate=0.01,
                  user_reg=0.015,
                  pos_reg=0.015,
