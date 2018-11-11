@@ -61,12 +61,6 @@ class RecommenderSystem(object):
         self.minRatingsPerUser = minRatingsPerUser
         self.exclude_seen = exclude_seen
 
-        self.URM_test = check_matrix(URM_test_new, format='csr')
-       # self.URM_train = check_matrix(self.URM_train, format='csr')
-        self.at = at
-        self.minRatingsPerUser = minRatingsPerUser
-        self.exclude_seen = exclude_seen
-
         numUsers = self.URM_test.shape[0]
         # Prune users with an insufficient number of ratings
         rows = self.URM_test.indptr
