@@ -1,3 +1,4 @@
+# URM train is swapped with tfidfed version
 import numpy as np
 
 from base.Similarity_mark2.tversky import tanimoto_similarity, tversky_similarity
@@ -21,8 +22,7 @@ class UserKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
                      sparse_weights=True,
                      verbose=True, 
                      similarity_mode="cosine",
-                     normalize= False,
-                     use_UCM = False):
+                     normalize= False):
         super(UserKNNCFRecommender, self).__init__()
         self.verbose = verbose
         self.URM_train = check_matrix(URM_train, 'csr')
@@ -31,8 +31,12 @@ class UserKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
         self.similarity_mode = similarity_mode
         self.parameters = None
         self.normalize = normalize
-        self.choice = use_UCM
-
+        # TFIDF that 
+        self.URM_train_T = self.URM_train.T
+        URM_tfidf_T = feature_extraction.text.TfidfTransformer().fit_transform(self.URM_train_T)
+        URM_tfidf = URM_tfidf_T.T
+        self.URM_tfidf_csr = URM_tfidf.tocsr()
+        
     def __str__(self):
         representation = "User KNN Collaborative Filtering " 
         return representation
@@ -43,7 +47,7 @@ class UserKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
         self.shrink = shrink
         if self.similarity_mode != "tversky":
             self.similarity = Similarity(
-                self.URM_train.T,
+                self.URM_tfidf_csr.T,
                 shrink=shrink,
                 verbose=self.verbose,
                 neighbourhood=k,
@@ -79,8 +83,6 @@ class UserKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
             rated = user_profile.copy()
             rated.data = np.ones_like(rated.data)
             if self.sparse_weights:
-               # print(rated.shape)
-               # print(self.W_sparse.shape)
                 den = rated.dot(self.W_sparse).toarray().ravel()
             else:
                 den = rated.dot(self.W).ravel()
