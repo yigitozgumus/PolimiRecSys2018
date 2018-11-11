@@ -1,3 +1,4 @@
+
 import numpy as np
 import scipy.sparse as sps
 import pandas as pd
@@ -26,6 +27,8 @@ class PlaylistDataReader(object):
         self.trainData = pd.read_csv(self.dataSubfolder + "train.csv")
         self.trackData = pd.read_csv(self.dataSubfolder + "tracks.csv")
         self.targetData = pd.read_csv(self.dataSubfolder + "target_playlists.csv")
+        self.artists = sps.load_npz(self.dataSubfolder + "artists.npz")
+        self.albums = sps.load_npz(self.dataSubfolder + "albums.npz")
         return
 
         ## Attribute Methods
@@ -59,6 +62,16 @@ class PlaylistDataReader(object):
         else:
             return self.URM_train
 
+    def get_URM_train_tfidf(self):
+        if self.URM_train is None:
+            raise TypeError("URM train is not build")
+        else:
+            self.URM_train_t = self.URM_train.T
+            URM_tfidf_T = feature_extraction.text.TfidfTransformer().fit_transform(self.URM_train_t)
+            URM_tfidf = URM_tfidf_T
+            self.URM_train_tfidf = URM_tfidf.tocsr()
+            return self.URM_train_tfidf
+
     def get_URM_test(self):
         if self.URM_test is None:
             raise TypeError("URM_test is not built")
@@ -70,6 +83,7 @@ class PlaylistDataReader(object):
             raise TypeError("ICM is not built")
         else:
             return self.ICM
+            
     def get_UCM(self):
         if self.UCM is None:
             raise TypeError("UCM is not built")
@@ -104,10 +118,11 @@ class PlaylistDataReader(object):
         print("PlaylistDataReader: URM matrix built completed")
         print("PlaylistDataReader: shape is {}".format(self.URM_all.shape))
         return
-
+    # UCM matrix + tfidf
     def build_UCM(self):
         print("PlaylistDataReader: UCM Matrix is being built...")
-        UCM_tfidf = feature_extraction.text.TfidfTransformer().fit_transform(self.URM_all.T)
+        stack = sps.hstack((self.artists, self.albums)).tocsr()
+        UCM_tfidf = feature_extraction.text.TfidfTransformer().fit_transform(stack.T)
         UCM_tfidf = UCM_tfidf.T
         self.UCM = UCM_tfidf
         print("PlaylistDataReader: UCM matrix built completed")
@@ -138,7 +153,7 @@ class PlaylistDataReader(object):
         print("PlaylistDataReader: shape is {}".format(self.ICM.shape))
         return
 
-    def split(self,divide_two = False):
+    def split(self,divide_two=False):
         print("PlaylistDataReader: URM_train and URM_test are being built...")
         self.URM_all = self.URM_all.tocoo()
         numInteractions = len(self.URM_all.data)
@@ -147,7 +162,7 @@ class PlaylistDataReader(object):
         # Divide the test set in half
         test_set_length = len(self.targetData.playlist_id.values)
         divider_mask = shuffle(np.array([True] * (int(test_set_length / 2)) + [False] * int(test_set_length / 2)),
-                               random_state=666)
+                               random_state=0)
         divider_mask = np.logical_not(divider_mask)
         test_list = self.targetData.playlist_id.values[divider_mask]
         for p in self.targetData.playlist_id.values:
@@ -164,7 +179,10 @@ class PlaylistDataReader(object):
         df_test_final = df_test[split_mask]
         test_mask = np.zeros((numInteractions, 1), dtype=bool).ravel()
         test_mask[df_test_final] = True
-        self.URM_test = sps.coo_matrix((self.URM_all.data[test_mask], (self.URM_all.row[test_mask], self.URM_all.col[test_mask])))
+        ints = self.URM_all.data[test_mask]
+        rows = self.URM_all.row[test_mask]
+        cols = self.URM_all.col[test_mask]
+        self.URM_test = sps.coo_matrix((ints, (rows, cols)))
         train_mask = np.logical_not(test_mask)
         self.URM_train = sps.coo_matrix((self.URM_all.data[train_mask], (self.URM_all.row[train_mask], self.URM_all.col[train_mask])))
         if divide_two:
@@ -178,3 +196,4 @@ class PlaylistDataReader(object):
         if self.verbose:
             print("PlaylistDataReader: Data loading is complete")
         return
+
