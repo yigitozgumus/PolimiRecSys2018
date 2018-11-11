@@ -13,10 +13,10 @@ class Logger(object):
         self.dir = "Logs/"
 
     def export_experiments(self, model_bundle):
-        index = len(list(os.listdir("./experiments"))) -2
+        index = len(list(os.listdir("./experiments_2"))) 
         self.submission_list = []
         for model in model_bundle:
-            filePath = "experiments/exp-"+str(index) + ".csv"
+            filePath = "experiments_2/exp-"+str(index) + ".csv"
             fileName = "exp-" + str(index) + ".csv"
             self.submission_list.append((fileName,filePath,self.time,model, model.map,model.precision,model.recall,model.parameters))
             f = open(filePath,"w+")
