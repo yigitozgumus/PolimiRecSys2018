@@ -9,7 +9,7 @@ try:
 except ImportError:
     print("Unable to load Cython Cosine_Simimlarity, reverting to Python")
     from base.Similarity import Similarity
-
+from base.Similarity_mark2.s_plus import dot_product
 
 class TwoLevelHybridRecommender(RecommenderSystem, RecommenderSystem_SM):
     def __init__(self,URM_train,UCM,ICM,sparse_weights,verbose,similarity_mode,normalize,alpha,avg):
@@ -27,11 +27,13 @@ class TwoLevelHybridRecommender(RecommenderSystem, RecommenderSystem_SM):
     def __str__(self):
         return "2 Level Hybrid Recommender"
 
-    def fit(self,k=250, shrink=100, alpha= None):
+    def fit(self,k=250, shrink=100, alpha= None,avg= None):
         self.k = k
         self.shrink = shrink
         if not alpha is None:
             self.alpha = alpha
+        if not avg is None:
+            self.avg = avg
 
         # Compute the TFIDF of the URM_train
         self.URM_train_T = self.URM_train.T
@@ -40,7 +42,7 @@ class TwoLevelHybridRecommender(RecommenderSystem, RecommenderSystem_SM):
         self.URM_tfidf_csr = URM_tfidf.tocsr()
 
         # Compute the similarity of the UCM
-        self.similarity_ucm = Similarity(self.UCM,
+        self.similarity_ucm = Similarity(self.UCM.T,
                                          shrink = shrink,
                                          verbose = self.verbose,
                                          neighbourhood= k*2,
@@ -97,10 +99,10 @@ class TwoLevelHybridRecommender(RecommenderSystem, RecommenderSystem_SM):
             n = self.URM_train.shape[1]-1
 
         if self.sparse_weights:
-            s_avg = (self.avg * self.W_sparse_ICM) + ((1- self.avg) * self.W_sparse_UCM)
+            s_avg = (self.avg * self.W_sparse_ICM) + ((1- self.avg) * self.W_sparse_slim)
             scores_avg = self.URM_train[playlist_id].dot(s_avg).toarray().ravel()
-            scores_slim = self.URM_train[playlist_id].dot(self.W_sparse_slim).toarray().ravel()
-            scores = self.alpha + scores_avg + (1 - self.alpha * scores_slim)
+            scores_UCM = self.W_sparse_UCM[playlist_id].dot(self.URM_train).toarray().ravel()
+            scores = self.alpha + scores_avg + (1 - self.alpha * scores_UCM)
         else:
             s_avg = (self.avg * self.W_ICM )+ ((1 - self.avg) * self.W_UCM)
             scores_avg = self.URM_tfidf_csr.T.dot(s_avg[playlist_id])
