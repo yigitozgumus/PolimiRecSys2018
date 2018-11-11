@@ -12,6 +12,8 @@ class RecommenderSystem_SM(object):
             n = self.URM_train.shape[1] - 1
 
         # compute the scores using the dot product
+        # This recommend method is for the item item similarity matrices. It shouldn't be inherited with 
+        # User user methods. 
         if self.sparse_weights:
             user_profile = self.URM_train[playlist_id]
             scores = user_profile.dot(self.W_sparse).toarray().ravel()
