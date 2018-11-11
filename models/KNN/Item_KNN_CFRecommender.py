@@ -3,7 +3,11 @@ import numpy as np
 from base.BaseRecommender import RecommenderSystem
 from base.BaseRecommender_SM import RecommenderSystem_SM
 from base.RecommenderUtils import check_matrix
-from base.Similarity import Similarity
+try:
+    from base.Cython.Similarity import Similarity
+except ImportError:
+    print("Unable to load Cython Cosine_Similarity, reverting to Python")
+    from base.Similarity import Similarity
 from sklearn import feature_extraction
 
 from base.Similarity_mark2.tversky import tversky_similarity
@@ -18,7 +22,10 @@ class ItemKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
         self.verbose = verbose
         self.similarity_mode = similarity_mode
         self.normalize = normalize
-
+        self.URM_train_T = self.URM_train.T
+        URM_tfidf_T = feature_extraction.text.TfidfTransformer().fit_transform(self.URM_train_T)
+        URM_tfidf = URM_tfidf_T.T
+        self.URM_tfidf_csr = URM_tfidf.tocsr()
     def __str__(self):
         representation = "Item KNN Collaborative Filtering "
         return representation
@@ -28,7 +35,7 @@ class ItemKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
         self.shrink = shrink
         if self.similarity_mode != "tversky":
             self.similarity = Similarity(
-                self.URM_train,
+                self.URM_tfidf_csr,
                 shrink=shrink,
                 verbose=self.verbose,
                 neighbourhood=k,
@@ -44,7 +51,4 @@ class ItemKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
         elif not self.sparse_weights:
             self.W = self.similarity.compute_similarity()
             self.W = self.W.toarray()
-        self.URM_train_T = self.URM_train.T
-        URM_tfidf_T = feature_extraction.text.TfidfTransformer().fit_transform(self.URM_train_T)
-        URM_tfidf = URM_tfidf_T.T
-        self.URM_tfidf_csr = URM_tfidf.tocsr()
+
