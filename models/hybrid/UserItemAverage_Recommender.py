@@ -39,7 +39,7 @@ class UserItemAvgRecommender(RecommenderSystem, RecommenderSystem_SM):
     def __str__(self):
         return "User Item Weighted Average Collaborative Filtering"
 
-    def fit(self, k=250, shrink=250, alpha=None):
+    def fit(self, k=250, shrink=100, alpha=None):
         self.k = k
         self.shrink = shrink
         if not alpha is None:
@@ -48,9 +48,6 @@ class UserItemAvgRecommender(RecommenderSystem, RecommenderSystem_SM):
         URM_tfidf_T = feature_extraction.text.TfidfTransformer().fit_transform(self.URM_train_T)
         URM_tfidf = URM_tfidf_T.T
         self.URM_tfidf_csr = URM_tfidf.tocsr()
-        ICM_tfidf_T = feature_extraction.text.TfidfTransformer().fit_transform(self.ICM.T)
-        ICM_tfidf = ICM_tfidf_T.T
-        self.ICM_tfidf_csr= ICM_tfidf.tocsr()
         print("UserItemAvgRecommender: Model fitting begins" )
         if self.similarity_mode != "tversky":
             # UCM creates a waaay unstable model
@@ -61,13 +58,13 @@ class UserItemAvgRecommender(RecommenderSystem, RecommenderSystem_SM):
                                              mode=self.similarity_mode,
                                              normalize=self.normalize)
             # 20635 * 20635 matrix
-            self.similarity_icm = Similarity(self.ICM_tfidf_csr.T, shrink=shrink,
+            self.similarity_icm = Similarity(self.ICM.T, shrink=shrink,
                                              verbose=self.verbose,
                                              neighbourhood=k,
                                              mode=self.similarity_mode,
                                              normalize=self.normalize)
         else:
-            self.W_sparse_UCM = tversky_similarity(self.UCM, k =k)
+            self.W_sparse_UCM = tversky_similarity(self.URM_tfidf_csr, k =k*2)
             self.W_sparse_UCM = check_matrix(self.W_sparse_UCM, "csr")
             self.W_sparse_ICM = tversky_similarity(self.ICM, k=k)
             self.W_sparse_ICM = check_matrix(self.W_sparse_ICM,"csr")
