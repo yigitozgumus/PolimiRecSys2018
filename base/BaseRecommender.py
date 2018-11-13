@@ -102,7 +102,7 @@ class RecommenderSystem(object):
             self.map = "{:.6f}".format(cum_map)
             self.precision = "{:.6f}".format(cum_precision)
             self.recall = "{:.6f}".format(cum_recall)
-            print("Recommender performance is: Precision = {:.4f}, Recall = {:.4f}, MAP = {:.4f}".format(
+            print("Recommender performance is: Precision = {:.6f}, Recall = {:.6f}, MAP = {:.6f}".format(
                 cum_precision, cum_recall, cum_map))
         else:
             print("WARNING: No users had a sufficient number of relevant items")
