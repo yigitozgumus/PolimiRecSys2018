@@ -4,15 +4,14 @@
          "model_name": "user_knn_cf",
          "sparse_weights": true,
          "verbose": false,
-         "similarity_mode": "tversky",
-         "normalize": false,
-         "use_UCM" : true
+         "similarity_mode": "jaccard",
+         "normalize": false
 
      }
  ],
  "shrink" : [ 100, 250, 500],
  "neighbourhood" : [ 50, 100, 250 ,500],
   "dataReader": {
-      "adjustSequentials": true
+      "adjustSequentials": false
   }
 }

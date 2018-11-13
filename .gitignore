@@ -4,9 +4,11 @@ __pycache__/
 .ipynb_checkpoints
 submissions
 Analysis
+configs/
 archived
 .vscode/settings.json
-experiments
+experiments/
+experiments_2/
 Logs/
 build
 **.npz
