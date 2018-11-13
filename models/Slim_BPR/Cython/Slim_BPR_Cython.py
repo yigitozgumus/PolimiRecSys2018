@@ -41,9 +41,9 @@ class Slim_BPR_Recommender_Cython(Slim_BPR_Recommender_Python):
             batch_size=1000,
             validate_every_N_epochs=1,
             start_validation_after_N_epochs=0,
-            lambda_i=0.0025,
-            lambda_j=0.00025,
-            learning_rate=0.05,
+            lambda_i=1,
+            lambda_j=1,
+            learning_rate=0.01,
             topK=500,
             sgd_mode='adagrad'):
 

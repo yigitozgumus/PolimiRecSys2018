@@ -42,7 +42,10 @@ class Logger(object):
             "|---              |---   |---         |---  |---        |---     |---         |---      |")
         f.close()
 
-    def log_experiment(self):
+    def log_experiment(self,submission=False):
+        submit = ""
+        if submission:
+            submit = "Full URM"
         if self.logFile is None:
             f = open(self.dir + "Logs.md", "a")
         else:
@@ -53,6 +56,6 @@ class Logger(object):
                 self.createLogFile(self.logFile)
                 f = open(self.dir + self.logFile, "a")
         for submission in self.submission_list:
-            f.write("\n|[" + submission[0] + "](" + submission[1]+ ")|" + "|".join(list(map(str,submission[2:]))) + "||")
+            f.write("\n|[" + submission[0] + "](" + submission[1]+ ")|" + "|".join(list(map(str,submission[2:]))) + "|" + submit + "|")
 
         f.close()
