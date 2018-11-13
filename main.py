@@ -31,7 +31,7 @@ def main():
     elif mode == 3:
         pipeline_mf(file_name, args.exp_switch, args.log_switch, logFile)
     elif mode == 4:
-        pipeline_weighted(file_name, args.exp_switch, args.log_switch, logFile)
+        pipeline_submission(file_name, args.exp_switch, args.log_switch, logFile)
 
 
 def pipeline_mf(fileName, exp_, log_, logFile):
@@ -58,8 +58,7 @@ def pipeline_mf(fileName, exp_, log_, logFile):
 def pipeline_stable(fileName, exp_, log_, logFile):
     clear()
     conf = Configurator(fileName)
-    data_reader = PlaylistDataReader(
-        adjustSequentials=conf.configs.dataReader["adjustSequentials"])
+    data_reader = PlaylistDataReader()
     data_reader.build_URM()
     data_reader.build_UCM()
     data_reader.build_ICM()
@@ -81,8 +80,7 @@ def pipeline_dev(fileName, exp_, log_, logFile):
     # Load the data
     conf = Configurator(fileName)
 
-    data_reader = PlaylistDataReader(
-        adjustSequentials=conf.configs.dataReader["adjustSequentials"])
+    data_reader = PlaylistDataReader()
     data_reader.build_URM()
     data_reader.build_UCM()
     data_reader.build_ICM()
@@ -91,9 +89,9 @@ def pipeline_dev(fileName, exp_, log_, logFile):
     # Prepare the models
     rec_sys = conf.extract_models(data_reader)
     # Shrink exp
-    for method in conf.configs.alpha:
+    for method in conf.configs.gamma:
         for model in rec_sys:
-            model.fit(alpha=method)  # Train the models
+            model.fit(gamma=method)  # Train the models
             model.evaluate_recommendations(
                 data_reader.URM_test, at=10, exclude_seen=True)  # make prediction
         if exp_:
@@ -101,8 +99,24 @@ def pipeline_dev(fileName, exp_, log_, logFile):
         if log_:
             l.log_experiment()
 
-def pipeline_weighted(fileName,exp_,log_,logFile):
-    pass
+def pipeline_submission(fileName,exp_,log_,logFile):
+    clear()
+    conf = Configurator(fileName)
+    data_reader = PlaylistDataReader(
+        adjustSequentials=conf.configs.dataReader["adjustSequentials"])
+    data_reader.build_URM()
+    data_reader.build_UCM()
+    data_reader.build_ICM()
+    data_reader.split()
+    l = Logger(data_reader.targetData, logFile)
+    rec_sys = conf.extract_models(data_reader,submission=True)
+    for model in rec_sys:
+        model.fit()
+        model.evaluate_recommendations(data_reader.get_URM_test(), at=10, exclude_seen=True)  # make prediction
+    if exp_:
+        l.export_experiments(rec_sys)
+    if log_:
+        l.log_experiment(submission=True)
 
 if __name__ == "__main__":
     main()
