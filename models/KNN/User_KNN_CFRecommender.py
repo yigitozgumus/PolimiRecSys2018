@@ -1,5 +1,6 @@
 # URM train is swapped with tfidfed version
 import numpy as np
+from sklearn.preprocessing.data import normalize
 
 from base.Similarity_mark2.tversky import tanimoto_similarity, tversky_similarity
 from base.Similarity_mark2.s_plus import dice_similarity, s_plus_similarity, p3alpha_similarity
@@ -41,7 +42,7 @@ class UserKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
         representation = "User KNN Collaborative Filtering " 
         return representation
 
-    def fit(self, k=250, shrink=100):
+    def fit(self, k=500, shrink=250):
         self.k = k
 
         self.shrink = shrink

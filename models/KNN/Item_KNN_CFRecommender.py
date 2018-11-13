@@ -35,7 +35,7 @@ class ItemKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
         self.shrink = shrink
         if self.similarity_mode != "tversky":
             self.similarity = Similarity(
-                self.URM_tfidf_csr,
+                self.URM_train,
                 shrink=shrink,
                 verbose=self.verbose,
                 neighbourhood=k,
