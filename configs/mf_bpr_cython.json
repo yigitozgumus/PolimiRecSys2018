@@ -1,7 +1,7 @@
 {
     "models": [
         {
-            "model_name": "ials",
+            "model_name": "mf_bpr_cython",
             "recompile_cython": true
         }
     ],

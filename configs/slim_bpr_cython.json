@@ -2,7 +2,7 @@
     "models": [
         {
             "model_name": "slim_bpr_cython",
-            "sparse_weights": false,
+            "sparse_weights": true,
             "positive_threshold": 1,
             "recompile_cython": false,
             "symmetric": true,

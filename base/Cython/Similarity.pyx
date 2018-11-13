@@ -15,7 +15,7 @@ import time, sys
 import numpy as np
 cimport numpy as np
 from cpython.array cimport array, clone
-
+from tqdm import tqdm
 
 
 import scipy.sparse as sps

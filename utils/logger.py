@@ -13,10 +13,10 @@ class Logger(object):
         self.dir = "Logs/"
 
     def export_experiments(self, model_bundle):
-        index = len(list(os.listdir("./experiments"))) -2
+        index = len(list(os.listdir("./experiments_2"))) 
         self.submission_list = []
         for model in model_bundle:
-            filePath = "experiments/exp-"+str(index) + ".csv"
+            filePath = "experiments_2/exp-"+str(index) + ".csv"
             fileName = "exp-" + str(index) + ".csv"
             self.submission_list.append((fileName,filePath,self.time,model, model.map,model.precision,model.recall,model.parameters))
             f = open(filePath,"w+")
@@ -42,7 +42,10 @@ class Logger(object):
             "|---              |---   |---         |---  |---        |---     |---         |---      |")
         f.close()
 
-    def log_experiment(self):
+    def log_experiment(self,submission=False):
+        submit = ""
+        if submission:
+            submit = "Full URM"
         if self.logFile is None:
             f = open(self.dir + "Logs.md", "a")
         else:
@@ -53,6 +56,6 @@ class Logger(object):
                 self.createLogFile(self.logFile)
                 f = open(self.dir + self.logFile, "a")
         for submission in self.submission_list:
-            f.write("\n|[" + submission[0] + "](" + submission[1]+ ")|" + "|".join(list(map(str,submission[2:]))) + "||")
+            f.write("\n|[" + submission[0] + "](" + submission[1]+ ")|" + "|".join(list(map(str,submission[2:]))) + "|" + submit + "|")
 
         f.close()

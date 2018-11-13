@@ -7,9 +7,9 @@ from base.RecommenderUtils import similarityMatrixTopK, check_matrix
 from base.BaseRecommender import RecommenderSystem
 from base.BaseRecommender_SM import RecommenderSystem_SM
 from models.Slim_BPR.BPR_Sampling import BPR_Sampling
-
+from base.RecommenderUtils import check_matrix
 from scipy.special import expit
-
+from tqdm import tqdm
 
 def sigmoidFunction(x):
     return 1 / (1 + np.exp(-x))
@@ -20,7 +20,7 @@ class Slim_BPR_Recommender_Python(BPR_Sampling, RecommenderSystem, RecommenderSy
     def __init__(self, URM_train, positive_threshold=1, sparse_weights=False):
         super(Slim_BPR_Recommender_Python, self).__init__()
 
-        self.URM_train = URM_train
+        self.URM_train = check_matrix(URM_train,"csr")
         self.normalize = False
         self.positive_threshold = positive_threshold
         self.sparse_weights = sparse_weights
@@ -31,6 +31,8 @@ class Slim_BPR_Recommender_Python(BPR_Sampling, RecommenderSystem, RecommenderSy
         self.URM_mask.data = self.URM_mask.data >= self.positive_threshold
         self.URM_mask.eliminate_zeros()
         self.parameters = None
+        self.W_sparse = None
+        self.W = None
 
     def __str__(self):
         representation = "Slim BPR implementation Python"
@@ -47,6 +49,10 @@ class Slim_BPR_Recommender_Python(BPR_Sampling, RecommenderSystem, RecommenderSy
                 self.W_sparse = sps.csr_matrix(self.S.T)
             else:
                 self.W = self.S.T
+        if self.sparse_weights:
+            return self.W_sparse
+        else:
+            return self.W
 
     def updateWeightsLoop(self, u, i, j):
         """
@@ -135,9 +141,9 @@ class Slim_BPR_Recommender_Python(BPR_Sampling, RecommenderSystem, RecommenderSy
             batch_size=1000,
             validate_every_N_epochs=1,
             start_validation_after_N_epochs=0,
-            lambda_i=0.0025,
-            lambda_j=0.00025,
-            learning_rate=0.05,
+            lambda_i=1,
+            lambda_j=1,
+            learning_rate=0.01,
             topK=False):
         self.parameters = "positive_threshold={0}, sparse_weights={1}".format(self.positive_threshold, self.sparse_weights)
 
@@ -202,15 +208,18 @@ class Slim_BPR_Recommender_Python(BPR_Sampling, RecommenderSystem, RecommenderSy
                 self.updateSimilarityMatrix()
                 results_run = self.evaluate_recommendations(URM_test)
                 self.writeCurrentConfig(currentEpoch, results_run)
-                print("Epoch {} of {} complete in {:.2f} minutes".format(currentEpoch + 1, epochs,
-                                                                         float(time.time() - start_time_epoch) / 60))
+                print("Epoch {} of {} complete in {:.2f} minutes".format(currentEpoch + 1, epochs,float(time.time() - start_time_epoch) / 60))
             # Fit with no validation
             else:
-                print("Epoch {} of {} complete in {:.2f} minutes".format(currentEpoch + 1, epochs,
-                                                                         float(time.time() - start_time_epoch) / 60))
+                print("Epoch {} of {} complete in {:.2f} minutes".format(currentEpoch + 1, epochs,float(time.time() - start_time_epoch) / 60))
         self.updateSimilarityMatrix()
         print("Fit completed in {:.2f} minutes".format(float(time.time() - start_time_train) / 60))
         sys.stdout.flush()
+        if self.sparse_weights:
+            return self.W_sparse
+        else:
+            return self.W
+
 
     def writeCurrentConfig(self, currentEpoch, results_run):
         current_config = {'lambda_i': self.lambda_i,

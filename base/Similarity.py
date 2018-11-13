@@ -11,6 +11,7 @@ import time
 import sys
 import scipy.sparse as sps
 from base.RecommenderUtils import check_matrix
+from tqdm import tqdm
 
 
 class Similarity:
@@ -160,15 +161,15 @@ class Similarity:
         if not self.tanimoto_coefficient:
             sumOfSquared = np.sqrt(sumOfSquared)
         # Compute all similarities for each item using vectorization
-        for columnIndex in range(self.n_columns):
+        for columnIndex in tqdm(range(self.n_columns)):
             processedItems += 1
-            if time.time() - start_time_print_batch >= 30 or processedItems == self.n_columns:
-                columnPerSec = processedItems / (time.time() - start_time)
-                print("Similarity column {} ( {:2.0f} % ), {:.2f} column/sec, elapsed time {:.2f} min".format(
-                    processedItems, processedItems / self.n_columns * 100, columnPerSec, (time.time() - start_time) / 60))
-                sys.stdout.flush()
-                sys.stderr.flush()
-                start_time_print_batch = time.time()
+            # if time.time() - start_time_print_batch >= 30 or processedItems == self.n_columns:
+            #     columnPerSec = processedItems / (time.time() - start_time)
+            #     print("Similarity column {} ( {:2.0f} % ), {:.2f} column/sec, elapsed time {:.2f} min".format(
+            #         processedItems, processedItems / self.n_columns * 100, columnPerSec, (time.time() - start_time) / 60))
+            #     sys.stdout.flush()
+            #     sys.stderr.flush()
+            #     start_time_print_batch = time.time()
 
             # All data points for a given item
             item_data = self.dataMatrix[:, columnIndex]

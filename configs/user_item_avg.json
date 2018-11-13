@@ -1,0 +1,17 @@
+{    
+ "models": [    
+     {
+         "model_name": "user_item_avg",
+         "sparse_weights": true,
+         "verbose": false,
+         "similarity_mode": "jaccard",
+         "normalize": false,
+         "alpha": 0.1655
+     }
+ ],
+"alpha": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
+     "neighbourhood" : [ 50, 100, 250 ,500],
+  "dataReader": {
+      "adjustSequentials": false
+  }
+}

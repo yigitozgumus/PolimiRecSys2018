@@ -1,49 +1,11 @@
 {
- "models": [
- 	
- 	
-     {
-         "model_name": "user_knn_cf",
-         "sparse_weights": true,
-         "verbose": false,
-         "similarity_mode": "cosine",
-         "normalize" : true
-
-     }
-     ,
-     {
-         "model_name": "user_knn_cf",
-         "sparse_weights": true,
-         "verbose": false,
-         "similarity_mode": "pearson",
-         "normalize": true
-
-     }
-     ,
-     {
-         "model_name": "user_knn_cf",
-         "sparse_weights": true,
-         "verbose": false,
-         "similarity_mode": "adjusted",
-         "normalize": true
-
-     }
-     ,
+ "models": [    
      {
          "model_name": "user_knn_cf",
          "sparse_weights": true,
          "verbose": false,
          "similarity_mode": "jaccard",
-         "normalize": true
-
-     }
-     ,
-     {
-         "model_name": "user_knn_cf",
-         "sparse_weights": true,
-         "verbose": false,
-         "similarity_mode": "tanimoto",
-         "normalize": true
+         "normalize": false
 
      }
  ],

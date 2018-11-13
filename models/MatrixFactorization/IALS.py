@@ -2,6 +2,7 @@ import numpy as np
 from base.RecommenderUtils import check_matrix
 
 from base.BaseRecommender import RecommenderSystem
+from tqdm import tqdm
 import models.MatrixFactorization.Cython.MF_RMSE as mf
 
 
@@ -21,11 +22,11 @@ class IALS_numpy(RecommenderSystem):
 
     # TODO: Add support for multiple confidence scaling functions (e.g. linear and log scaling)
     def __init__(self,
-                 num_factors=150,
-                 reg=0.015,
+                 num_factors=50,
+                 reg=0.011,
                  iters=30,
                  scaling='log',
-                 alpha=45,
+                 alpha=40,
                  epsilon=1.0,
                  init_mean=0.0,
                  init_std=0.1,
@@ -76,7 +77,7 @@ class IALS_numpy(RecommenderSystem):
         # initialize the latent factors
         self.X = np.random.normal(self.init_mean, self.init_std, size=(M, self.num_factors))
         self.Y = np.random.normal(self.init_mean, self.init_std, size=(N, self.num_factors))
-        for it in range(self.iters):
+        for it in tqdm(range(self.iters)):
 
             self.X = self._lsq_solver_fast(C, self.X, self.Y, self.reg)
             self.Y = self._lsq_solver_fast(Ct, self.Y, self.X, self.reg)
