@@ -1,16 +1,18 @@
 .idea
+data
 Lecture Notebooks
 __pycache__/
 .ipynb_checkpoints
 submissions
 Analysis
-configs/
+configs
 archived
 .vscode/settings.json
 experiments/
 experiments_2/
-Logs/
+Logs
 build
 **.npz
 **.sql
+Makefile
 
