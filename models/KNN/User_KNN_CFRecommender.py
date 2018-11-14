@@ -41,14 +41,14 @@ class UserKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
     def __str__(self):
         representation = "User KNN Collaborative Filtering " 
         return representation
-
-    def fit(self, k=500, shrink=250):
+    # after the tuning
+    def fit(self, k=200, shrink=0):
         self.k = k
 
         self.shrink = shrink
         if self.similarity_mode != "tversky":
             self.similarity = Similarity(
-                self.URM_tfidf_csr.T,
+                self.URM_train.T,
                 shrink=shrink,
                 verbose=self.verbose,
                 neighbourhood=k,

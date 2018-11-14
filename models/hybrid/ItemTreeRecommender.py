@@ -48,10 +48,10 @@ class ItemTreeRecommender(RecommenderSystem):
         print("Item Tree Hybrid Recommender: Model fitting begins")
         # Calculate all the Similarity Matrices One by one
         # URM tfidf --> 50446 x 50446
-        self.sim_URM_tfidf = Similarity(self.URM_train_tfidf.T,
-                                       shrink=shrink,
+        self.sim_URM_tfidf = Similarity(self.URM_train.T,
+                                       shrink=0,
                                        verbose=self.verbose,
-                                       neighbourhood=k* 2,
+                                       neighbourhood=200,
                                        mode=self.similarity_mode,
                                        normalize=self.normalize)
         # ICM tfidf --> 20635 x 20635
@@ -62,10 +62,10 @@ class ItemTreeRecommender(RecommenderSystem):
                                         mode=self.similarity_mode,
                                         normalize=self.normalize)
         # URM.T tfidf --> 20635 x 20635
-        self.sim_URM_T_tfidf = Similarity(self.URM_train_tfidf,
-                                       shrink=shrink,
+        self.sim_URM_T_tfidf = Similarity(self.URM_train,
+                                       shrink=10,
                                        verbose=self.verbose,
-                                       neighbourhood=k* 2,
+                                       neighbourhood=350,
                                        mode=self.similarity_mode,
                                        normalize=self.normalize)
         # Slim --> 20635 x 20635

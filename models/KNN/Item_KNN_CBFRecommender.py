@@ -4,7 +4,11 @@ import scipy.sparse as sps
 from base.BaseRecommender import RecommenderSystem
 from base.BaseRecommender_SM import RecommenderSystem_SM
 from base.RecommenderUtils import check_matrix
-from base.Similarity import Similarity
+try:
+    from base.Cython.Similarity import Similarity
+except ImportError:
+    print("Unable to load Cython Cosine_Similarity, reverting to Python")
+    from base.Similarity import Similarity
 
 
 class ItemKNNCBFRecommender(RecommenderSystem, RecommenderSystem_SM):

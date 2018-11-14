@@ -1,81 +1,86 @@
-
 """
 Author: Semsi Yigit Ozgumus
 """
 import numpy as np
 from sklearn.preprocessing.data import normalize
 
-from models.Slim_BPR.Cython.Slim_BPR_Cython import Slim_BPR_Recommender_Cython
 from base.BaseRecommender import RecommenderSystem
 from base.RecommenderUtils import check_matrix
+
 try:
     from base.Cython.Similarity import Similarity
 except ImportError:
     print("Unable to load Cython Cosine_Simimlarity, reverting to Python")
     from base.Similarity import Similarity
 
+from models.Slim_BPR.Cython.Slim_BPR_Cython import Slim_BPR_Recommender_Cython
 
-class SeqRandRecommender(RecommenderSystem):
+class SeqRandRecommender_mark2(RecommenderSystem):
 
-    def __init__(self,URM_train,URM_train_tfidf,UCM,ICM,sequential_playlists,sparse_weights=True, verbose=False,similarity_mode="tanimoto",
-                 normalize=False, alpha=0.168, beta = 0.375, gamma = 0.717):
-        super(SeqRandRecommender,self).__init__()
+    def __init__(self,URM_train,URM_train_tfidf,UCM, ICM,sequential_playlists, sparse_weights=True, verbose=False, similarity_mode="jaccard",
+                 normalize=False, alpha=0.168, beta=0.317, gamma=0.546, omega = 0.666):
+        super(SeqRandRecommender_mark2,self).__init__()
         self.URM_train = check_matrix(URM_train,"csr")
         self.URM_train_tfidf = check_matrix(URM_train_tfidf,"csr")
-        self.UCM = check_matrix(UCM,"csr")
         self.ICM = check_matrix(ICM,"csr")
+        self.UCM = check_matrix(UCM,"csr")
         self.seq_list = sequential_playlists
         self.sparse_weights = sparse_weights
-        self.similarity_mode = similarity_mode
         self.verbose = verbose
+        self.similarity_mode = similarity_mode
         self.normalize = normalize
-
         self.alpha = alpha
         self.beta = beta
         self.gamma = gamma
+        self.omega = omega
         self.parameters = None
 
     def __str__(self):
-        return "Sequential Random 2 Level Hybrid Recommender"
+        return "Sequential Random 4 Level Hybrid Recommender"
 
-    def partition(self,first,second,partition):
-        denominator = second * partition + first
-        return first/denominator, 1 - first/denominator
-
-    def fit(self, k=250, shrink=100, alpha= None, beta= None, gamma = None):
+    def fit(self, k = 250, shrink= 100, alpha=None, beta= None, gamma = None, omega= None):
         self.k = k
         self.shrink = shrink
-        # check the parameters for the tuning scenerio
+        # Check the parameters for the tuning scenerio
         if alpha is not None:
             self.alpha = alpha
         if beta is not None:
             self.beta = beta
         if gamma is not None:
             self.gamma = gamma
-        # Calculate all the Similarity Matrices one by one
-        print("Sequential Random Recommender: model fitting begins")
-        # URM_tfidf --> 50446 x 50446
+        if omega is not None:
+            self.omega = omega
+        print("Sequential Random Hybrid Recommender mark 2: Model fitting begins")
+        # Calculate all the Similarity Matrices One by one
+        # URM tfidf --> 50446 x 50446
         self.sim_URM_tfidf = Similarity(self.URM_train_tfidf.T,
                                        shrink=shrink,
                                        verbose=self.verbose,
                                        neighbourhood=k* 2,
                                        mode=self.similarity_mode,
                                        normalize=self.normalize)
-        # UCM_tfidf --> 50446 x 50446
+
         self.sim_UCM_tfidf = Similarity(self.UCM.T,
-                                        shrink=shrink,
-                                        verbose=self.verbose,
-                                        neighbourhood= k* 2,
-                                        mode= self.similarity_mode,
-                                        normalize=True)
-        #self.sim_UCM_tfidf = Slim_BPR_Recommender_Cython(self.URM_train_tfidf.T)
-        # ICM_tfidf --> 20635 x 20635
+                                       shrink=shrink,
+                                       verbose=self.verbose,
+                                       neighbourhood=k* 2,
+                                       mode=self.similarity_mode,
+                                       normalize=self.normalize)
+        # ICM tfidf --> 20635 x 20635
         self.sim_ICM_tfidf = Similarity(self.ICM.T,
                                         shrink=shrink,
                                         verbose=self.verbose,
                                         neighbourhood=k,
                                         mode=self.similarity_mode,
                                         normalize=self.normalize)
+        # URM.T tfidf --> 20635 x 20635
+        self.sim_URM_T_tfidf = Similarity(self.URM_train_tfidf,
+                                       shrink=shrink,
+                                       verbose=self.verbose,
+                                       neighbourhood=k* 2,
+                                       mode=self.similarity_mode,
+                                       normalize=self.normalize)
+        # Slim --> 20635 x 20635
         self.sim_Slim = Slim_BPR_Recommender_Cython(self.URM_train)
 
         if self.sparse_weights:
@@ -83,39 +88,41 @@ class SeqRandRecommender(RecommenderSystem):
             self.W_sparse_URM = self.sim_URM_tfidf.compute_similarity()
             # UCM
             self.W_sparse_UCM = self.sim_UCM_tfidf.compute_similarity()
-            #self.W_sparse_UCM = self.sim_UCM_tfidf.fit()
-            # ICM
+            # UCM
             self.W_sparse_ICM = self.sim_ICM_tfidf.compute_similarity()
+            # self.W_sparse_UCM = self.sim_UCM_tfidf.fit()
+            # ICM
+            self.W_sparse_URM_T = self.sim_URM_T_tfidf.compute_similarity()
             # Slim
             self.W_sparse_Slim = self.sim_Slim.fit()
+
         # add the parameters for the logging
-        self.parameters = "sparse_weights= {0}, verbose= {1}, similarity= {2},shrink= {3}, neighbourhood={4},normalize= {5}, alpha= {6}, beta={7}, gamma={8}".format(
-            self.sparse_weights, self.verbose, self.similarity_mode, self.shrink, self.k, self.normalize, self.alpha,self.beta,self.gamma)
+        self.parameters = "sparse_weights= {0}, verbose= {1}, similarity= {2},shrink= {3}, neighbourhood={4},normalize= {5}, alpha= {6}, beta={7}, gamma={8}, omega={9}".format(
+            self.sparse_weights, self.verbose, self.similarity_mode, self.shrink, self.k, self.normalize,
+            self.alpha, self.beta, self.gamma, self.omega)
 
-        # calculate the portions
-        self.item_seq, self.user_seq = self.partition(self.beta,self.alpha,self.gamma)
-        self.user_rand, self.item_rand = self.partition(self.alpha, self.beta,1- self.gamma)
-
-        # Calculate the User based Part
-        self.sim_user = self.alpha * self.W_sparse_UCM + (1-self.alpha) * self.W_sparse_URM
-        # Calculate the Item based Part
-        self.sim_item = self.beta * self.W_sparse_Slim + (1-self.beta) * self.W_sparse_ICM
-
-    def recommend(self,playlist_id,exclude_seen=True,n=None, export=False):
+    def recommend(self, playlist_id, exclude_seen= True, n= None, export = False):
         if n is None:
-            n = self.URM_train.shape[1] -1
-
+            n = self.URM_train.shape[1] - 1
         if self.sparse_weights:
-            # Compute the User based Part
-            scores_users = self.sim_user[playlist_id].dot(self.URM_train).toarray().ravel()
-
-            scores_items = self.URM_train[playlist_id].dot(self.sim_item).toarray().ravel()
-
+            #Item First Branch
+            scores_ICM = self.URM_train[playlist_id].dot(self.W_sparse_ICM).toarray().ravel()
+            scores_Slim = self.URM_train[playlist_id].dot(self.W_sparse_Slim).toarray().ravel()
+            score_first_branch = self.alpha * scores_ICM + (1- self.alpha) * scores_Slim
+            # Item Second Branch
+            scores_URM_T = self.URM_train[playlist_id].dot(self.W_sparse_URM_T).toarray().ravel()
+            scores_item_final = self.beta * score_first_branch + (1-self.beta * scores_URM_T)
+            # User first Branch
+            scores_URM = self.W_sparse_URM[playlist_id].dot(self.URM_train).toarray().ravel()
+            scores_UCM = self.W_sparse_UCM[playlist_id].dot(self.URM_train).toarray().ravel()
+            scores_user_final = self.gamma * scores_URM + (1 - self.gamma) * scores_UCM
+            # Third Branch
+            # Omega should be between 0.5 and 1
             scores = None
             if playlist_id in self.seq_list:
-                scores = self.item_seq * scores_items + self.user_seq * scores_users
+                scores = self.omega * scores_item_final + (1-self.omega) * scores_user_final
             else:
-                scores = self.user_rand * scores_users + self.item_rand * scores_items
+                scores = self.omega * scores_user_final + (1-self.omega) * scores_item_final
 
         if self.normalize:
             # normalization will keep the scores in the same range
@@ -142,3 +149,6 @@ class SeqRandRecommender(RecommenderSystem):
             return ranking
         elif export:
             return str(ranking).strip("[]")
+
+
+
