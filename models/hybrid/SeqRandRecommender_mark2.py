@@ -114,7 +114,7 @@ class SeqRandRecommender_mark2(RecommenderSystem):
             scores_item_final = self.beta * score_first_branch + (1-self.beta * scores_URM_T)
             # User first Branch
             scores_URM = self.W_sparse_URM[playlist_id].dot(self.URM_train).toarray().ravel()
-            scores_UCM = self.W_sparse_UCM[playlist_id].dot(self.URM_train).toarray().ravel()
+            sres_UCM = self.W_sparse_UCM[playlist_id].dot(self.URM_train).toarray().ravel()
             scores_user_final = self.gamma * scores_URM + (1 - self.gamma) * scores_UCM
             # Third Branch
             # Omega should be between 0.5 and 1

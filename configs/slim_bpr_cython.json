@@ -9,8 +9,8 @@
             "sgd_mode": "adagrad"
         }
     ],
-
+    "k": [10,20,30,40,50,100,150,200,250,300,350,400,500,750,1000],
     "dataReader": {
-        "adjustSequentials": true
+        "adjustSequentials": false
     }
 }

@@ -17,6 +17,7 @@ from models.MatrixFactorization.BPRMF import BPRMF
 from models.MatrixFactorization.Cython.MF_BPR_Cython import MF_BPR_Cython
 from models.hybrid.TwoLevel_Hybrid_Recommender import TwoLevelHybridRecommender
 from models.hybrid.ItemTreeRecommender import ItemTreeRecommender
+from models.hybrid.SeqRandRecommender_mark2 import SeqRandRecommender_mark2
 # define clear function
 def clear():
     # check and make call for specific operating system
@@ -148,6 +149,21 @@ class Configurator(object):
                                                   alpha=model["alpha"],
                                                   beta=model["beta"],
                                                   gamma=model["gamma"]))
+            elif model["model_name"] == "seqrand_mark2":
+                recsys.append(SeqRandRecommender_mark2(data,
+                                                 dataReader.get_URM_train_tfidf(),
+                                                 dataReader.get_UCM(),
+                                                 dataReader.get_ICM(),
+                                                 dataReader.get_target_playlists_seq(),
+                                                 sparse_weights=model["sparse_weights"],
+                                                 verbose=model["verbose"],
+                                                 similarity_mode=model["similarity_mode"],
+                                                 normalize=model["normalize"],
+                                                 alpha=model["alpha"],
+                                                 beta=model["beta"],
+                                                 gamma = model["gamma"],
+                                                 omega = model["omega"]
+                                                 ))
         print("Configurator: Models are extracted")
 
         return recsys

@@ -48,7 +48,7 @@ class ItemTreeRecommender(RecommenderSystem):
         print("Item Tree Hybrid Recommender: Model fitting begins")
         # Calculate all the Similarity Matrices One by one
         # URM tfidf --> 50446 x 50446
-        self.sim_URM_tfidf = Similarity(self.URM_train.T,
+        self.sim_URM_tfidf = Similarity(self.URM_train_tfidf.T,
                                        shrink=0,
                                        verbose=self.verbose,
                                        neighbourhood=200,
@@ -56,13 +56,13 @@ class ItemTreeRecommender(RecommenderSystem):
                                        normalize=self.normalize)
         # ICM tfidf --> 20635 x 20635
         self.sim_ICM_tfidf = Similarity(self.ICM.T,
-                                        shrink=shrink,
+                                        shrink=0,
                                         verbose=self.verbose,
-                                        neighbourhood=k,
+                                        neighbourhood=25,
                                         mode=self.similarity_mode,
                                         normalize=self.normalize)
         # URM.T tfidf --> 20635 x 20635
-        self.sim_URM_T_tfidf = Similarity(self.URM_train,
+        self.sim_URM_T_tfidf = Similarity(self.URM_train_tfidf,
                                        shrink=10,
                                        verbose=self.verbose,
                                        neighbourhood=350,
@@ -73,14 +73,14 @@ class ItemTreeRecommender(RecommenderSystem):
 
         if self.sparse_weights:
             # URM
-            self.W_sparse_URM = self.sim_URM_tfidf.compute_similarity()
+            self.W_sparse_URM = normalize(self.sim_URM_tfidf.compute_similarity(),axis=1,norm="l2")
             # UCM
-            self.W_sparse_ICM = self.sim_ICM_tfidf.compute_similarity()
+            self.W_sparse_ICM = normalize(self.sim_ICM_tfidf.compute_similarity(),axis=1,norm="l2")
             # self.W_sparse_UCM = self.sim_UCM_tfidf.fit()
             # ICM
-            self.W_sparse_URM_T = self.sim_URM_T_tfidf.compute_similarity()
+            self.W_sparse_URM_T = normalize(self.sim_URM_T_tfidf.compute_similarity(),axis=1,norm="l2")
             # Slim
-            self.W_sparse_Slim = self.sim_Slim.fit()
+            self.W_sparse_Slim = normalize(self.sim_Slim.fit(),axis=1,norm="l2")
         # add the parameters for the logging
         self.parameters = "sparse_weights= {0}, verbose= {1}, similarity= {2},shrink= {3}, neighbourhood={4},normalize= {5}, alpha= {6}, beta={7}, gamma={8}".format(
             self.sparse_weights, self.verbose, self.similarity_mode, self.shrink, self.k, self.normalize,

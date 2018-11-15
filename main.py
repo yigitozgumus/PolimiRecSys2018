@@ -62,7 +62,7 @@ def pipeline_stable(fileName, exp_, log_, logFile):
     data_reader.build_URM()
     data_reader.build_UCM()
     data_reader.build_ICM()
-    data_reader.split(divide_two=False)
+    data_reader.split()
     l = Logger(data_reader.targetData, logFile)
     rec_sys = conf.extract_models(data_reader)
     for model in rec_sys:
@@ -89,21 +89,20 @@ def pipeline_dev(fileName, exp_, log_, logFile):
     # Prepare the models
     rec_sys = conf.extract_models(data_reader)
     # Shrink exp
-    for method in conf.configs.gamma:
+
+    for k in conf.configs.k:
         for model in rec_sys:
-            model.fit(gamma=method)  # Train the models
-            model.evaluate_recommendations(
-                data_reader.URM_test, at=10, exclude_seen=True)  # make prediction
-        if exp_:
-            l.export_experiments(rec_sys)
-        if log_:
-            l.log_experiment()
+            model.fit(topK=k)  # Train the models
+            model.evaluate_recommendations(data_reader.URM_test, at=10, exclude_seen=True)  # make prediction
+            if exp_:
+                l.export_experiments(rec_sys)
+            if log_:
+                l.log_experiment()
 
 def pipeline_submission(fileName,exp_,log_,logFile):
     clear()
     conf = Configurator(fileName)
-    data_reader = PlaylistDataReader(
-        adjustSequentials=conf.configs.dataReader["adjustSequentials"])
+    data_reader = PlaylistDataReader()
     data_reader.build_URM()
     data_reader.build_UCM()
     data_reader.build_ICM()
