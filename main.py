@@ -46,7 +46,7 @@ def pipeline_mf(fileName, exp_, log_, logFile):
     l = Logger(data_reader.targetData, logFile)
     rec_sys = conf.extract_models(data_reader)
     for model in rec_sys:
-        model.fit(data_reader.get_URM_train())  # Train the models
+        model.fit(URM_test = data_reader.get_URM_train())  # Train the models
         model.evaluate_recommendations(
             data_reader.URM_test, at=10, exclude_seen=True)  # make prediction
     if exp_:
@@ -90,9 +90,11 @@ def pipeline_dev(fileName, exp_, log_, logFile):
     rec_sys = conf.extract_models(data_reader)
     # Shrink exp
 
-    for k in conf.configs.k:
+    #for k in conf.configs.lambda_j:
+    for k in conf.configs.lambda_i:
         for model in rec_sys:
-            model.fit(topK=k)  # Train the models
+            model.fit(lambda_i = k)  # Train the models
+            #model.fit(lambda_j=k)
             model.evaluate_recommendations(data_reader.URM_test, at=10, exclude_seen=True)  # make prediction
             if exp_:
                 l.export_experiments(rec_sys)

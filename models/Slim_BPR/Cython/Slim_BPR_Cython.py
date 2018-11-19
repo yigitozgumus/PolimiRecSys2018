@@ -34,7 +34,7 @@ class Slim_BPR_Recommender_Cython(Slim_BPR_Recommender_Python):
         representation = "Slim BPR implementation Cython"
         return representation
 
-    def fit(self, epochs=30,
+    def fit(self, epochs=50,
             URM_test=None,
             filterTopPop=False,
             minRatingsPerUser=1,
@@ -43,12 +43,12 @@ class Slim_BPR_Recommender_Cython(Slim_BPR_Recommender_Python):
             start_validation_after_N_epochs=0,
             lambda_i=1,
             lambda_j=1,
-            learning_rate=0.01,
+            learning_rate=0.001,
             topK=500,
             sgd_mode='adagrad'):
 
         self.parameters = "positive_threshold= {0}, sparse_weights= {1}, symmetric= {2},sgd_mode= {3}, lambda_i={4}, " \
-                          "lambda_j={5}, learning_rate={6}, topK={7}".format(
+                          "lambda_j={5}, learning_rate={6}, topK={7}, epochs= {8}".format(
             self.positive_threshold,
             self.sparse_weights,
             self.symmetric,
@@ -56,7 +56,8 @@ class Slim_BPR_Recommender_Cython(Slim_BPR_Recommender_Python):
             lambda_i,
             lambda_j,
             learning_rate,
-            topK)
+            topK,
+            epochs)
 
         # Select only positive interactions
         URM_train_positive = self.URM_train.copy()
