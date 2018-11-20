@@ -80,7 +80,10 @@ class ItemTreeRecommender(RecommenderSystem):
             # ICM
             self.W_sparse_URM_T = normalize(self.sim_URM_T_tfidf.compute_similarity(),axis=1,norm="l2")
             # Slim
-            self.W_sparse_Slim = normalize(self.sim_Slim.fit(),axis=1,norm="l2")
+            self.W_sparse_Slim = normalize(self.sim_Slim.fit(
+                lambda_i=0.37142857,
+                lambda_j = 0.97857143,
+                learning_rate = 0.001), axis=1, norm="l2")
         # add the parameters for the logging
         self.parameters = "sparse_weights= {0}, verbose= {1}, similarity= {2},shrink= {3}, neighbourhood={4},normalize= {5}, alpha= {6}, beta={7}, gamma={8}".format(
             self.sparse_weights, self.verbose, self.similarity_mode, self.shrink, self.k, self.normalize,

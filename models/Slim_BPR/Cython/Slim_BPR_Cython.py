@@ -34,14 +34,14 @@ class Slim_BPR_Recommender_Cython(Slim_BPR_Recommender_Python):
         representation = "Slim BPR implementation Cython"
         return representation
 
-    def fit(self, epochs=50,
+    def fit(self, epochs=30,
             URM_test=None,
             filterTopPop=False,
             minRatingsPerUser=1,
             batch_size=1000,
             validate_every_N_epochs=1,
             start_validation_after_N_epochs=0,
-            lambda_i=1,
+            lambda_i=1, 
             lambda_j=1,
             learning_rate=0.001,
             topK=500,
