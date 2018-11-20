@@ -24,6 +24,7 @@ class Logger(object):
             for ind, playlist_id in enumerate(self.data['playlist_id']):
                 f.write(str(playlist_id) + ',' + model.recommend(playlist_id, n=10,export=True) + '\n');
             f.close()
+            print("Logger: The experiment {0} is exported to the {1}".format(fileName,filePath))
             index+=1
 
     def export_single_submission(data, model):

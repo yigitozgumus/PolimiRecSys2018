@@ -1,3 +1,4 @@
+
 from data.PlaylistDataReader import PlaylistDataReader
 from utils.logger import Logger
 from utils.config import clear, Configurator
@@ -46,7 +47,7 @@ def pipeline_mf(fileName, exp_, log_, logFile):
     l = Logger(data_reader.targetData, logFile)
     rec_sys = conf.extract_models(data_reader)
     for model in rec_sys:
-        model.fit(URM_test = data_reader.get_URM_train())  # Train the models
+        model.fit(data_reader.get_URM_train())  # Train the models
         model.evaluate_recommendations(
             data_reader.URM_test, at=10, exclude_seen=True)  # make prediction
     if exp_:
@@ -91,9 +92,9 @@ def pipeline_dev(fileName, exp_, log_, logFile):
     # Shrink exp
 
     #for k in conf.configs.lambda_j:
-    for k in conf.configs.lambda_i:
+    for k in conf.configs.gamma:
         for model in rec_sys:
-            model.fit(lambda_i = k)  # Train the models
+            model.fit(gamma = k)  # Train the models
             #model.fit(lambda_j=k)
             model.evaluate_recommendations(data_reader.URM_test, at=10, exclude_seen=True)  # make prediction
             if exp_:
