@@ -5,7 +5,8 @@
          "sparse_weights": true,
          "verbose": false,
          "similarity_mode": "jaccard",
-         "normalize": false
+         "normalize": false,
+        "feature_weights": "okapi"
 
      }
  ],

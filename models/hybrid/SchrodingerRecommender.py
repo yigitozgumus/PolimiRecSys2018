@@ -54,47 +54,49 @@ class SeqRandRecommender_mark2(RecommenderSystem):
         # Calculate all the Similarity Matrices One by one
         # URM tfidf --> 50446 x 50446
         self.sim_URM_tfidf = Similarity(self.URM_train_tfidf.T,
-                                       shrink=shrink,
+                                       shrink=0,
                                        verbose=self.verbose,
-                                       neighbourhood=k* 2,
-                                       mode=self.similarity_mode,
-                                       normalize=self.normalize)
-
-        self.sim_UCM_tfidf = Similarity(self.UCM.T,
-                                       shrink=shrink,
-                                       verbose=self.verbose,
-                                       neighbourhood=k* 2,
+                                       neighbourhood=200,
                                        mode=self.similarity_mode,
                                        normalize=self.normalize)
         # ICM tfidf --> 20635 x 20635
         self.sim_ICM_tfidf = Similarity(self.ICM.T,
-                                        shrink=shrink,
+                                        shrink=0,
                                         verbose=self.verbose,
-                                        neighbourhood=k,
+                                        neighbourhood=25,
                                         mode=self.similarity_mode,
                                         normalize=self.normalize)
         # URM.T tfidf --> 20635 x 20635
         self.sim_URM_T_tfidf = Similarity(self.URM_train_tfidf,
-                                       shrink=shrink,
+                                       shrink=10,
                                        verbose=self.verbose,
-                                       neighbourhood=k* 2,
+                                       neighbourhood=350,
                                        mode=self.similarity_mode,
                                        normalize=self.normalize)
         # Slim --> 20635 x 20635
-        self.sim_Slim = Slim_BPR_Recommender_Cython(self.URM_train)
+        self.sim_Slim_item = Slim_BPR_Recommender_Cython(self.URM_train)
+        self.sim_Slim_user = Slim_BPR_Recommender_Cython(self.URM_train.T)
 
         if self.sparse_weights:
             # URM
-            self.W_sparse_URM = self.sim_URM_tfidf.compute_similarity()
-            # UCM
-            self.W_sparse_UCM = self.sim_UCM_tfidf.compute_similarity()
-            # UCM
-            self.W_sparse_ICM = self.sim_ICM_tfidf.compute_similarity()
-            # self.W_sparse_UCM = self.sim_UCM_tfidf.fit()
+            self.W_sparse_URM = normalize(self.sim_URM_tfidf.compute_similarity(),axis=1,norm="l2")
             # ICM
-            self.W_sparse_URM_T = self.sim_URM_T_tfidf.compute_similarity()
+            self.W_sparse_ICM = normalize(self.sim_ICM_tfidf.compute_similarity(),axis=1,norm="l2")
+            # URM_T
+            self.W_sparse_URM_T = normalize(self.sim_URM_T_tfidf.compute_similarity(),axis=1,norm="l2")
             # Slim
-            self.W_sparse_Slim = self.sim_Slim.fit()
+            self.W_sparse_Slim_item = normalize(self.sim_Slim_item.fit(
+                lambda_i=0.37142857,
+                lambda_j=0.97857143,
+                learning_rate=0.001,
+                epochs=30), axis=1, norm="l2")
+
+            # Slim_T
+            self.W_sparse_Slim_user = normalize(self.sim_Slim_user.fit(
+                lambda_i=1,
+                lambda_j=1,
+                learning_rate=0.001,
+                epochs=30), axis=1, norm="l2")
 
         # add the parameters for the logging
         self.parameters = "sparse_weights= {0}, verbose= {1}, similarity= {2},shrink= {3}, neighbourhood={4},normalize= {5}, alpha= {6}, beta={7}, gamma={8}, omega={9}".format(
@@ -107,22 +109,23 @@ class SeqRandRecommender_mark2(RecommenderSystem):
         if self.sparse_weights:
             #Item First Branch
             scores_ICM = self.URM_train[playlist_id].dot(self.W_sparse_ICM).toarray().ravel()
-            scores_Slim = self.URM_train[playlist_id].dot(self.W_sparse_Slim).toarray().ravel()
-            score_first_branch = self.alpha * scores_ICM + (1- self.alpha) * scores_Slim
+            scores_Slim_user = self.W_sparse_Slim_user[playlist_id].dot(self.URM_train).toarray().ravel()
+            scores_Slim_item = self.URM_train[playlist_id].dot(self.W_sparse_Slim_item).toarray().ravel()
+            scores_Slim_final = self.gamma * scores_Slim_user + (1- self.gamma) * scores_Slim_item
+            score_first_branch = self.alpha * scores_ICM + (1- self.alpha) * scores_Slim_final
             # Item Second Branch
             scores_URM_T = self.URM_train[playlist_id].dot(self.W_sparse_URM_T).toarray().ravel()
             scores_item_final = self.beta * score_first_branch + (1-self.beta * scores_URM_T)
             # User first Branch
             scores_URM = self.W_sparse_URM[playlist_id].dot(self.URM_train).toarray().ravel()
-            sres_UCM = self.W_sparse_UCM[playlist_id].dot(self.URM_train).toarray().ravel()
-            scores_user_final = self.gamma * scores_URM + (1 - self.gamma) * scores_UCM
+
             # Third Branch
             # Omega should be between 0.5 and 1
             scores = None
             if playlist_id in self.seq_list:
-                scores = self.omega * scores_item_final + (1-self.omega) * scores_user_final
+                scores = self.omega * scores_item_final + (1-self.omega) * scores_URM
             else:
-                scores = self.omega * scores_user_final + (1-self.omega) * scores_item_final
+                scores = self.omega * scores_URM + (1-self.omega) * scores_item_final
 
         if self.normalize:
             # normalization will keep the scores in the same range

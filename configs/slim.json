@@ -2,7 +2,9 @@
     "models": [
 
         {
-            "model_name": "slim"
+            "model_name": "slim",
+            "sparse_weights": true,
+            "normalize": false
         }
     ],
     "shrink": [100, 250, 500],

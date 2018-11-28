@@ -6,10 +6,10 @@
             "verbose" : false,
             "similarity_mode" : "jaccard",
             "normalize" : false,
-            "alpha" : 0.890,
-            "beta" :0.5,
-            "gamma" : 0.9,
-            "omega": 0.87142857
+            "alpha" : 0.7017094,
+            "beta" :0.51034483,
+            "gamma" : 0.75,
+            "omega": 0.16206897
         }
     ],
     "alpha": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],

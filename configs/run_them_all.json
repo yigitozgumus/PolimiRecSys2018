@@ -1,0 +1,19 @@
+{
+  "models":[
+    {
+      "model_name": "mf_cython",
+      "positive_threshold" : 1,
+      "recompile_cython": true,
+      "algorithm" : "MF_BPR"
+    },
+    {
+      "model_name": "puresvd"
+    },
+    {
+      "model_name": "funksvd"
+    }
+  ],
+      "dataReader": {
+        "adjustSequentials": false
+    }
+}

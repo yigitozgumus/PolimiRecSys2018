@@ -2,7 +2,7 @@
     "models": [
         {
             "model_name": "mf_bpr_cython",
-            "recompile_cython": false
+            "recompile_cython": true
         }
     ],
 

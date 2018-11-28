@@ -4,8 +4,8 @@
         "model_name": "funksvd",
         "sparse_weights": true,
         "verbose": false,
-        "similarity_mode": "cosine",
-        "normalize": true
+        "similarity_mode": "jaccard",
+        "normalize": false
     }
 
 ],

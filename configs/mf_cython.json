@@ -1,0 +1,13 @@
+{
+  "models":[
+    {
+      "model_name": "mf_cython",
+      "positive_threshold" : 1,
+      "recompile_cython": true,
+      "algorithm" : "ASY_SVD"
+    }
+  ],
+      "dataReader": {
+        "adjustSequentials": false
+    }
+}
