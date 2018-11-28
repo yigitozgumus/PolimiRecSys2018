@@ -20,9 +20,7 @@ class Slim(RecommenderSystem, RecommenderSystem_SM):
         self.parameters = None
 
     def __str__(self):
-        return "SLIM (l1_penalty={},l2_penalty={},positive_only={})".format(
-            self.l1_penalty, self.l2_penalty, self.positive_only
-        )
+        return "Slim Recommender with ElasticNet"
 
     def fit(self, l1_penalty=0.01, l2_penalty=0.01, positive_only=True, topK=100):
         self.l1_penalty = l1_penalty
@@ -38,15 +36,17 @@ class Slim(RecommenderSystem, RecommenderSystem_SM):
         n_items = X.shape[1]
 
         # initialize the ElasticNet model
+        print("Slim: ElasticNet model fitting begins")
         self.model = ElasticNet(alpha=1.0,
                                 l1_ratio=self.l1_ratio,
                                 positive=self.positive_only,
-                                fit_intercept=False,
+                                fit_intercept=True,
                                 copy_X=False,
                                 precompute=True,
                                 selection='random',
                                 max_iter=100,
                                 tol=1e-4)
+        print("Slim: Fitting is completed!")
         values, rows, cols = [], [], []
         start_time = time.time()
         start_time_printBatch = start_time
@@ -92,3 +92,5 @@ class Slim(RecommenderSystem, RecommenderSystem_SM):
         # generate the sparse weight matrix
         self.W_sparse = sps.csc_matrix(
             (values, (rows, cols)), shape=(n_items, n_items), dtype=np.float32)
+
+

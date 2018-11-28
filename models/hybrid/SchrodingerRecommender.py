@@ -15,11 +15,11 @@ except ImportError:
 
 from models.Slim_BPR.Cython.Slim_BPR_Cython import Slim_BPR_Recommender_Cython
 
-class SeqRandRecommender_mark2(RecommenderSystem):
+class ScrodingerRecommender(RecommenderSystem):
 
     def __init__(self,URM_train,URM_train_tfidf,UCM, ICM,sequential_playlists, sparse_weights=True, verbose=False, similarity_mode="jaccard",
                  normalize=False, alpha=0.168, beta=0.317, gamma=0.546, omega = 0.666):
-        super(SeqRandRecommender_mark2,self).__init__()
+        super(ScrodingerRecommender, self).__init__()
         self.URM_train = check_matrix(URM_train,"csr")
         self.URM_train_tfidf = check_matrix(URM_train_tfidf,"csr")
         self.ICM = check_matrix(ICM,"csr")

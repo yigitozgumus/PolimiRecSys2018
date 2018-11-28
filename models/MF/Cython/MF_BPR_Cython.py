@@ -32,10 +32,10 @@ class MF_BPR_Cython(RecommenderSystem):
             batch_size = 1000,
             validate_every_N_epochs = 1,
             start_validation_after_N_epochs = 0,
-            num_factors=10,
+            num_factors=100,
             positive_threshold=1,
-            learning_rate = 0.05,
-            sgd_mode='sgd',
+            learning_rate = 0.005,
+            sgd_mode='adagrad',
             user_reg = 0.0,
             positive_reg = 0.0,
             negative_reg = 0.0):
@@ -49,7 +49,7 @@ class MF_BPR_Cython(RecommenderSystem):
         URM_train_positive.eliminate_zeros()
         self.sgd_mode = sgd_mode
         # Import compiled module
-        from models.MatrixFactorization.Cython.MF_BPR_Cython_Epoch import MF_BPR_Cython_Epoch
+        from models.MF.Cython.MF_BPR_Cython_Epoch import MF_BPR_Cython_Epoch
         self.cythonEpoch = MF_BPR_Cython_Epoch(URM_train_positive,
                                                  n_factors = self.num_factors,
                                                  learning_rate=learning_rate,
@@ -95,7 +95,7 @@ class MF_BPR_Cython(RecommenderSystem):
         # Run compile script setting the working directory to ensure the compiled file are contained in the
         # appropriate subfolder and not the project root
 
-        compiledModuleSubfolder = "/models/MatrixFactorization/Cython"
+        compiledModuleSubfolder = "/models/MF/Cython"
         fileToCompile_list = ['MF_BPR_Cython_Epoch.pyx']
         for fileToCompile in fileToCompile_list:
             command = ['python',
@@ -145,10 +145,6 @@ class MF_BPR_Cython(RecommenderSystem):
         # recommended
         if exclude_seen:
             scores_array[user_profile_batch.nonzero()] = -np.inf
-        if filterTopPop:
-            scores_array[:,self.filterTopPop_ItemsID] = -np.inf
-        if filterCustomItems:
-            scores_array[:, self.filterCustomItems_ItemsID] = -np.inf
         # rank items and mirror column to obtain a ranking in descending score
         #ranking = (-scores_array).argsort(axis=1)
         #ranking = np.fliplr(ranking)

@@ -1,9 +1,10 @@
 import numpy as np
 import scipy.sparse as sps
 
+
 from base.BaseRecommender import RecommenderSystem
 from base.BaseRecommender_SM import RecommenderSystem_SM
-from base.RecommenderUtils import check_matrix
+from base.RecommenderUtils import check_matrix, to_okapi,to_tfidf
 try:
     from base.Cython.Similarity import Similarity
 except ImportError:
@@ -18,7 +19,8 @@ class ItemKNNCBFRecommender(RecommenderSystem, RecommenderSystem_SM):
                  sparse_weights=True,
                  verbose=False,
                  similarity_mode="cosine",
-                 normalize=False,):
+                 normalize=False,
+                 feature_weights = "okapi"):
         super(ItemKNNCBFRecommender, self).__init__()
         self.URM_train = check_matrix(URM_train, 'csr')
         self.ICM = ICM
@@ -27,6 +29,7 @@ class ItemKNNCBFRecommender(RecommenderSystem, RecommenderSystem_SM):
         self.similarity_mode = similarity_mode
         self.normalize = normalize
         self.parameters = None
+        self.feature_weights = feature_weights
 
     def __str__(self):
         representation = "Item KNN Content Based Filtering "
@@ -35,6 +38,10 @@ class ItemKNNCBFRecommender(RecommenderSystem, RecommenderSystem_SM):
     def fit(self, k=250, shrink=100):
         self.k = k
         self.shrink = shrink
+        if self.feature_weights == "tfidf":
+            self.ICM = to_tfidf(self.ICM)
+        elif self.feature_weights == "okapi":
+            self.ICM = to_okapi(self.ICM)
         print("ItemKNNCBFRecommender: Model fitting begins")
         self.similarity = Similarity(self.ICM.T,
                                      shrink=shrink,

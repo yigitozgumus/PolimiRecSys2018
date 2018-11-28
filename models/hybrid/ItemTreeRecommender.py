@@ -5,7 +5,7 @@ import numpy as np
 from sklearn.preprocessing.data import normalize
 
 from base.BaseRecommender import RecommenderSystem
-from base.RecommenderUtils import check_matrix
+from base.RecommenderUtils import check_matrix, to_okapi
 
 try:
     from base.Cython.Similarity import Similarity
@@ -55,6 +55,7 @@ class ItemTreeRecommender(RecommenderSystem):
                                        mode=self.similarity_mode,
                                        normalize=self.normalize)
         # ICM tfidf --> 20635 x 20635
+        self.ICM = to_okapi(self.ICM)
         self.sim_ICM_tfidf = Similarity(self.ICM.T,
                                         shrink=0,
                                         verbose=self.verbose,
@@ -83,23 +84,27 @@ class ItemTreeRecommender(RecommenderSystem):
             self.W_sparse_Slim = normalize(self.sim_Slim.fit(
                 lambda_i=0.37142857,
                 lambda_j = 0.97857143,
-                learning_rate = 0.001), axis=1, norm="l2")
+                learning_rate = 0.001,
+                epochs=50), axis=1, norm="l2")
         # add the parameters for the logging
         self.parameters = "sparse_weights= {0}, verbose= {1}, similarity= {2},shrink= {3}, neighbourhood={4},normalize= {5}, alpha= {6}, beta={7}, gamma={8}".format(
             self.sparse_weights, self.verbose, self.similarity_mode, self.shrink, self.k, self.normalize,
             self.alpha, self.beta, self.gamma)
+        self.merged_Ws = self.alpha * self.W_sparse_ICM + (1 - self.alpha) * self.W_sparse_Slim
 
     def recommend(self, playlist_id, exclude_seen= True, n= None, export = False):
         if n is None:
             n = self.URM_train.shape[1] - 1
         if self.sparse_weights:
             # First Branch
+            scores_merged = self.URM_train[playlist_id].dot(self.merged_Ws).toarray().ravel()
             scores_ICM = self.URM_train[playlist_id].dot(self.W_sparse_ICM).toarray().ravel()
             scores_Slim = self.URM_train[playlist_id].dot(self.W_sparse_Slim).toarray().ravel()
-            score_first_branch = self.alpha * scores_ICM + (1- self.alpha) * scores_Slim
+            #score_first_branch = self.alpha * scores_ICM + (1- self.alpha) * scores_Slim
             # Second Branch
             scores_URM_T = self.URM_train[playlist_id].dot(self.W_sparse_URM_T).toarray().ravel()
-            scores_second_branch = self.beta * score_first_branch + (1 - self.beta) * scores_URM_T
+            #scores_second_branch = self.beta * score_first_branch + (1 - self.beta) * scores_URM_T
+            scores_second_branch = self.beta * scores_merged + (1- self.beta) * scores_URM_T
             # Third Branch
             scores_URM = self.W_sparse_URM[playlist_id].dot(self.URM_train).toarray().ravel()
             scores = self.gamma * scores_URM + (1-self.gamma) * scores_second_branch

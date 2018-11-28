@@ -2,7 +2,7 @@ import numpy as np
 from base.RecommenderUtils import check_matrix
 
 from base.BaseRecommender import RecommenderSystem
-import models.MatrixFactorization.Cython.MF_RMSE as mf
+import models.MF.Cython.MF_RMSE as mf
 
 
 class FunkSVD(RecommenderSystem):

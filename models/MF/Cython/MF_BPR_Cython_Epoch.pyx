@@ -32,9 +32,9 @@ cdef class MF_BPR_Cython_Epoch:
     cdef int batch_size
     cdef int[:] URM_mask_indices, URM_mask_indptr
     cdef double[:,:] W, H
-    def __init__(self, URM_mask, n_factors = 10,
-                 learning_rate = 0.01, user_reg = 0.0, positive_reg = 0.0, negative_reg = 0.0,
-                 batch_size = 1, sgd_mode='sgd'):
+    def __init__(self, URM_mask, n_factors = 100,
+                 learning_rate = 0.001, user_reg = 0.0, positive_reg = 0.0, negative_reg = 0.0,
+                 batch_size = 1, sgd_mode='adagrad'):
 
         super(MF_BPR_Cython_Epoch, self).__init__()
         URM_mask = check_matrix(URM_mask, 'csr')
@@ -100,7 +100,7 @@ cdef class MF_BPR_Cython_Epoch:
             j = sample.neg_item
             x_uij = 0.0
             for index in range(self.n_factors):
-                x_uij = self.W[u,index] * (self.H[i,index] - self.H[j,index])
+                x_uij += self.W[u,index] * (self.H[i,index] - self.H[j,index])
             # Use gradient of log(sigm(-x_uij))
             sigmoid_item = 1 / (1 + exp(x_uij))
             sigmoid_user = sigmoid_item

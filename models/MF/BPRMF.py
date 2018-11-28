@@ -2,7 +2,7 @@ import numpy as np
 from base.RecommenderUtils import check_matrix
 
 from base.BaseRecommender import RecommenderSystem
-from models.MatrixFactorization.Cython.MF_RMSE import FunkSVD_sgd, AsySVD_sgd, AsySVD_compute_user_factors, BPRMF_sgd
+from models.MF.Cython.MF_RMSE import FunkSVD_sgd, AsySVD_sgd, AsySVD_compute_user_factors, BPRMF_sgd
 
 class BPRMF(RecommenderSystem):
     '''

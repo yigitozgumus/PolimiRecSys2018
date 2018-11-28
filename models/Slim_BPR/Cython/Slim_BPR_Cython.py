@@ -34,17 +34,22 @@ class Slim_BPR_Recommender_Cython(Slim_BPR_Recommender_Python):
         representation = "Slim BPR implementation Cython"
         return representation
 
-    def fit(self, epochs=30,
+    def fit(self,
+            #epochs=30,
             URM_test=None,
             filterTopPop=False,
             minRatingsPerUser=1,
             batch_size=1000,
             validate_every_N_epochs=1,
             start_validation_after_N_epochs=0,
-            lambda_i=1, 
-            lambda_j=1,
+            #lambda_i=1,
+            #lambda_j=1,
+            #learning_rate=0.001,
+            topK=250,
+            lambda_i=0.37142857,
+            lambda_j=0.97857143,
             learning_rate=0.001,
-            topK=500,
+            epochs=50,
             sgd_mode='adagrad'):
 
         self.parameters = "positive_threshold= {0}, sparse_weights= {1}, symmetric= {2},sgd_mode= {3}, lambda_i={4}, " \

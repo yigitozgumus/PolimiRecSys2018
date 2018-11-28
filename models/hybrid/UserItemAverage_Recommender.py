@@ -1,7 +1,7 @@
 # URM_train version is swapped with tfidfed version
 import numpy as np
 
-from tversky import tversky_similarity
+from base.Similarity_mark2.tversky import tversky_similarity
 
 try:
     from base.Cython.Similarity import Similarity
