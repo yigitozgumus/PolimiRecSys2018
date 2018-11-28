@@ -3,6 +3,7 @@ import scipy.sparse as sps
 import time
 import os
 from sklearn import feature_extraction
+from sklearn.preprocessing import normalize
 
 
 def check_matrix(X, format='csc', dtype=np.float32):
@@ -122,3 +123,43 @@ def removeTopPop(URM_1, URM_2=None, percentageToRemove=0.2):
     removedItems = np.arange(len(popularItemsSorted))[np.logical_not(itemMask)]
 
     return URM_1[:, itemMask], itemMappings, removedItems
+
+def to_tfidf(dataMatrix):
+    dataMatrix = sps.coo_matrix(dataMatrix)
+    ICM_tfidf_T = feature_extraction.text.TfidfTransformer().fit_transform(dataMatrix)
+    ICM_tfidf = ICM_tfidf_T.T
+    ICM_tfidf = normalize(ICM_tfidf, axis=0, norm='l2')
+    return ICM_tfidf.tocsr()
+
+def to_okapi(dataMatrix, K1=1.2, B=0.75):
+    """
+    Items are assumed to be on rows
+    :param dataMatrix:
+    :param K1:
+    :param B:
+    :return:
+    """
+
+    assert B>0 and B<1, "okapi_BM_25: B must be in (0,1)"
+    assert K1>0,        "okapi_BM_25: K1 must be > 0"
+
+
+    # Weighs each row of a sparse matrix by OkapiBM25 weighting
+    # calculate idf per term (user)
+
+    dataMatrix = sps.coo_matrix(dataMatrix)
+
+    N = float(dataMatrix.shape[0])
+    idf = np.log(N / (1 + np.bincount(dataMatrix.col)))
+
+    # calculate length_norm per document
+    row_sums = np.ravel(dataMatrix.sum(axis=1))
+
+    average_length = row_sums.mean()
+    length_norm = (1.0 - B) + B * row_sums / average_length
+
+    # weight matrix rows by bm25
+    dataMatrix.data = dataMatrix.data * (K1 + 1.0) / (K1 * length_norm[dataMatrix.row] + dataMatrix.data) * idf[dataMatrix.col]
+
+    return dataMatrix.tocsr()
+
