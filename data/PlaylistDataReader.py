@@ -7,6 +7,9 @@ from sklearn import feature_extraction
 from sklearn.preprocessing import MultiLabelBinarizer, normalize
 from sklearn.utils import shuffle
 
+from base.RecommenderUtils import to_okapi
+
+
 class PlaylistDataReader(object):
 
     def __init__(self,
@@ -106,6 +109,13 @@ class PlaylistDataReader(object):
             self.URM_train_tfidf = URM_tfidf.tocsr()
             return self.URM_train_tfidf
 
+    def get_URM_train_okapi(self):
+        if self.URM_train is None:
+            raise TypeError("URM train is not build")
+        else:
+            self.URM_train_okapi = to_okapi(self.URM_train)
+            return self.URM_train_okapi
+
 
     def get_UCM_tfidf(self):
         if self.UCM is None:
@@ -153,10 +163,11 @@ class PlaylistDataReader(object):
             classes=self.get_albums(), sparse_output=True).fit_transform(album_list)
         icm_albums_csr = icm_albums.tocsr()
         ICM = sps.hstack((icm_artists_csr, icm_albums_csr))
-        ICM_tfidf_T = feature_extraction.text.TfidfTransformer().fit_transform(ICM.T)
-        ICM_tfidf = ICM_tfidf_T.T
-        ICM_tfidf = normalize(ICM_tfidf, axis=0, norm='l2')
-        self.ICM = ICM_tfidf.tocsr()
+        # ICM_tfidf_T = feature_extraction.text.TfidfTransformer().fit_transform(ICM.T)
+        # ICM_tfidf = ICM_tfidf_T.T
+        # ICM_tfidf = normalize(ICM_tfidf, axis=0, norm='l2')
+        # self.ICM = ICM_tfidf.tocsr()
+        self.ICM = ICM
         print("PlaylistDataReader: ICM matrix built completed")
         print("PlaylistDataReader: shape is {}".format(self.ICM.shape))
         return

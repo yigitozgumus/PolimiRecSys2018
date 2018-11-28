@@ -5,6 +5,7 @@ from utils.config import clear, Configurator
 import argparse
 
 
+
 def main():
     parser = argparse.ArgumentParser(
         description="Main runner script of the Recommendation System Project")
@@ -33,6 +34,13 @@ def main():
         pipeline_mf(file_name, args.exp_switch, args.log_switch, logFile)
     elif mode == 4:
         pipeline_submission(file_name, args.exp_switch, args.log_switch, logFile)
+    elif mode == 5:
+        pipeline_parameter_tuning()
+
+
+def pipeline_parameter_tuning():
+    pass
+
 
 
 def pipeline_mf(fileName, exp_, log_, logFile):
