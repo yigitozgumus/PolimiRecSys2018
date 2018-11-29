@@ -11,7 +11,7 @@ try:
     from base.Cython.Similarity import Similarity
 except ImportError:
     print("Unable to load Cython Cosine_Simimlarity, reverting to Python")
-    from base.Similarity import Similarity
+    from base.Similarity_old import Similarity_old
 
 from models.Slim_BPR.Cython.Slim_BPR_Cython import Slim_BPR_Recommender_Cython
 
@@ -48,27 +48,27 @@ class ItemTreeRecommender(RecommenderSystem):
         print("Item Tree Hybrid Recommender: Model fitting begins")
         # Calculate all the Similarity Matrices One by one
         # URM tfidf --> 50446 x 50446
-        self.sim_URM_tfidf = Similarity(self.URM_train_tfidf.T,
-                                       shrink=0,
-                                       verbose=self.verbose,
-                                       neighbourhood=200,
-                                       mode=self.similarity_mode,
-                                       normalize=self.normalize)
+        self.sim_URM_tfidf = Similarity_old(self.URM_train_tfidf.T,
+                                            shrink=0,
+                                            verbose=self.verbose,
+                                            neighbourhood=200,
+                                            mode=self.similarity_mode,
+                                            normalize=self.normalize)
         # ICM tfidf --> 20635 x 20635
         self.ICM = to_okapi(self.ICM)
-        self.sim_ICM_tfidf = Similarity(self.ICM.T,
-                                        shrink=0,
-                                        verbose=self.verbose,
-                                        neighbourhood=25,
-                                        mode=self.similarity_mode,
-                                        normalize=self.normalize)
+        self.sim_ICM_tfidf = Similarity_old(self.ICM.T,
+                                            shrink=0,
+                                            verbose=self.verbose,
+                                            neighbourhood=25,
+                                            mode=self.similarity_mode,
+                                            normalize=self.normalize)
         # URM.T tfidf --> 20635 x 20635
-        self.sim_URM_T_tfidf = Similarity(self.URM_train_tfidf,
-                                       shrink=10,
-                                       verbose=self.verbose,
-                                       neighbourhood=350,
-                                       mode=self.similarity_mode,
-                                       normalize=self.normalize)
+        self.sim_URM_T_tfidf = Similarity_old(self.URM_train_tfidf,
+                                              shrink=10,
+                                              verbose=self.verbose,
+                                              neighbourhood=350,
+                                              mode=self.similarity_mode,
+                                              normalize=self.normalize)
         # Slim --> 20635 x 20635
         self.sim_Slim = Slim_BPR_Recommender_Cython(self.URM_train)
 
@@ -124,7 +124,7 @@ class ItemTreeRecommender(RecommenderSystem):
             den[np.abs(den) < 1e-6] = 1.0  # to avoid NaNs
             scores /= den
         if exclude_seen:
-            scores = self.filter_seen_on_scores(playlist_id, scores)
+            scores = self._remove_seen_on_scores(playlist_id, scores)
 
         relevant_items_partition = (-scores).argpartition(n)[0:n]
         relevant_items_partition_sorting = np.argsort(

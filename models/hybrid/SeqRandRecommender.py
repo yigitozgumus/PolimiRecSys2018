@@ -12,7 +12,7 @@ try:
     from base.Cython.Similarity import Similarity
 except ImportError:
     print("Unable to load Cython Cosine_Simimlarity, reverting to Python")
-    from base.Similarity import Similarity
+    from base.Similarity_old import Similarity_old
 
 
 class SeqRandRecommender(RecommenderSystem):
@@ -55,27 +55,27 @@ class SeqRandRecommender(RecommenderSystem):
         # Calculate all the Similarity Matrices one by one
         print("Sequential Random Recommender: model fitting begins")
         # URM_tfidf --> 50446 x 50446
-        self.sim_URM_tfidf = Similarity(self.URM_train_tfidf.T,
-                                       shrink=shrink,
-                                       verbose=self.verbose,
-                                       neighbourhood=k* 2,
-                                       mode=self.similarity_mode,
-                                       normalize=self.normalize)
+        self.sim_URM_tfidf = Similarity_old(self.URM_train_tfidf.T,
+                                            shrink=shrink,
+                                            verbose=self.verbose,
+                                            neighbourhood=k* 2,
+                                            mode=self.similarity_mode,
+                                            normalize=self.normalize)
         # UCM_tfidf --> 50446 x 50446
-        self.sim_UCM_tfidf = Similarity(self.UCM.T,
-                                        shrink=shrink,
-                                        verbose=self.verbose,
-                                        neighbourhood= k* 2,
-                                        mode= self.similarity_mode,
-                                        normalize=True)
+        self.sim_UCM_tfidf = Similarity_old(self.UCM.T,
+                                            shrink=shrink,
+                                            verbose=self.verbose,
+                                            neighbourhood= k* 2,
+                                            mode= self.similarity_mode,
+                                            normalize=True)
         #self.sim_UCM_tfidf = Slim_BPR_Recommender_Cython(self.URM_train_tfidf.T)
         # ICM_tfidf --> 20635 x 20635
-        self.sim_ICM_tfidf = Similarity(self.ICM.T,
-                                        shrink=shrink,
-                                        verbose=self.verbose,
-                                        neighbourhood=k,
-                                        mode=self.similarity_mode,
-                                        normalize=self.normalize)
+        self.sim_ICM_tfidf = Similarity_old(self.ICM.T,
+                                            shrink=shrink,
+                                            verbose=self.verbose,
+                                            neighbourhood=k,
+                                            mode=self.similarity_mode,
+                                            normalize=self.normalize)
         self.sim_Slim = Slim_BPR_Recommender_Cython(self.URM_train)
 
         if self.sparse_weights:
@@ -132,7 +132,7 @@ class SeqRandRecommender(RecommenderSystem):
             den[np.abs(den) < 1e-6] = 1.0  # to avoid NaNs
             scores /= den
         if exclude_seen:
-            scores = self.filter_seen_on_scores(playlist_id, scores)
+            scores = self._remove_seen_on_scores(playlist_id, scores)
 
         relevant_items_partition = (-scores).argpartition(n)[0:n]
         relevant_items_partition_sorting = np.argsort(

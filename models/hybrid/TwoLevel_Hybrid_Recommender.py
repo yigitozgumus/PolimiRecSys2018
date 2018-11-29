@@ -8,8 +8,8 @@ try:
     from base.Cython.Similarity import Similarity
 except ImportError:
     print("Unable to load Cython Cosine_Simimlarity, reverting to Python")
-    from base.Similarity import Similarity
-from base.Similarity_mark2.s_plus import dot_product
+    from base.Similarity_old import Similarity_old
+
 
 class TwoLevelHybridRecommender(RecommenderSystem, RecommenderSystem_SM):
     def __init__(self,URM_train,UCM,ICM,sparse_weights,verbose,similarity_mode,normalize,alpha,avg):
@@ -42,20 +42,20 @@ class TwoLevelHybridRecommender(RecommenderSystem, RecommenderSystem_SM):
         self.URM_tfidf_csr = URM_tfidf.tocsr()
 
         # Compute the similarity of the UCM
-        self.similarity_ucm = Similarity(self.UCM.T,
-                                         shrink = shrink,
-                                         verbose = self.verbose,
-                                         neighbourhood= k*2,
-                                         mode=self.similarity_mode,
-                                         normalize=self.normalize)
+        self.similarity_ucm = Similarity_old(self.UCM.T,
+                                             shrink = shrink,
+                                             verbose = self.verbose,
+                                             neighbourhood= k*2,
+                                             mode=self.similarity_mode,
+                                             normalize=self.normalize)
 
         # Compute the similarity of ICM
-        self.similarity_icm = Similarity(self.ICM.T,
-                                         shrink=shrink,
-                                         verbose=self.verbose,
-                                         neighbourhood=k,
-                                         mode=self.similarity_mode,
-                                         normalize=self.normalize)
+        self.similarity_icm = Similarity_old(self.ICM.T,
+                                             shrink=shrink,
+                                             verbose=self.verbose,
+                                             neighbourhood=k,
+                                             mode=self.similarity_mode,
+                                             normalize=self.normalize)
         # Compute the similarity for the Slim
         self.similarity_slim = Slim_BPR_Recommender_Cython(self.URM_train)
 
@@ -123,7 +123,7 @@ class TwoLevelHybridRecommender(RecommenderSystem, RecommenderSystem_SM):
             den[np.abs(den) < 1e-6] = 1.0  # to avoid NaNs
             scores /= den
         if exclude_seen:
-            scores = self.filter_seen_on_scores(playlist_id, scores)
+            scores = self._remove_seen_on_scores(playlist_id, scores)
 
         relevant_items_partition = (-scores).argpartition(n)[0:n]
         relevant_items_partition_sorting = np.argsort(

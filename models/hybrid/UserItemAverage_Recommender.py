@@ -1,13 +1,12 @@
 # URM_train version is swapped with tfidfed version
 import numpy as np
 
-from base.Similarity_mark2.tversky import tversky_similarity
 
 try:
     from base.Cython.Similarity import Similarity
 except ImportError:
     print("Unable to load Cython Cosine_Simimlarity, reverting to Python")
-    from base.Similarity import Similarity
+    from base.Similarity_old import Similarity_old
 
 from base.BaseRecommender import RecommenderSystem
 from base.BaseRecommender_SM import RecommenderSystem_SM
@@ -49,25 +48,20 @@ class UserItemAvgRecommender(RecommenderSystem, RecommenderSystem_SM):
         URM_tfidf = URM_tfidf_T.T
         self.URM_tfidf_csr = URM_tfidf.tocsr()
         print("UserItemAvgRecommender: Model fitting begins" )
-        if self.similarity_mode != "tversky":
-            # UCM creates a waaay unstable model
-            # 50446 * 50446 matrix
-            self.similarity_ucm = Similarity(self.URM_tfidf_csr.T, shrink=shrink,
+
+        # UCM creates a waaay unstable model
+        # 50446 * 50446 matrix
+        self.similarity_ucm = Similarity_old(self.URM_tfidf_csr.T, shrink=shrink,
                                              verbose=self.verbose,
                                              neighbourhood=k* 2,
                                              mode=self.similarity_mode,
                                              normalize=self.normalize)
-            # 20635 * 20635 matrix
-            self.similarity_icm = Similarity(self.ICM.T, shrink=shrink,
+        # 20635 * 20635 matrix
+        self.similarity_icm = Similarity_old(self.ICM.T, shrink=shrink,
                                              verbose=self.verbose,
                                              neighbourhood=k,
                                              mode=self.similarity_mode,
                                              normalize=self.normalize)
-        else:
-            self.W_sparse_UCM = tversky_similarity(self.URM_tfidf_csr, k =k*2)
-            self.W_sparse_UCM = check_matrix(self.W_sparse_UCM, "csr")
-            self.W_sparse_ICM = tversky_similarity(self.ICM, k=k)
-            self.W_sparse_ICM = check_matrix(self.W_sparse_ICM,"csr")
         self.parameters = "sparse_weights= {0}, verbose= {1}, similarity= {2},shrink= {3}, neighbourhood={4},normalize= {5}, alpha= {6}".format(
             self.sparse_weights, self.verbose, self.similarity_mode, self.shrink, self.k, self.normalize, self.alpha)
 
@@ -107,7 +101,7 @@ class UserItemAvgRecommender(RecommenderSystem, RecommenderSystem_SM):
             den[np.abs(den) < 1e-6] = 1.0  # to avoid NaNs
             scores /= den
         if exclude_seen:
-            scores = self.filter_seen_on_scores(playlist_id, scores)
+            scores = self._remove_seen_on_scores(playlist_id, scores)
 
         relevant_items_partition = (-scores).argpartition(n)[0:n]
         relevant_items_partition_sorting = np.argsort(
