@@ -1,13 +1,14 @@
-
 import time
-from tqdm import tqdm
-from base.Metrics import precision, recall, map
+from base.evaluation.Metrics import precision, recall, map
 from base.RecommenderUtils import check_matrix, removeTopPop
 import numpy as np
+import pickle
+
 class RecommenderSystem(object):
 
     def __init__(self):
         super(RecommenderSystem, self).__init__()
+        self.RECOMMENDER_NAME ="Abstract Recommender Class"
         self.URM_train = None
         self.URM_test = None
         self.map = None
@@ -15,13 +16,37 @@ class RecommenderSystem(object):
         self.recall = None
         self.parameters = None
         self.sparse_weights = True
-        # Filter topPop and Custom Items TODO
+
+        self.filterTopPop = False
+        self.filterTopPop_ItemsID = np.array([], dtype=np.int)
+
+        self.items_to_ignore_flag = False
+        self.items_to_ignore_ID = np.array([], dtype=np.int)
 
     def fit(self):
         pass
 
-    def filter_seen_on_scores(self, playlist_id, scores):
-        self.URM_train = check_matrix(self.URM_train,"csr")
+    def get_URM_train(self):
+        return self.URM_train.copy()
+
+    def set_items_to_ignore(self, items_to_ignore):
+        self.items_to_ignore_flag = True
+        self.items_to_ignore_ID = np.array(items_to_ignore, dtype=np.int)
+
+    def reset_items_to_ignore(self):
+        self.items_to_ignore_flag = False
+        self.items_to_ignore_ID = np.array([], dtype=np.int)
+
+    def _remove_TopPop_on_scores(self, scores_batch):
+        scores_batch[:, self.filterTopPop_ItemsID] = -np.inf
+        return scores_batch
+
+    def _remove_CustomItems_on_scores(self, scores_batch):
+        scores_batch[:, self.items_to_ignore_ID] = -np.inf
+        return scores_batch
+
+    def _remove_seen_on_scores(self, playlist_id, scores):
+        self.URM_train = check_matrix(self.URM_train, "csr")
         seen = self.URM_train.indices[self.URM_train.indptr[playlist_id]:self.URM_train.indptr[playlist_id + 1]]
         scores[seen] = -np.inf
         return scores
@@ -30,83 +55,76 @@ class RecommenderSystem(object):
         return self.URM_test.indices[self.URM_test.indptr[playlist_id]:self.URM_test.indptr[playlist_id + 1]]
         # return self.URM_train[playlist_id].indices
 
-    def _filter_TopPop_on_scores(self, scores):
-        scores[self.filterTopPop_ItemsID] = -np.inf
-        return scores
+    def compute_item_score(self, user_id):
+        raise NotImplementedError(
+            "Recommender: compute_item_score not assigned for current recommender, unable to compute prediction scores")
 
-    def evaluate_recommendations(self,
-                                 URM_test_new,
-                                 at=10,
-                                 minRatingsPerUser=1,
-                                 exclude_seen=True,
-                                 mode="sequential",
-                                 filterTopPop=False):  # FilterTopPop Implementation TODO
-        if filterTopPop != False:
-            self.filterTopPop = True
+    def recommend(self, user_id_array, cutoff=None, remove_seen_flag=True, remove_top_pop_flag=False,
+                  remove_CustomItems_flag=False, export=False):
 
-            _, _, self.filterTopPop_ItemsID = removeTopPop(self.URM_train, URM_2=URM_test_new,
-                                                           percentageToRemove=filterTopPop)
-
-            print("Filtering {}% TopPop items, count is: {}".format(filterTopPop * 100, len(self.filterTopPop_ItemsID)))
-
-            # Zero-out the items in order to be considered irrelevant
-            URM_test_new = check_matrix(URM_test_new, format='lil')
-            URM_test_new[:, self.filterTopPop_ItemsID] = 0
-            URM_test_new = check_matrix(URM_test_new, format='csr')
-
-            # During testing CSR is faster
-        self.URM_test = check_matrix(URM_test_new, format='csr')
-        self.URM_train = check_matrix(self.URM_train, format='csr')
-        self.at = at
-        self.minRatingsPerUser = minRatingsPerUser
-        self.exclude_seen = exclude_seen
-
-        numUsers = self.URM_test.shape[0]
-        # Prune users with an insufficient number of ratings
-        rows = self.URM_test.indptr
-        numRatings = np.ediff1d(rows)
-        mask = minRatingsPerUser <= numRatings
-        usersToEvaluate = np.arange(numUsers)[mask]
-        usersToEvaluate = list(usersToEvaluate)
-        if mode == 'sequential':
-            return self.evaluate_recommendations_sequential(usersToEvaluate)
+        # If is a scalar transform it in a 1-cell array
+        if np.isscalar(user_id_array):
+            user_id_array = np.atleast_1d(user_id_array)
+            single_user = True
         else:
-            raise ValueError("Mode '{}' not available".format(mode))
+            single_user = False
 
-    def evaluate_recommendations_sequential(self, usersToEvaluate):
-        start_time = time.time()
-        cum_precision, cum_recall, cum_map = 0.0, 0.0, 0.0
-        num_eval = 0
-        print("Recommender System: Evaluation for the Test set begins")
-        for test_user in usersToEvaluate:
-            relevant_items = self.get_user_relevant_items(test_user)
-            num_eval += 1
-            recommended_items = self.recommend(playlist_id=test_user,
-                                               exclude_seen=self.exclude_seen)
-            is_relevant = np.in1d(recommended_items, relevant_items, assume_unique=True)
-            cum_precision += precision(is_relevant)
-            cum_recall += recall(is_relevant, relevant_items)
-            cum_map += map(is_relevant, relevant_items)
+        if cutoff is None:
+            cutoff = self.URM_train.shape[1] - 1
 
-            if num_eval % 5000 == 0 or num_eval == len(usersToEvaluate) - 1:
-                print("Processed {} ( {:.2f}% ) in {:.2f} seconds. Users per second: {:.0f}".format(
-                    num_eval,
-                    100.0 * float(num_eval + 1) / len(usersToEvaluate),
-                    time.time() - start_time,
-                    float(num_eval) / (time.time() - start_time)))
+        # Compute the scores using the model-specific function
+        # Vectorize over all users in user_id_a
+        scores_batch = self.compute_item_score(user_id_array)
+        for user_index in range(len(user_id_array)):
 
-        if num_eval > 0:
-            cum_precision /= num_eval
-            cum_recall /= num_eval
-            cum_map /= num_eval
-            self.map = "{:.6f}".format(cum_map)
-            self.precision = "{:.6f}".format(cum_precision)
-            self.recall = "{:.6f}".format(cum_recall)
-            print("Recommender performance is: Precision = {:.6f}, Recall = {:.6f}, MAP = {:.6f}".format(
-                cum_precision, cum_recall, cum_map))
-        else:
-            print("WARNING: No users had a sufficient number of relevant items")
+            user_id = user_id_array[user_index]
+            if remove_seen_flag:
+                scores_batch[user_index, :] = self._remove_seen_on_scores(user_id, scores_batch[user_index, :])
 
-        results_run = {"precision": cum_precision, "recall": cum_recall, "map": cum_map}
+        if remove_top_pop_flag:
+            scores_batch = self._remove_TopPop_on_scores(scores_batch)
 
-        return (results_run)
+        if remove_CustomItems_flag:
+            scores_batch = self._remove_CustomItems_on_scores(scores_batch)
+
+        # relevant_items_partition is block_size x cutoff
+        relevant_items_partition = (-scores_batch).argpartition(cutoff, axis=1)[:, 0:cutoff]
+
+        # Get original value and sort it
+        # [:, None] adds 1 dimension to the array, from (block_size,) to (block_size,1)
+        # This is done to correctly get scores_batch value as [row, relevant_items_partition[row,:]]
+        relevant_items_partition_original_value = scores_batch[ np.arange(scores_batch.shape[0])[:, None], relevant_items_partition]
+        relevant_items_partition_sorting = np.argsort(-relevant_items_partition_original_value, axis=1)
+        ranking = relevant_items_partition[ np.arange(relevant_items_partition.shape[0])[:, None], relevant_items_partition_sorting]
+
+        ranking_list = ranking.tolist()
+
+        # Return single list for one user, instead of list of lists
+        if single_user:
+            if not export:
+                return ranking_list
+            elif export:
+                return str(ranking_list[0]).strip("[]")
+
+        if not export:
+            return ranking_list
+        elif export:
+            return str(ranking_list).strip("[]")
+
+
+    def saveModel(self, folder_path, file_name=None):
+        raise NotImplementedError("Recommender: saveModel not implemented")
+
+    def loadModel(self, folder_path, file_name=None):
+
+        if file_name is None:
+            file_name = self.RECOMMENDER_NAME
+
+        print("{}: Loading model from file '{}'".format(self.RECOMMENDER_NAME, folder_path + file_name))
+
+        data_dict = pickle.load(open(folder_path + file_name, "rb"))
+
+        for attrib_name in data_dict.keys():
+            self.__setattr__(attrib_name, data_dict[attrib_name])
+
+        print("{}: Loading complete".format(self.RECOMMENDER_NAME))

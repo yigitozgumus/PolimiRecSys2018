@@ -125,7 +125,7 @@ def removeTopPop(URM_1, URM_2=None, percentageToRemove=0.2):
     return URM_1[:, itemMask], itemMappings, removedItems
 
 def to_tfidf(dataMatrix):
-    dataMatrix = sps.coo_matrix(dataMatrix)
+    dataMatrix = sps.coo_matrix(dataMatrix).T
     ICM_tfidf_T = feature_extraction.text.TfidfTransformer().fit_transform(dataMatrix)
     ICM_tfidf = ICM_tfidf_T.T
     ICM_tfidf = normalize(ICM_tfidf, axis=0, norm='l2')

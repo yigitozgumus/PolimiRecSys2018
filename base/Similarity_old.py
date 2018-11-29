@@ -14,7 +14,7 @@ from base.RecommenderUtils import check_matrix
 from tqdm import tqdm
 
 
-class Similarity:
+class Similarity_old:
 
     def __init__(self, dataMatrix, neighbourhood=100,verbose=True, shrink=0, normalize=True,
                  mode="cosine"):
@@ -34,7 +34,7 @@ class Similarity:
 
         """
 
-        super(Similarity, self).__init__()
+        super(Similarity_old, self).__init__()
 
         self.TopK = neighbourhood
         self.shrink = shrink

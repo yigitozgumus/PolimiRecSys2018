@@ -5,6 +5,8 @@
 import numpy as np
 import scipy as sps
 
+from base.RecommenderUtils import check_matrix
+
 
 class Metrics_Object(object):
     """
@@ -205,7 +207,7 @@ class Novelty(Metrics_Object):
 
     def __init__(self, URM_train):
         super(Novelty, self).__init__()
-        URM_train = sps.csc_matrix(URM_train)
+        URM_train = check_matrix(URM_train,"csc")
         URM_train.eliminate_zeros()
         self.item_popularity = np.ediff1d(URM_train.indptr)
         self.novelty = 0.0
@@ -391,24 +393,21 @@ def arhr(is_relevant):
     return arhr_score
 
 
-def precision(is_relevant):
-    # is_relevant = np.in1d(recommended_items, relevant_items, assume_unique=True)
-    precision_score = np.sum(is_relevant, dtype=np.float32) / len(is_relevant)
+def precision(is_relevant, n_test_items):
+    precision_score = np.sum(is_relevant, dtype=np.float32) / min(n_test_items, len(is_relevant))
     assert 0 <= precision_score <= 1, precision_score
     return precision_score
 
 
-def recall(is_relevant, relevant_items):
-    recall_score = np.sum(is_relevant, dtype=np.float32) / relevant_items.shape[0]
+def recall(is_relevant, pos_items):
+    recall_score = np.sum(is_relevant, dtype=np.float32) / pos_items.shape[0]
     assert 0 <= recall_score <= 1, recall_score
     return recall_score
 
 
-def map(is_relevant, relevant_items):
-    # is_relevant = np.in1d(recommended_items, relevant_items, assume_unique=True)
-    p_at_k = is_relevant * np.cumsum(is_relevant, dtype=np.float32) \
-             / (1 + np.arange(is_relevant.shape[0]))
-    map_score = np.sum(p_at_k) / np.min([relevant_items.shape[0], is_relevant.shape[0]])
+def map(is_relevant, pos_items):
+    p_at_k = is_relevant * np.cumsum(is_relevant, dtype=np.float32) / (1 + np.arange(is_relevant.shape[0]))
+    map_score = np.sum(p_at_k) / np.min([pos_items.shape[0], is_relevant.shape[0]])
     assert 0 <= map_score <= 1, map_score
     return map_score
 
@@ -461,3 +460,8 @@ def pp_metrics(metric_names, metric_values, metric_at):
     return ' '.join(['{}: {:.4f}'.format(mname, mvalue) if mcutoff is None or mcutoff == 0 else
                      '{}@{}: {:.4f}'.format(mname, mcutoff, mvalue)
                      for mname, mcutoff, mvalue in zip(metric_names, metric_at, metric_values)])
+
+def recall_min_test_len(is_relevant, pos_items):
+    recall_score = np.sum(is_relevant, dtype=np.float32) / min(pos_items.shape[0], len(is_relevant))
+    assert 0 <= recall_score <= 1, recall_score
+    return recall_score
