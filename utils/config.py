@@ -73,28 +73,18 @@ class Configurator(object):
             if model["model_name"] == "user_knn_cf":
                 recsys.append(UserKNNCFRecommender(
                     data,
-                    dataReader.get_UCM(),
-                    sparse_weights=model["sparse_weights"],
-                    verbose=model["verbose"],
-                    similarity_mode=model["similarity_mode"],
-                    normalize=model["normalize"]))
+                    sparse_weights=model["sparse_weights"]))
             # Item Collaborative Filtering with KNN
             elif model["model_name"] == "item_knn_cf":
                 recsys.append(ItemKNNCFRecommender(
                     data,
-                    sparse_weights=model["sparse_weights"],
-                    verbose=model["verbose"],
-                    similarity_mode=model["similarity_mode"],
-                    normalize=model["normalize"]))
+                    sparse_weights=model["sparse_weights"]))
             # Item Content Based Filtering with KNN
             elif model["model_name"] == "item_knn_cbf":
                 recsys.append(ItemKNNCBFRecommender(
                     data,
                     dataReader.get_ICM(),
-                    sparse_weights=model["sparse_weights"],
-                    verbose=model["verbose"],
-                    similarity_mode=model["similarity_mode"],
-                    feature_weights=model["feature_weights"]))
+                    sparse_weights=model["sparse_weights"]))
             # Slim BPR with Python
             elif model["model_name"] == "slim_bpr_python":
                 recsys.append(Slim_BPR_Recommender_Python(
@@ -107,9 +97,8 @@ class Configurator(object):
                     data,
                     positive_threshold=model["positive_threshold"],
                     recompile_cython=model["recompile_cython"],
-                    sparse_weights= model["sparse_weights"],
-                    symmetric= model["symmetric"],
-                    sgd_mode= model["sgd_mode"]))
+                    symmetric= model["symmetric"]
+                    ))
             # Funk SVD Recommender
             elif model["model_name"] == "funksvd":
                 recsys.append(FunkSVD(data))

@@ -12,20 +12,19 @@ class Logger(object):
         self.time = asctime()
         self.dir = "Logs/"
 
-    def export_experiments(self, model_bundle):
+    def export_experiments(self, model,results):
         index = len(list(os.listdir("./experiments_2"))) 
         self.submission_list = []
-        for model in model_bundle:
-            filePath = "experiments_2/exp-"+str(index) + ".csv"
-            fileName = "exp-" + str(index) + ".csv"
-            self.submission_list.append((fileName,filePath,self.time,model, model.map,model.precision,model.recall,model.parameters))
-            f = open(filePath,"w+")
-            f.write("playlist_id,track_ids\n")
-            for ind, playlist_id in enumerate(self.data['playlist_id']):
-                f.write(str(playlist_id) + ',' + model.recommend(playlist_id, n=10,export=True) + '\n');
-            f.close()
-            print("Logger: The experiment {0} is exported to the {1}".format(fileName,filePath))
-            index+=1
+        filePath = "experiments_2/exp-"+str(index) + ".csv"
+        fileName = "exp-" + str(index) + ".csv"
+        self.submission_list.append((fileName,filePath,self.time,model, model.parameters,results))
+        f = open(filePath,"w+")
+        f.write("playlist_id,track_ids\n")
+        for ind, playlist_id in enumerate(self.data['playlist_id']):
+            f.write(str(playlist_id) + ',' + model.recommend(playlist_id, cutoff=10,export=True) + '\n');
+        f.close()
+        print("Logger: The experiment {0} is exported to the {1}".format(fileName,filePath))
+        index+=1
 
     def export_single_submission(data, model):
         f = open("experiments/exp-" + asctime() + ".csv", "w+")
@@ -38,9 +37,9 @@ class Logger(object):
         f = open(self.dir + filename,"w+")
         f.write("# Experiment Logs\n")
         f.write(
-            "| Experiment Name | Date | Model Name | MAP | Precision | Recall | Parameters |Submission|\n")
+            "| Experiment Name | Date | Model Name | Parameters |Results | Submission|\n")
         f.write(
-            "|---              |---   |---         |---  |---        |---     |---         |---      |")
+            "|---              |---   |---         |---         |---     |---        |")
         f.close()
 
     def log_experiment(self,submission=False):
