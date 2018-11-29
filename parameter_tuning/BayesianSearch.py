@@ -1,12 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on 10/03/2018
 
-@author: Maurizio Ferrari Dacrema
-"""
 
-from ParameterTuning.AbstractClassSearch import AbstractClassSearch, DictionaryKeys
+from parameter_tuning.AbstractClassSearch import AbstractClassSearch, DictionaryKeys
 from functools import partial
 import traceback, pickle
 import numpy as np
@@ -29,9 +25,6 @@ def writeLog(string, logFile):
     if logFile!=None:
         logFile.write(string)
         logFile.flush()
-
-
-
 
 class BayesianSearch(AbstractClassSearch):
 
