@@ -117,7 +117,7 @@ class FunkSVD(RecommenderSystem):
             n = self.URM_train.shape[1] - 1
         scores_array = np.dot(self.U[playlist_id], self.V.T)
         if exclude_seen:
-            scores = self.filter_seen_on_scores(playlist_id, scores_array)
+            scores = self._remove_seen_on_scores(playlist_id, scores_array)
         if remove_top_pop_flag:
             scores = self._remove_TopPop_on_scores(scores_array)
         if remove_CustomItems:

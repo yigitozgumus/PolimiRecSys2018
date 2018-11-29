@@ -164,7 +164,7 @@ class MF_BPR_Cython(RecommenderSystem):
         if self.normalize:
             raise ValueError("Not implemented")
         if exclude_seen:
-            scores = self.filter_seen_on_scores(playlist_id, scores_array)
+            scores = self._remove_seen_on_scores(playlist_id, scores_array)
         if filterTopPop:
             scores = self._filter_TopPop_on_scores(scores_array)
         if filterCustomItems:

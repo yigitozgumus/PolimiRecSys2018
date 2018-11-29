@@ -54,7 +54,7 @@ class PureSVDRecommender(RecommenderSystem):
         scores = self.compute_score_SVD(playlist_id)
 
         if exclude_seen:
-            scores = self.filter_seen_on_scores(playlist_id, scores)
+            scores = self._remove_seen_on_scores(playlist_id, scores)
         if filterTopPop:
             scores = self._filter_TopPop_on_scores(scores)
 
