@@ -31,7 +31,7 @@ class Slim(RecommenderSystem, RecommenderSystem_SM):
         self.parameters = "sparse_weights= {0},normalize= {1}, l1_penalty= {2}, l2_penalty= {3}, positive_only= {4}".format(
             self.sparse_weights, self.normalize, self.l1_penalty, self.l2_penalty, self.positive_only)
 
-        X = check_matrix(self.URM_train, 'csc', dtype=np.float32)
+        X = check_matrix(self.URM_train.T, 'csc', dtype=np.float32)
 
         n_items = X.shape[1]
 
