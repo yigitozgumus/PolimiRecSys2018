@@ -13,7 +13,7 @@ except ImportError:
     print("Unable to load Cython Cosine_Simimlarity, reverting to Python")
     from base.Similarity_old import Similarity_old
 
-from models.Slim_BPR.Cython.Slim_BPR_Cython import Slim_BPR_Recommender_Cython
+from models.Slim_mark1.Cython.Slim_BPR_Cython import Slim_BPR_Recommender_Cython
 
 class ScrodingerRecommender(RecommenderSystem):
 

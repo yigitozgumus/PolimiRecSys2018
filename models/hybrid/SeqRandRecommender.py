@@ -5,7 +5,7 @@ Author: Semsi Yigit Ozgumus
 import numpy as np
 from sklearn.preprocessing.data import normalize
 
-from models.Slim_BPR.Cython.Slim_BPR_Cython import Slim_BPR_Recommender_Cython
+from models.Slim_mark1.Cython.Slim_BPR_Cython import Slim_BPR_Recommender_Cython
 from base.BaseRecommender import RecommenderSystem
 from base.RecommenderUtils import check_matrix
 try:

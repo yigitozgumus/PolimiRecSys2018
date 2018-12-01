@@ -1,7 +1,7 @@
 import numpy as np
 from sklearn import feature_extraction
 
-from models.Slim_BPR.Cython.Slim_BPR_Cython import Slim_BPR_Recommender_Cython
+from models.Slim_mark1.Cython.Slim_BPR_Cython import Slim_BPR_Recommender_Cython
 from base.BaseRecommender import RecommenderSystem
 from base.BaseRecommender_SM import RecommenderSystem_SM
 try:
