@@ -15,14 +15,12 @@ from base.evaluation.Evaluator import SequentialEvaluator
 
 class Slim_BPR_Recommender_Cython(RecommenderSystem_SM, RecommenderSystem, Incremental_Training_Early_Stopping):
 
-
-
+    RECOMMENDER_NAME = "SLIM_BPR_Recommender_mark2"
     def __init__(self, URM_train, positive_threshold=1, URM_validation = None,
-                 recompile_cython = False, final_model_sparse_weights = False, train_with_sparse_weights = False,
+                 recompile_cython = False, final_model_sparse_weights = True, train_with_sparse_weights = False,
                  symmetric = True):
 
         super(Slim_BPR_Recommender_Cython, self).__init__()
-        self.RECOMMENDER_NAME = "SLIM_BPR_Recommender"
 
         self.URM_train = URM_train.copy()
         self.n_users = URM_train.shape[0]
@@ -59,15 +57,15 @@ class Slim_BPR_Recommender_Cython(RecommenderSystem_SM, RecommenderSystem, Incre
             print("Compilation Complete")
 
     def __repr__(self):
-        return "Slim BPR with Cython"
+        return "Slim BPR with Cython mark 2"
 
     def fit(self, epochs=300, logFile=None,
-            batch_size = 1000, lambda_i = 0.0, lambda_j =0.0, learning_rate = 1e-4, topK = 200,
+            batch_size = 1000, lambda_i = 1.0, lambda_j =1.0, learning_rate = 1e-4, topK = 500,
             sgd_mode='adagrad', gamma=0.995, beta_1=0.9, beta_2=0.999,
             stop_on_validation = False, lower_validatons_allowed = 5, validation_metric="MAP",
             evaluator_object = None, validation_every_n = 1):
         # Import compiled module
-        from models.Slim_BPR.Cython.SLIM_BPR_Cython_Epoch import SLIM_BPR_Cython_Epoch
+        from models.Slim_mark2.Cython.SLIM_BPR_Cython_Epoch import SLIM_BPR_Cython_Epoch
         # Select only positive interactions
         URM_train_positive = self.URM_train.copy()
         URM_train_positive.data = URM_train_positive.data >= self.positive_threshold

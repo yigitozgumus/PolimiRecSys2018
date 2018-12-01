@@ -6,7 +6,7 @@ import scipy.sparse as sps
 from base.RecommenderUtils import similarityMatrixTopK, check_matrix
 from base.BaseRecommender import RecommenderSystem
 from base.BaseRecommender_SM import RecommenderSystem_SM
-from models.Slim_BPR.BPR_Sampling import BPR_Sampling
+from models.Slim_mark1.BPR_Sampling import BPR_Sampling
 from base.RecommenderUtils import check_matrix
 from scipy.special import expit
 from tqdm import tqdm
@@ -17,6 +17,7 @@ def sigmoidFunction(x):
 
 class Slim_BPR_Recommender_Python(BPR_Sampling, RecommenderSystem, RecommenderSystem_SM):
 
+    RECOMMENDER_NAME = "SLIM_BPR_Recommender_mark1"
     def __init__(self, URM_train, positive_threshold=1, sparse_weights=False):
         super(Slim_BPR_Recommender_Python, self).__init__()
 

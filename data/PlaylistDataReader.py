@@ -127,7 +127,7 @@ class PlaylistDataReader(object):
             self.UCM_tfidf = UCM_tfidf.tocsr()
 
     def build_URM(self):
-        print("PlaylistDataReader: URM Matrix is being built...")
+        #print("PlaylistDataReader: URM Matrix is being built...")
         grouped = self.trainData.groupby('playlist_id', as_index=True).apply(lambda x: list(x['track_id']))
         matrix = MultiLabelBinarizer(classes=self.get_tracks(), sparse_output=True).fit_transform(grouped)
         self.URM_all = matrix.tocsr()
@@ -136,7 +136,7 @@ class PlaylistDataReader(object):
         return
     # UCM matrix + tfidf
     def build_UCM(self):
-        print("PlaylistDataReader: UCM Matrix is being built...")
+        #print("PlaylistDataReader: UCM Matrix is being built...")
         stack = sps.hstack((self.artists, self.albums)).tocsr()
         UCM_tfidf = feature_extraction.text.TfidfTransformer().fit_transform(stack.T)
         UCM_tfidf = UCM_tfidf.T
@@ -147,7 +147,7 @@ class PlaylistDataReader(object):
         return
 
     def build_ICM(self):
-        print("PlaylistDataReader: ICM Matrix is being built...")
+        #print("PlaylistDataReader: ICM Matrix is being built...")
         # artists
         df_artists = self.trackData.reindex(columns=["track_id", "artist_id"])
         df_artists.sort_values(by="track_id", inplace=True)
@@ -237,7 +237,11 @@ class PlaylistDataReader(object):
             print("PlaylistDataReader: saving URM_train and URM_test")
             sps.save_npz(self.dataSubfolder + "URM_train.npz", self.URM_train)
             sps.save_npz(self.dataSubfolder + "URM_test.npz", self.URM_test)
-        if self.verbose:
-            print("PlaylistDataReader: Data loading is complete")
+            sps.save_npz(self.dataSubfolder + "URM_test.npz", self.URM_test)
         return
 
+    def generate_datasets(self):
+        self.build_URM()
+        #self.build_UCM()
+        self.build_ICM()
+        self.split()

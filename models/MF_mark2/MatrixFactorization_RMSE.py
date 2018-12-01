@@ -147,7 +147,7 @@ class AsySVD(RecommenderSystem):
     The model is learned by solving the following regularized Least-squares objective function with Stochastic Gradient Descent
     \operatornamewithlimits{argmin}\limits_{x*,y*}\frac{1}{2}\sum_{i,j \in R}(r_{ij} - x_j^T \sum_{l \in R(i)} r_{il}y_l)^2 + \frac{\lambda}{2}(\sum_{i}{||x_i||^2} + \sum_{j}{||y_j||^2})
     '''
-
+    RECOMMENDER_NAME = "ASYSvd"
     # TODO: add global effects
     # TODO: recommendation for new-users. Update the precomputed profiles online
     def __init__(self,

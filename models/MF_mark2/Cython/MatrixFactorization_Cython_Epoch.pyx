@@ -113,9 +113,6 @@ cdef class MatrixFactorization_Cython_Epoch:
         else:
             raise ValueError("Loss value not recognized")
 
-
-
-
         self.useAdaGrad = False
         self.useRmsprop = False
         self.useAdam = False
@@ -369,8 +366,8 @@ cdef class MatrixFactorization_Cython_Epoch:
                 # Copy original value to avoid messing up the updates
                 H_i = self.ITEM_factors[sample.item, factor_index]
                 W_u = user_factors_accumulated[factor_index]
-                print("H_i" + str(H_i))
-                print("W_u" + str(W_u))
+               # print("H_i" + str(H_i))
+               # print("W_u" + str(W_u))
                 self.ITEM_factors[sample.item, factor_index] += self.learning_rate * (adaptive_gradient_item * W_u - self.positive_reg * H_i)
 
 

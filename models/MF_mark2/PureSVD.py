@@ -7,7 +7,7 @@ Created on 14/06/18
 """
 import numpy as np
 from base.BaseRecommender import RecommenderSystem
-from base.BaseRecommender_SM import RecommenderSystem_SM
+
 from base.RecommenderUtils import check_matrix
 
 from sklearn.decomposition import TruncatedSVD
@@ -17,6 +17,7 @@ import scipy.sparse as sps
 class PureSVDRecommender(RecommenderSystem):
     """ PureSVDRecommender"""
 
+    RECOMMENDER_NAME = "PureSVD"
     def __init__(self, URM_train):
         super(PureSVDRecommender, self).__init__()
         # CSR is faster during evaluation
@@ -47,21 +48,65 @@ class PureSVDRecommender(RecommenderSystem):
             pass
         return item_weights
 
-    def recommend(self, playlist_id, exclude_seen=True, n=None, filterTopPop=False, export=False):
-        if n is None:
-            n = self.URM_train.shape[1] - 1
+    def recommend(self, playlist_id_array, remove_seen_flag=True, cutoff=None, remove_CustomItems_flag=False, remove_top_pop_flag=False, export=False):
 
-        scores = self.compute_score_SVD(playlist_id)
+        # If is a scalar transform it in a 1-cell array
+        if np.isscalar(playlist_id_array):
+            playlist_id_array = np.atleast_1d(playlist_id_array)
+            single_user = True
+        else:
+            single_user = False
 
-        if exclude_seen:
-            scores = self._remove_seen_on_scores(playlist_id, scores)
-        if filterTopPop:
-            scores = self._filter_TopPop_on_scores(scores)
+        if cutoff is None:
+            cutoff = self.URM_train.shape[1] - 1
 
-        relevant_items_partition = (-scores).argpartition(n)[0:n]
-        relevant_items_partition_sorting = np.argsort( -scores[relevant_items_partition])
-        ranking = relevant_items_partition[relevant_items_partition_sorting]
-        if not export:
-            return ranking
-        elif export:
-            return str(ranking).strip("[]")
+        scores = self.compute_score_SVD(playlist_id_array)
+
+        for user_index in range(len(playlist_id_array)):
+            user_id = playlist_id_array[user_index]
+            if remove_seen_flag:
+                scores[user_index, :] = self._remove_seen_on_scores(user_id, scores[user_index, :])
+
+                # relevant_items_partition is block_size x cutoff
+            relevant_items_partition = (-scores).argpartition(cutoff, axis=1)[:, 0:cutoff]
+
+            # Get original value and sort it
+            # [:, None] adds 1 dimension to the array, from (block_size,) to (block_size,1)
+            # This is done to correctly get scores_batch value as [row, relevant_items_partition[row,:]]
+            relevant_items_partition_original_value = scores[
+                np.arange(scores.shape[0])[:, None], relevant_items_partition]
+            relevant_items_partition_sorting = np.argsort(-relevant_items_partition_original_value, axis=1)
+            ranking = relevant_items_partition[
+                np.arange(relevant_items_partition.shape[0])[:, None], relevant_items_partition_sorting]
+
+            ranking_list = ranking.tolist()
+
+            # Return single list for one user, instead of list of lists
+            if single_user:
+                if not export:
+                    return ranking_list
+                elif export:
+                    return str(ranking_list[0]).strip("[,]")
+
+            if not export:
+                return ranking_list
+            elif export:
+                return str(ranking_list).strip("[,]")
+
+    def saveModel(self, folder_path, file_name=None):
+
+        import pickle
+        if file_name is None:
+            file_name = self.RECOMMENDER_NAME
+        print("{}: Saving model in file '{}'".format(self.RECOMMENDER_NAME, folder_path + file_name))
+        data_dict = {
+            "U": self.U,
+            "Sigma": self.Sigma,
+            "VT": self.VT,
+            "s_Vt": self.s_Vt
+        }
+        pickle.dump(data_dict,
+                    open(folder_path + file_name, "wb"),
+                    protocol=pickle.HIGHEST_PROTOCOL)
+
+        print("{}: Saving complete")
