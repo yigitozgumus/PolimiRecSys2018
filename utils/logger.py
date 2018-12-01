@@ -21,7 +21,7 @@ class Logger(object):
         f = open(filePath,"w+")
         f.write("playlist_id,track_ids\n")
         for ind, playlist_id in enumerate(self.data['playlist_id']):
-            f.write(str(playlist_id) + ',' + model.recommend(playlist_id, cutoff=10,export=True) + '\n');
+            f.write(str(playlist_id) + ',' + str(model.recommend(playlist_id, cutoff=10, export=True)).replace(",", "") + '\n')
         f.close()
         print("Logger: The experiment {0} is exported to the {1}".format(fileName,filePath))
         index+=1
@@ -30,7 +30,7 @@ class Logger(object):
         f = open("experiments/exp-" + asctime() + ".csv", "w+")
         f.write("playlist_id,track_ids\n")
         for ind, playlist_id in enumerate(data['playlist_id']):
-            f.write(str(playlist_id) + ',' + model.recommend(playlist_id, n=10,export=True) + '\n');
+            f.write(str(playlist_id) + ',' + model.recommend(playlist_id, cutoff=10, export=True) + '\n');
         f.close()
 
     def createLogFile(self,filename):

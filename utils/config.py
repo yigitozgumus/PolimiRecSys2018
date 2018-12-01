@@ -4,7 +4,7 @@ import os
 from subprocess import call
 
 # Graph Based
-
+from models.graph.RP3BetaRecommender import RP3betaRecommender
 from models.graph.P3AlphaRecommender import P3alphaRecommender
 # hybrid Ones
 from models.hybrid.SeqRandRecommender import SeqRandRecommender
@@ -13,9 +13,10 @@ from models.hybrid.ItemTreeRecommender import ItemTreeRecommender
 from models.hybrid.SchrodingerRecommender import ScrodingerRecommender
 from models.hybrid.UserItemAverage_Recommender import UserItemAvgRecommender
 # Slim
-from models.Slim_BPR.Slim import Slim
-from models.Slim_BPR.Cython.Slim_BPR_Cython import Slim_BPR_Recommender_Cython
-from models.Slim_BPR.Slim_BPR import Slim_BPR_Recommender_Python
+from models.Slim_mark1.Slim import Slim
+from models.Slim_mark1.Cython.Slim_BPR_Cython import Slim_BPR_Recommender_Cython
+from models.Slim_mark1.Slim_BPR import Slim_BPR_Recommender_Python
+from models.Slim_ElasticNet.SlimElasticNetRecommender import SLIMElasticNetRecommender
 # CF and CBF
 from models.KNN.Item_KNN_CBFRecommender import ItemKNNCBFRecommender
 from models.KNN.User_KNN_CFRecommender import UserKNNCFRecommender
@@ -30,6 +31,9 @@ from models.MF_mark2.MatrixFactorization_RMSE import FunkSVD
 from models.MF_mark2.PureSVD import PureSVDRecommender
 from models.MF_mark2.Cython.MatrixFactorization_Cython import MatrixFactorization_Cython
 # define clear function
+from models.offline.ItemTreeRecommender_offline import ItemTreeRecommender_offline
+
+
 def clear():
     # check and make call for specific operating system
     _ = call('clear' if os.name == 'posix' else 'cls')
@@ -166,13 +170,12 @@ class Configurator(object):
                     data,
                     dataReader.get_URM_train_okapi(),
                     dataReader.get_ICM(),
-                    sparse_weights=model["sparse_weights"],
-                    verbose=model["verbose"],
-                    similarity_mode=model["similarity_mode"],
-                    normalize=model["normalize"],
-                    alpha=model["alpha"],
-                    beta=model["beta"],
-                    gamma=model["gamma"]))
+                    sparse_weights=model["sparse_weights"]))
+
+            elif model["model_name"] == "itemtree_offline":
+                recsys.append(ItemTreeRecommender_offline(
+                    data,
+                dataReader.get_ICM()))
 
             elif model["model_name"] == "seqrand_mark2":
                 recsys.append(ScrodingerRecommender(
@@ -198,6 +201,10 @@ class Configurator(object):
 
             elif model["model_name"] == "p3alpha":
                 recsys.append(P3alphaRecommender(data))
+            elif model["model_name"] == "rp3beta":
+                recsys.append(RP3betaRecommender(data))
+            elif model["model_name"] == "slim_elastic":
+                recsys.append(SLIMElasticNetRecommender(data))
         print("Configurator: Models are extracted")
 
         return recsys
