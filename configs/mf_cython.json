@@ -3,7 +3,7 @@
     {
       "model_name": "mf_cython",
       "positive_threshold" : 1,
-      "recompile_cython": true,
+      "recompile_cython": false,
       "algorithm" : "ASY_SVD"
     }
   ],

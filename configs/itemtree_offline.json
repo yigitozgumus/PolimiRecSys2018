@@ -1,0 +1,12 @@
+{
+  "models": [
+    {
+      "model_name": "itemtree_offline",
+      "alpha": 0.4002,
+      "beta": 0.37368421,
+      "gamma": 0.16896552
+    }
+  ]
+    
+    
+}

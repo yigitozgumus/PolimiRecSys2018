@@ -1,0 +1,22 @@
+{
+    "models": [
+       {
+           "model_name": "user_knn_cf"
+       },
+       {
+           "model_name": "item_knn_cf"
+       },
+       {
+           "model_name": "item_knn_cbf"
+       },
+       {
+           "model_name": "slim_bpr_cython"
+       },
+       {
+           "model_name": "p3alpha"
+       },
+       {
+           "model_name": "rp3beta"
+       }
+    ]
+}

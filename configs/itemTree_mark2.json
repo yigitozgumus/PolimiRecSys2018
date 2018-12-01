@@ -3,9 +3,6 @@
     {
       "model_name": "itemtree",
       "sparse_weights" : true,
-      "verbose": false,
-      "similarity_mode": "jaccard",
-      "normalize" : false,
       "alpha": 0.7017094,
       "beta": 0.51034483,
       "gamma": 0.16206897
