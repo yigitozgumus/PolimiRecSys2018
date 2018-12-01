@@ -409,15 +409,15 @@ def read_data_split_and_search():
         os.makedirs(output_root_path)
 
     collaborative_algorithm_list = [
-        # P3alphaRecommender,
-        # RP3betaRecommender,
+         #P3alphaRecommender,
+         #RP3betaRecommender,
      #   ItemKNNCFRecommender,
      #   UserKNNCFRecommender,
   #      MatrixFactorization_BPR_Cython,
   #      MatrixFactorization_FunkSVD_Cython,
        # PureSVDRecommender,
-       # Slim_mark1,
-      #  Slim_mark2,
+        #Slim_mark1,
+        #Slim_mark2,
     ItemTreeRecommender_offline
         #SLIMElasticNetRecommender
         #ItemKNNCBFRecommender
@@ -439,7 +439,7 @@ def read_data_split_and_search():
                                                        evaluator_validation_earlystopping=evaluator_validation_earlystopping,
                                                        evaluator_validation=evaluator_validation,
                                                        evaluator_test=evaluator_test,
-                                                       n_cases = 75,
+                                                       n_cases = 250,
                                                        output_root_path=output_root_path)
 
     for recommender_class in collaborative_algorithm_list:
