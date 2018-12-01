@@ -4,6 +4,9 @@ from utils.logger import Logger
 from utils.config import clear, Configurator
 import argparse
 from base.evaluation.Evaluator import SequentialEvaluator
+from utils.tuner import read_data_split_and_search
+
+
 
 
 
@@ -26,33 +29,45 @@ def main():
     if mode == 1:
         pipeline_stable(file_name, logFile)
     elif mode == 2:
-        print("Deprecated. Use another mode.")
+        pipeline_submission_hybrid(file_name, logFile)
     elif mode == 3:
-        print("Deprecated. Use another mode.")
+        read_data_split_and_search()
     elif mode == 4:
-        pipeline_submission(file_name, logFile)
+        pass
     elif mode == 5:
         pipeline_parameter_tuning()
+    elif mode == 6:
+        pipeline_save_model(file_name,logFile)
 
 
 def pipeline_parameter_tuning():
     pass
 
-
+def pipeline_save_model(fileName, logFile):
+    clear()
+    conf = Configurator(fileName)
+    data_reader = PlaylistDataReader()
+    data_reader.generate_datasets()
+    l = Logger(data_reader.targetData, logFile)
+    rec_sys = conf.extract_models(data_reader)
+    evaluator = SequentialEvaluator(data_reader.get_URM_all(), [10], exclude_seen=True)
+    for model in rec_sys:
+        model.fit(save_model=True,best_parameters=True)
+        #results_run, results_run_string = evaluator.evaluateRecommender(model)
+        #print("Algorithm: {}, results: \n{}".format(str(model), results_run_string))
+        #l.export_experiments(model, results_run_string)
+        #l.log_experiment()
 
 def pipeline_stable(fileName, logFile):
     clear()
     conf = Configurator(fileName)
     data_reader = PlaylistDataReader()
-    data_reader.build_URM()
-    data_reader.build_UCM()
-    data_reader.build_ICM()
-    data_reader.split()
+    data_reader.generate_datasets()
     l = Logger(data_reader.targetData, logFile)
     rec_sys = conf.extract_models(data_reader)
     evaluator = SequentialEvaluator(data_reader.get_URM_test(), [10], exclude_seen=True)
     for model in rec_sys:
-        model.fit()
+        model.fit(best_parameters=True)
         results_run, results_run_string = evaluator.evaluateRecommender(model)
         print("Algorithm: {}, results: \n{}".format(str(model), results_run_string))
         l.export_experiments(model,results_run_string)
@@ -60,22 +75,20 @@ def pipeline_stable(fileName, logFile):
 
 
 
-def pipeline_submission(fileName,logFile):
+def pipeline_submission_hybrid(fileName, logFile):
     clear()
     conf = Configurator(fileName)
     data_reader = PlaylistDataReader()
-    data_reader.build_URM()
-    data_reader.build_UCM()
-    data_reader.build_ICM()
-    data_reader.split()
+    data_reader.generate_datasets()
     l = Logger(data_reader.targetData, logFile)
     rec_sys = conf.extract_models(data_reader,submission=True)
     evaluator = SequentialEvaluator(data_reader.get_URM_all(), [10], exclude_seen=True)
     for model in rec_sys:
-        model.fit()
-        results_run, results_run_string = evaluator.evaluateRecommender(model)
-        print("Algorithm: {}, results: \n{}".format(str(model), results_run_string))
-        l.export_experiments(rec_sys,results_run_string)
+        model.fit(submission=True,best_parameters=True)
+    #    results_run, results_run_string = evaluator.evaluateRecommender(model)
+    #    print("Algorithm: {}, results: \n{}".format(str(model), results_run_string))
+        result_string = "Full Submission No MAP"
+        l.export_experiments(model,result_string)
         l.log_experiment(submission=True)
 
 if __name__ == "__main__":
