@@ -13,7 +13,7 @@ from base.RecommenderUtils import to_okapi
 class PlaylistDataReader(object):
 
     def __init__(self,
-                 loadPredefinedTrainTest=False,
+                 loadPredefinedTrainTest=True,
                  verbose=False,
                  adjustSequentials=False):
         super(PlaylistDataReader, self).__init__()
@@ -41,6 +41,8 @@ class PlaylistDataReader(object):
         return
 
         ## Attribute Methods
+
+
 
     def get_trackData(self):
         return self.trackData
@@ -237,11 +239,14 @@ class PlaylistDataReader(object):
             print("PlaylistDataReader: saving URM_train and URM_test")
             sps.save_npz(self.dataSubfolder + "URM_train.npz", self.URM_train)
             sps.save_npz(self.dataSubfolder + "URM_test.npz", self.URM_test)
-            sps.save_npz(self.dataSubfolder + "URM_test.npz", self.URM_test)
         return
+    def save_dataset(self):
+        print("PlaylistDataReader: saving URM_train and URM_test")
+        sps.save_npz(self.dataSubfolder + "URM_train.npz", self.URM_train)
+        sps.save_npz(self.dataSubfolder + "URM_test.npz", self.URM_test)
 
     def generate_datasets(self):
         self.build_URM()
-        #self.build_UCM()
-        self.build_ICM()
+        if not self.loadPredefined:
+            self.build_ICM()
         self.split()
