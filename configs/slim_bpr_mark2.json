@@ -1,7 +1,7 @@
 {
     "models": [
         {
-            "model_name": "slim_bpr_cython",
+            "model_name": "slim_bpr_mark2",
             "sparse_weights": false,
             "positive_threshold": 1,
             "recompile_cython": false,
