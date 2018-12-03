@@ -14,7 +14,8 @@ from models.hybrid.SchrodingerRecommender import ScrodingerRecommender
 from models.hybrid.UserItemAverage_Recommender import UserItemAvgRecommender
 # Slim
 from models.Slim_mark1.Slim import Slim
-from models.Slim_mark1.Cython.Slim_BPR_Cython import Slim_BPR_Recommender_Cython
+from models.Slim_mark2.Cython.Slim_BPR_Cython import Slim_BPR_Recommender_Cython as Slim_mark2
+from models.Slim_mark1.Cython.Slim_BPR_Cython import Slim_BPR_Recommender_Cython as Slim_mark1
 from models.Slim_mark1.Slim_BPR import Slim_BPR_Recommender_Python
 from models.Slim_ElasticNet.SlimElasticNetRecommender import SLIMElasticNetRecommender
 # CF and CBF
@@ -32,6 +33,8 @@ from models.MF_mark2.PureSVD import PureSVDRecommender
 from models.MF_mark2.Cython.MatrixFactorization_Cython import MatrixFactorization_Cython
 # define clear function
 from models.offline.ItemTreeRecommender_offline import ItemTreeRecommender_offline
+from models.offline.PartyRecommender_offline import PartyRecommender_offline
+from models.offline.PyramidRecommender_offline import PyramidRecommender_offline
 
 
 def clear():
@@ -96,8 +99,15 @@ class Configurator(object):
                     positive_threshold=model["positive_threshold"],
                     sparse_weights= model["sparse_weights"]))
             # Slim BPR with Cython Extension
-            elif model["model_name"] == "slim_bpr_cython":
-                recsys.append(Slim_BPR_Recommender_Cython(
+            elif model["model_name"] == "slim_bpr_mark1":
+                recsys.append(Slim_mark1(
+                    data,
+                    positive_threshold=model["positive_threshold"],
+                    recompile_cython=model["recompile_cython"],
+                    symmetric= model["symmetric"]
+                    ))
+            elif model["model_name"] == "slim_bpr_mark2":
+                recsys.append(Slim_mark2(
                     data,
                     positive_threshold=model["positive_threshold"],
                     recompile_cython=model["recompile_cython"],
@@ -205,6 +215,10 @@ class Configurator(object):
                 recsys.append(RP3betaRecommender(data))
             elif model["model_name"] == "slim_elastic":
                 recsys.append(SLIMElasticNetRecommender(data))
+            elif model["model_name"] == "party":
+                recsys.append(PartyRecommender_offline(data))
+            elif model["model_name"] == "pyramid":
+                recsys.append(PyramidRecommender_offline(data))
         print("Configurator: Models are extracted")
 
         return recsys

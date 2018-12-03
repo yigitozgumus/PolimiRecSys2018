@@ -1,4 +1,4 @@
-
+from models.Slim_ElasticNet.SlimElasticNetRecommender import SLIMElasticNetRecommender
 from data.PlaylistDataReader import PlaylistDataReader
 from utils.logger import Logger
 from utils.config import clear, Configurator
@@ -9,8 +9,11 @@ from models.KNN.Item_KNN_CFRecommender import ItemKNNCFRecommender
 from models.KNN.Item_KNN_CBFRecommender import ItemKNNCBFRecommender
 from models.graph.P3AlphaRecommender import P3alphaRecommender
 from models.graph.RP3BetaRecommender import RP3betaRecommender
-from models.Slim_mark1.Cython.Slim_BPR_Cython import Slim_BPR_Recommender_Cython
+from models.MF_mark2.PureSVD import PureSVDRecommender
+from models.Slim_mark1.Cython.Slim_BPR_Cython import Slim_BPR_Recommender_Cython as Slim_mark1
+from models.Slim_mark2.Cython.Slim_BPR_Cython import Slim_BPR_Recommender_Cython as Slim_mark2
 from models.offline.ItemTreeRecommender_offline import ItemTreeRecommender_offline
+from models.offline.PartyRecommender_offline import PartyRecommender_offline
 from utils.config import clear
 
 from contextlib import contextmanager
@@ -59,7 +62,7 @@ def packageWithModel(fileList, saved=False):
         model_file.append(added)
     return model_file
 
-def printOutMapValues(modelList, URM, UCM, modelsSoFar):
+def printOutMapValues(modelList, URM, ICM, modelsSoFar):
     map_dict = {i: dict() for i in modelsSoFar}
     m = OfflineDataLoader()
     for model in modelList:
@@ -75,13 +78,13 @@ def printOutMapValues(modelList, URM, UCM, modelsSoFar):
             mod.loadModel(folder_path=folder, file_name=file, verbose=False)
             map_dict[model[0]][model[2]] = mod.MAP
            # print(model[0], model[2], mod.MAP)
-        elif model[0] == "ItemKNNCBFRecommender":
-            mod = ItemKNNCBFRecommender(URM, UCM)
-            mod.loadModel(folder_path=folder, file_name=file, verbose=False)
-            map_dict[model[0]][model[2]] = mod.MAP
+        # elif model[0] == "ItemKNNCBFRecommender":
+        #     mod = ItemKNNCBFRecommender(URM, UCM)
+        #     mod.loadModel(folder_path=folder, file_name=file, verbose=False)
+        #     map_dict[model[0]][model[2]] = mod.MAP
            # print(model[0], model[2], mod.MAP)
         elif model[0] == "SLIM_BPR_Recommender_mark1":
-            mod = Slim_BPR_Recommender_Cython(URM)
+            mod = Slim_mark1(URM)
             mod.loadModel(folder_path=folder, file_name=file, verbose=False)
             map_dict[model[0]][model[2]] = mod.MAP
            # print(model[0], model[2], mod.MAP)
@@ -96,22 +99,27 @@ def printOutMapValues(modelList, URM, UCM, modelsSoFar):
             map_dict[model[0]][model[2]] = mod.MAP
            # print(model[0], model[2], mod.MAP)
         elif model[0] == "PureSVD":
-            mod = P3alphaRecommender(URM)
+            mod = PureSVDRecommender(URM)
             mod.loadModel(folder_path=folder, file_name=file, verbose=False)
             map_dict[model[0]][model[2]] = mod.MAP
            # print(model[0], model[2], mod.MAP)
         elif model[0] == "Slim_Elastic_Net_Recommender":
-            mod = P3alphaRecommender(URM)
+            mod = SLIMElasticNetRecommender(URM)
             mod.loadModel(folder_path=folder, file_name=file, verbose=False)
             map_dict[model[0]][model[2]] = mod.MAP
             #print(model[0], model[2], mod.MAP)
         elif model[0] == "SLIM_BPR_Recommender_mark2":
-            mod = P3alphaRecommender(URM)
+            mod = Slim_mark2(URM)
             mod.loadModel(folder_path=folder, file_name=file, verbose=False)
             map_dict[model[0]][model[2]] = mod.MAP
             #print(model[0], model[2], mod.MAP)
         elif model[0] == "ItemTreeRecommender_offline":
-            mod = P3alphaRecommender(URM)
+            mod = ItemTreeRecommender_offline(URM,ICM)
+            mod.loadModel(folder_path=folder, file_name=file, verbose=False)
+            map_dict[model[0]][model[2]] = mod.MAP
+            #print(model[0], model[2], mod.MAP)
+        elif model[0] == "PartyRecommender_offline":
+            mod = PartyRecommender_offline(URM)
             mod.loadModel(folder_path=folder, file_name=file, verbose=False)
             map_dict[model[0]][model[2]] = mod.MAP
             #print(model[0], model[2], mod.MAP)

@@ -29,19 +29,31 @@ def main():
     if mode == 1:
         pipeline_stable(file_name, logFile)
     elif mode == 2:
-        pipeline_submission_hybrid(file_name, logFile)
+        pipeline_best(file_name, logFile)
     elif mode == 3:
         read_data_split_and_search()
     elif mode == 4:
-        pass
+        pipeline_save_training_model(file_name,logFile)
     elif mode == 5:
-        pipeline_parameter_tuning()
+        pipeline_submission_hybrid(file_name, logFile)
     elif mode == 6:
         pipeline_save_model(file_name,logFile)
 
 
-def pipeline_parameter_tuning():
-    pass
+def pipeline_save_training_model(fileName, logFile):
+    clear()
+    conf = Configurator(fileName)
+    data_reader = PlaylistDataReader()
+    data_reader.generate_datasets()
+    l = Logger(data_reader.targetData, logFile)
+    rec_sys = conf.extract_models(data_reader)
+    evaluator = SequentialEvaluator(data_reader.get_URM_test(), [10], exclude_seen=True)
+    for model in rec_sys:
+        model.fit(save_model=True,best_parameters=False)
+        results_run, results_run_string = evaluator.evaluateRecommender(model)
+        print("Algorithm: {}, results: \n{}".format(str(model), results_run_string))
+        l.export_experiments(model, results_run_string)
+        l.log_experiment()
 
 def pipeline_save_model(fileName, logFile):
     clear()
@@ -59,6 +71,21 @@ def pipeline_save_model(fileName, logFile):
         #l.log_experiment()
 
 def pipeline_stable(fileName, logFile):
+    clear()
+    conf = Configurator(fileName)
+    data_reader = PlaylistDataReader()
+    data_reader.generate_datasets()
+    l = Logger(data_reader.targetData, logFile)
+    rec_sys = conf.extract_models(data_reader)
+    evaluator = SequentialEvaluator(data_reader.get_URM_test(), [10], exclude_seen=True)
+    for model in rec_sys:
+        model.fit()
+        results_run, results_run_string = evaluator.evaluateRecommender(model)
+        print("Algorithm: {}, results: \n{}".format(str(model), results_run_string))
+        l.export_experiments(model,results_run_string)
+        l.log_experiment()
+
+def pipeline_best(fileName, logFile):
     clear()
     conf = Configurator(fileName)
     data_reader = PlaylistDataReader()
