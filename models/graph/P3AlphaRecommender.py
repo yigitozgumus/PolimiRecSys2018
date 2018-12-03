@@ -129,7 +129,7 @@ class P3alphaRecommender(RecommenderSystem,RecommenderSystem_SM):
                 start_time_printBatch = time.time()
 
         self.W_sparse = sps.coo_matrix((values[:numCells], (rows[:numCells], cols[:numCells])), shape=(Pui.shape[1], Pui.shape[1]))
-        self.W_sparse = check_matrix(self.W_sparse,"csr",dtype=np.float64)
+        self.W_sparse = check_matrix(self.W_sparse,"csr",dtype=np.float32)
 
 
         if self.normalize_similarity:

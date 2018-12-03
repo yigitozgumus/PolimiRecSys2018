@@ -21,7 +21,7 @@ class ItemTreeRecommender_offline(RecommenderSystem):
 
     def __init__(self, URM_train,ICM):
         super(ItemTreeRecommender_offline, self).__init__()
-        self.URM_train = check_matrix(URM_train, "csr",dtype=np.float64)
+        self.URM_train = check_matrix(URM_train, "csr",dtype=np.float32)
         self.ICM = check_matrix(ICM,"csr")
         self.parameters = None
         self.dataset = None
@@ -29,9 +29,14 @@ class ItemTreeRecommender_offline(RecommenderSystem):
 
 
     def __repr__(self):
-        return "Item_Tree_Hybrid_Offline_Recommender"
+        return "Item Tree Hybrid Offline Recommender"
     #0.48932802125541863 #0.33816203568945447 # 0.7341780576036934
-    def fit(self, alpha=0.48932802125541863, beta=0.33816203568945447, gamma=0.4534234 ,theta= 0.7341780576036934,omega=0.679695975, normalize=False,save_model=False,submission=False,best_parameters=False):
+    def fit(self,
+     alpha=0.0500226666668111,
+      beta=0.9996482062853596, 
+      gamma=0.36595766622100967 ,
+      theta= 0.22879224932897924,
+      omega=0.5940982982110466, normalize=False,save_model=False,submission=False,best_parameters=False):
         if best_parameters:
             m = OfflineDataLoader()
             folder_path,file_name = m.get_parameter(self.RECOMMENDER_NAME)
@@ -69,12 +74,12 @@ class ItemTreeRecommender_offline(RecommenderSystem):
         folder_path_beta, file_name_beta = m.get_model(RP3betaRecommender.RECOMMENDER_NAME,training=self.submission)
         self.m_beta.loadModel(folder_path= folder_path_beta,file_name=file_name_beta)
 
-        self.W_sparse_URM = check_matrix(self.m_user_knn_cf.W_sparse,"csr",dtype=np.float64)
-        self.W_sparse_ICM = check_matrix(self.m_item_knn_cbf.W_sparse,"csr",dtype=np.float64)
-        self.W_sparse_URM_T= check_matrix(self.m_item_knn_cf.W_sparse,"csr",dtype=np.float64)
-        self.W_sparse_Slim = check_matrix(self.m_slim_mark1.W,"csr",dtype=np.float64)
-        self.W_sparse_alpha = check_matrix(self.m_alpha.W_sparse,"csr",dtype=np.float64)
-        self.W_sparse_beta = check_matrix(self.m_beta.W_sparse,"csr",dtype=np.float64)
+        self.W_sparse_URM = check_matrix(self.m_user_knn_cf.W_sparse,"csr",dtype=np.float32)
+        self.W_sparse_ICM = check_matrix(self.m_item_knn_cbf.W_sparse,"csr",dtype=np.float32)
+        self.W_sparse_URM_T= check_matrix(self.m_item_knn_cf.W_sparse,"csr",dtype=np.float32)
+        self.W_sparse_Slim = check_matrix(self.m_slim_mark1.W,"csr",dtype=np.float32)
+        self.W_sparse_alpha = check_matrix(self.m_alpha.W_sparse,"csr",dtype=np.float32)
+        self.W_sparse_beta = check_matrix(self.m_beta.W_sparse,"csr",dtype=np.float32)
         # Precomputations
         self.matrix_first_branch = self.alpha * self.W_sparse_ICM + (1-self.alpha) * self.W_sparse_Slim
         self.matrix_right = self.beta * self.matrix_first_branch + (1-self.beta) * self.W_sparse_URM_T

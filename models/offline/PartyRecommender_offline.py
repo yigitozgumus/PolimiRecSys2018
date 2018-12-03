@@ -18,26 +18,26 @@ from models.graph.P3AlphaRecommender import P3alphaRecommender
 from models.graph.RP3BetaRecommender import RP3betaRecommender
 
 
-class PyramidRecommender_offline(RecommenderSystem):
-    RECOMMENDER_NAME = "PyramidTreeRecommender_offline"
+class PartyRecommender_offline(RecommenderSystem):
+    RECOMMENDER_NAME = "PartyTreeRecommender_offline"
 
     def __init__(self, URM_train):
-        super(PyramidRecommender_offline, self).__init__()
+        super(PartyRecommender_offline, self).__init__()
         self.URM_train = check_matrix(URM_train, "csr", dtype=np.float32)
         self.parameters = None
         self.dataset = None
         self.normalize = False
 
     def __repr__(self):
-        return "Pyramid 3 Level Hybrid Offline Recommender"
+        return "Party 3 Level Hybrid Offline Recommender"
 
     def fit(self,
             alpha=0.36595766622100967,
             beta=0.9996482062853596,
             gamma=0.0500226666668111,
-            chi = 0.8765434567,
-            psi=0.22879224932897924,
+            theta=0.22879224932897924,
             omega=0.5940982982110466,
+            coeff = 10,
             normalize=False,
             save_model=False,
             submission=False,
@@ -50,9 +50,10 @@ class PyramidRecommender_offline(RecommenderSystem):
             self.alpha = alpha
             self.beta = beta
             self.gamma = gamma
-            self.chi = chi
-            self.psi = psi
+            self.theta = theta
             self.omega = omega
+            self.coeff = coeff
+
 
         self.normalize = normalize
         self.submission = not submission
@@ -90,14 +91,10 @@ class PyramidRecommender_offline(RecommenderSystem):
         self.W_sparse_elastic = check_matrix(self.m_slim_elastic.W_sparse, "csr", dtype=np.float32)
         # Precomputations
         self.matrix_alpha_beta = self.alpha * self.W_sparse_alpha + (1 - self.alpha) * self.W_sparse_beta
-        self.matrix_slim = self.beta * self.W_sparse_Slim + (1 - self.beta) * self.W_sparse_elastic
-        normalizer = self.chi + self.psi + self.omega
-        self.chi = self.chi / normalizer
-        self.psi = self.psi / normalizer
-        self.omega = self.omega / normalizer
+        self.matrix_level1 = self.beta * self.W_sparse_Slim + (1 - self.beta) * self.W_sparse_URM_T
 
-        self.parameters = "alpha={}, beta={}, gamma={}, chi={}, psi={}, omega={}".format(self.alpha, self.beta, self.gamma,
-                                                                                   self.chi, self.psi, self.omega)
+        self.parameters = "alpha={}, beta={}, gamma={}, omega={}, theta={}".format(self.alpha, self.beta, self.gamma,
+                                                                                   self.omega, self.theta)
         if save_model:
             self.saveModel("saved_models/submission/", file_name=self.RECOMMENDER_NAME)
 
@@ -112,12 +109,13 @@ class PyramidRecommender_offline(RecommenderSystem):
         if cutoff is None:
             cutoff = self.URM_train.shape[1] - 1
 
-        scores_users = self.W_sparse_URM[playlist_id_array].dot(self.URM_train).toarray()
-        scores_items = self.URM_train[playlist_id_array].dot(self.W_sparse_URM_T).toarray()
-        scores_knn = self.gamma * scores_users + (1-self.gamma) * scores_items
-        scores_ab = self.URM_train[playlist_id_array].dot(self.matrix_alpha_beta).toarray()
-        scores_slim = self.URM_train[playlist_id_array].dot(self.matrix_slim).toarray()
-        scores = self.chi * scores_knn + self.psi * scores_ab + self.omega * scores_slim
+        scores_URM = self.W_sparse_URM[playlist_id_array].dot(self.URM_train).toarray()
+        scores_alphabeta = self.URM_train[playlist_id_array].dot(self.matrix_alpha_beta).toarray()
+        scores_level1 = self.URM_train[playlist_id_array].dot(self.matrix_level1).toarray()
+        scores_level2 = self.gamma * scores_alphabeta + (1 - self.gamma) * scores_URM
+        scores_level3 = self.theta * scores_level2 + (1 - self.theta) * scores_level1
+        scores_elastic = self.URM_train[playlist_id_array].dot(self.W_sparse_elastic).toarray()
+        scores = (self.omega* self.coeff * scores_elastic) + (1 - self.omega) * scores_level3
 
         if self.normalize:
             # normalization will keep the scores in the same range
@@ -173,14 +171,14 @@ class PyramidRecommender_offline(RecommenderSystem):
                               "W_sparse_alpha": self.W_sparse_alpha,
                               "W_sparse_beta": self.W_sparse_beta,
                               "W_sparse_elastic": self.W_sparse_elastic,
-                              "matrix_slim": self.matrix_slim,
+                              "matrix_level1": self.matrix_level1,
                               "matrix_alpha_beta": self.matrix_alpha_beta,
                               "alpha": self.alpha,
                               "beta": self.beta,
                               "gamma": self.gamma,
-                              "chi": self.chi,
-                              "psi": self.psi,
-                              "omega": self.omega}
+                              "theta": self.theta,
+                              "omega": self.omega,
+                              "coeff": self.coeff}
 
         pickle.dump(dictionary_to_save,
                     open(folder_path + file_name, "wb"),

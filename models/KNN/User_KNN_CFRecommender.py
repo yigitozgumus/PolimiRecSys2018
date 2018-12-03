@@ -46,11 +46,11 @@ class UserKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
                 similarity = Compute_Similarity(self.URM_train.T, **similarity_args)
             else:
                 if self.feature_weighting == "BM25":
-                    self.URM_train_copy = self.URM_train.astype(np.float64)
+                    self.URM_train_copy = self.URM_train.astype(np.float32)
                     self.URM_train_copy = to_okapi(self.URM_train)
 
                 elif self.feature_weighting == "TF-IDF":
-                    self.URM_train_copy = self.URM_train.astype(np.float64)
+                    self.URM_train_copy = self.URM_train.astype(np.float32)
                     self.URM_train_copy = to_tfidf(self.URM_train)
 
                 similarity = Compute_Similarity(self.URM_train_copy.T, **similarity_args)
@@ -59,11 +59,11 @@ class UserKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
             self.shrink = shrink
             self.feature_weighting = feature_weighting
             if self.feature_weighting == "BM25":
-                self.URM_train_copy = self.URM_train.astype(np.float64)
+                self.URM_train_copy = self.URM_train.astype(np.float32)
                 self.URM_train_copy = to_okapi(self.URM_train)
 
             elif self.feature_weighting == "TF-IDF":
-                self.URM_train_copy = self.URM_train.astype(np.float64)
+                self.URM_train_copy = self.URM_train.astype(np.float32)
                 self.URM_train_copy = to_tfidf(self.URM_train)
 
             if self.feature_weighting == "none":

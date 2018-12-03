@@ -3,6 +3,8 @@
 
 import numpy as np
 import scipy.sparse as sps
+
+from utils.OfflineDataLoader import OfflineDataLoader
 from base.BaseRecommender import RecommenderSystem
 from base.BaseRecommender_SM import RecommenderSystem_SM
 from base.RecommenderUtils import check_matrix
@@ -37,116 +39,90 @@ class SLIMElasticNetRecommender(RecommenderSystem_SM, RecommenderSystem):
     def __repr__(self):
         return "Slim ElasticNet Recommender"
 
-    def fit(self, l1_penalty=0.1, l2_penalty=0.1, positive_only=True, topK=100):
-
-        self.l1_penalty = l1_penalty
-        self.l2_penalty = l2_penalty
-        self.positive_only = positive_only
-        self.topK = topK
-        self.parameters = "l1_penalty={},l2_penalty={},positive_only={}".format(
-            self.l1_penalty, self.l2_penalty, self.positive_only
-        )
-
-        if self.l1_penalty + self.l2_penalty != 0:
-            self.l1_ratio = self.l1_penalty / (self.l1_penalty + self.l2_penalty)
+    def fit(self, l1_ratio=0.1, positive_only=True, topK = 400,save_model=False,best_parameters=False, offline=True,submission=False):
+        self.parameters = "l1_ratio= {}, topK= {},alpha= {},tol= {},max_iter= {}".format(l1_ratio,topK,0.0001,1e-4,100)
+        if offline:
+            m = OfflineDataLoader()
+            folder, file = m.get_model(self.RECOMMENDER_NAME,training=(not submission))
+            self.loadModel(folder_path=folder,file_name=file)
         else:
-            print("SLIM_ElasticNet: l1_penalty+l2_penalty cannot be equal to zero, setting the ratio l1/(l1+l2) to 1.0")
-            self.l1_ratio = 1.0
+        
+            assert l1_ratio>= 0 and l1_ratio<=1, "SLIM_ElasticNet: l1_ratio must be between 0 and 1, provided value was {}".format(l1_ratio)
 
-        # initialize the ElasticNet model
-        self.model = ElasticNet(alpha=1.0,
-                                l1_ratio=self.l1_ratio,
-                                positive=self.positive_only,
-                                fit_intercept=False,
-                                copy_X=False,
-                                precompute=True,
-                                selection='random',
-                                max_iter=100,
-                                tol=1e-4)
+            self.l1_ratio = l1_ratio
+            self.positive_only = positive_only
+            self.topK = topK
 
-        URM_train = check_matrix(self.URM_train, 'csc', dtype=np.float32)
+            # initialize the ElasticNet model
+            self.model = ElasticNet(alpha=0.0001,
+                                    l1_ratio=self.l1_ratio,
+                                    positive=self.positive_only,
+                                    fit_intercept=False,
+                                    copy_X=False,
+                                    precompute=True,
+                                    selection='random',
+                                    max_iter=100,
+                                    tol=1e-4)
 
-        n_items = URM_train.shape[1]
+           
+            URM_train = check_matrix(self.URM_train, 'csc', dtype=np.float32)
+            n_items = URM_train.shape[1]
+            # Use array as it reduces memory requirements compared to lists
+            dataBlock = 10000000
+            rows = np.zeros(dataBlock, dtype=np.int32)
+            cols = np.zeros(dataBlock, dtype=np.int32)
+            values = np.zeros(dataBlock, dtype=np.float32)
+            numCells = 0
+            start_time = time.time()
+            start_time_printBatch = start_time
 
-        # Use array as it reduces memory requirements compared to lists
-        dataBlock = 10000000
+            # fit each item's factors sequentially (not in parallel)
+            for currentItem in range(n_items):
+                # get the target column
+                y = URM_train[:, currentItem].toarray()
+                # set the j-th column of X to zero
+                start_pos = URM_train.indptr[currentItem]
+                end_pos = URM_train.indptr[currentItem + 1]
+                current_item_data_backup = URM_train.data[start_pos: end_pos].copy()
+                URM_train.data[start_pos: end_pos] = 0.0
+                # fit one ElasticNet model per column
+                self.model.fit(URM_train, y)
+                nonzero_model_coef_index = self.model.sparse_coef_.indices
+                nonzero_model_coef_value = self.model.sparse_coef_.data
+                local_topK = min(len(nonzero_model_coef_value)-1, self.topK)
+                relevant_items_partition = (-nonzero_model_coef_value).argpartition(local_topK)[0:local_topK]
+                relevant_items_partition_sorting = np.argsort(-nonzero_model_coef_value[relevant_items_partition])
+                ranking = relevant_items_partition[relevant_items_partition_sorting]
 
-        rows = np.zeros(dataBlock, dtype=np.int32)
-        cols = np.zeros(dataBlock, dtype=np.int32)
-        values = np.zeros(dataBlock, dtype=np.float32)
+                for index in range(len(ranking)):
+                    if numCells == len(rows):
+                        rows = np.concatenate((rows, np.zeros(dataBlock, dtype=np.int32)))
+                        cols = np.concatenate((cols, np.zeros(dataBlock, dtype=np.int32)))
+                        values = np.concatenate((values, np.zeros(dataBlock, dtype=np.float32)))
+                    rows[numCells] = nonzero_model_coef_index[ranking[index]]
+                    cols[numCells] = currentItem
+                    values[numCells] = nonzero_model_coef_value[ranking[index]]
+                    numCells += 1
+                # finally, replace the original values of the j-th column
+                URM_train.data[start_pos:end_pos] = current_item_data_backup
 
-        numCells = 0
+                if time.time() - start_time_printBatch > 300 or currentItem == n_items-1:
+                    print("Processed {} ( {:.2f}% ) in {:.2f} minutes. Items per second: {:.0f}".format(
+                                      currentItem+1,
+                                      100.0* float(currentItem+1)/n_items,
+                                      (time.time()-start_time)/60,
+                                      float(currentItem)/(time.time()-start_time)))
+                    sys.stdout.flush()
+                    sys.stderr.flush()
+                    start_time_printBatch = time.time()
 
-        start_time = time.time()
-        start_time_printBatch = start_time
+            # generate the sparse weight matrix
+            self.W_sparse = sps.csr_matrix((values[:numCells], (rows[:numCells], cols[:numCells])),
+                                           shape=(n_items, n_items), dtype=np.float32)
+        if save_model:
+            self.saveModel("saved_models/submission/",file_name=self.RECOMMENDER_NAME)
 
-        # fit each item's factors sequentially (not in parallel)
-        for currentItem in range(n_items):
 
-            # get the target column
-            y = URM_train[:, currentItem].toarray()
-
-            # set the j-th column of X to zero
-            start_pos = URM_train.indptr[currentItem]
-            end_pos = URM_train.indptr[currentItem + 1]
-
-            current_item_data_backup = URM_train.data[start_pos: end_pos].copy()
-            URM_train.data[start_pos: end_pos] = 0.0
-
-            # fit one ElasticNet model per column
-            self.model.fit(URM_train, y)
-
-            # self.model.coef_ contains the coefficient of the ElasticNet model
-            # let's keep only the non-zero values
-
-            # Select topK values
-            # Sorting is done in three steps. Faster then plain np.argsort for higher number of items
-            # - Partition the data to extract the set of relevant items
-            # - Sort only the relevant items
-            # - Get the original item index
-
-            # nonzero_model_coef_index = self.model.coef_.nonzero()[0]
-            # nonzero_model_coef_value = self.model.coef_[nonzero_model_coef_index]
-
-            nonzero_model_coef_index = self.model.sparse_coef_.indices
-            nonzero_model_coef_value = self.model.sparse_coef_.data
-
-            local_topK = min(len(nonzero_model_coef_value) - 1, self.topK)
-
-            relevant_items_partition = (-nonzero_model_coef_value).argpartition(local_topK)[0:local_topK]
-            relevant_items_partition_sorting = np.argsort(-nonzero_model_coef_value[relevant_items_partition])
-            ranking = relevant_items_partition[relevant_items_partition_sorting]
-
-            for index in range(len(ranking)):
-
-                if numCells == len(rows):
-                    rows = np.concatenate((rows, np.zeros(dataBlock, dtype=np.int32)))
-                    cols = np.concatenate((cols, np.zeros(dataBlock, dtype=np.int32)))
-                    values = np.concatenate((values, np.zeros(dataBlock, dtype=np.float32)))
-
-                rows[numCells] = nonzero_model_coef_index[ranking[index]]
-                cols[numCells] = currentItem
-                values[numCells] = nonzero_model_coef_value[ranking[index]]
-
-                numCells += 1
-
-            # finally, replace the original values of the j-th column
-            URM_train.data[start_pos:end_pos] = current_item_data_backup
-
-            if time.time() - start_time_printBatch > 300 or currentItem == n_items - 1:
-                print("Processed {} ( {:.2f}% ) in {:.2f} minutes. Items per second: {:.0f}".format(
-                    currentItem + 1,
-                    100.0 * float(currentItem + 1) / n_items,
-                    (time.time() - start_time) / 60,
-                    float(currentItem) / (time.time() - start_time)))
-                sys.stdout.flush()
-                sys.stderr.flush()
-
-                start_time_printBatch = time.time()
-
-        # generate the sparse weight matrix
-        self.W_sparse = sps.csr_matrix((values[:numCells], (rows[:numCells], cols[:numCells])),
-                                       shape=(n_items, n_items), dtype=np.float32)
 
 
 import multiprocessing
