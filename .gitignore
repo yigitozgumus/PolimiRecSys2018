@@ -16,3 +16,7 @@ Makefile
 *.so
 *.c
 *.html
+parameter_tunings/
+saved_models/
+parameter_tuning/BayesianOptimization
+tuned_parameters/
