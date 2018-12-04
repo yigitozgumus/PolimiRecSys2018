@@ -340,7 +340,7 @@ def runParameterSearch_Collaborative(recommender_class, URM_train, metric_to_opt
             hyperparamethers_range_dictionary["gamma"] = range(0,1)
             hyperparamethers_range_dictionary["theta"] = range(0,1)
             hyperparamethers_range_dictionary["omega"] = range(0,1)
-            hyperparamethers_range_dictionary["coeff"] = [1,2,4,5,10,15,20,25,30,40,50]
+            hyperparamethers_range_dictionary["coeff"] = range(1,50)
 
             recommenderDictionary = {DictionaryKeys.CONSTRUCTOR_POSITIONAL_ARGS: [URM_train],
                                      DictionaryKeys.CONSTRUCTOR_KEYWORD_ARGS: dict(),
@@ -352,12 +352,14 @@ def runParameterSearch_Collaborative(recommender_class, URM_train, metric_to_opt
         if recommender_class is PyramidRecommender_offline:
             hyperparamethers_range_dictionary = {}
 
-            hyperparamethers_range_dictionary["alpha"] = list(np.linspace(0.2, 0.85, 150))
-            hyperparamethers_range_dictionary["beta"] = list(np.linspace(0.2, 0.85, 150))
-            hyperparamethers_range_dictionary["gamma"] = list(np.linspace(0.2, 0.85, 150))
-            hyperparamethers_range_dictionary["chi"] = list(np.linspace(2, 20, 150))
-            hyperparamethers_range_dictionary["psi"] = list(np.linspace(2, 20, 150))
-            hyperparamethers_range_dictionary["omega"] = list(np.linspace(2, 20, 150))
+            hyperparamethers_range_dictionary["alpha"] = range(0,3)
+            hyperparamethers_range_dictionary["beta"] = range(0,3)
+            hyperparamethers_range_dictionary["gamma"] = range(0,3)
+            hyperparamethers_range_dictionary["chi"] = range(0,5)
+            hyperparamethers_range_dictionary["psi"] = range(0,5)
+            hyperparamethers_range_dictionary["omega"] = range(0,10)
+            hyperparamethers_range_dictionary["coeff"] = range(1,40)
+
 
             recommenderDictionary = {DictionaryKeys.CONSTRUCTOR_POSITIONAL_ARGS: [URM_train],
                                      DictionaryKeys.CONSTRUCTOR_KEYWORD_ARGS: dict(),
@@ -452,8 +454,8 @@ def read_data_split_and_search():
     collaborative_algorithm_list = [
         #P3alphaRecommender,
         #RP3betaRecommender,
-        ItemKNNCFRecommender,
-        UserKNNCFRecommender
+       # ItemKNNCFRecommender,
+        #UserKNNCFRecommender
         # MatrixFactorization_BPR_Cython,
         # MatrixFactorization_FunkSVD_Cython,
         # PureSVDRecommender,
@@ -461,8 +463,8 @@ def read_data_split_and_search():
         # Slim_mark2,
         # ItemTreeRecommender_offline
         # SLIMElasticNetRecommender,
-        # PartyRecommender_offline
-       # PyramidRecommender_offline
+       # PartyRecommender_offline
+        PyramidRecommender_offline
         # ItemKNNCBFRecommender
     ]
 
@@ -481,7 +483,7 @@ def read_data_split_and_search():
                                                        evaluator_validation_earlystopping=evaluator_validation_earlystopping,
                                                        evaluator_validation=evaluator_validation,
                                                        evaluator_test=evaluator_test,
-                                                       n_cases=35,
+                                                       n_cases=50,
                                                        output_root_path=output_root_path)
 
     for recommender_class in collaborative_algorithm_list:

@@ -24,6 +24,7 @@ def main():
     file_name = args.json
     logFile = None
     mode = args.mode
+    clear()
     if not args.logFile is None:
         logFile = args.logFile
     if mode == 1:
@@ -41,7 +42,7 @@ def main():
 
 
 def pipeline_save_training_model(fileName, logFile):
-    clear()
+    print("Pipeline: Will save the model with the defined parameters and URM test")
     conf = Configurator(fileName)
     data_reader = PlaylistDataReader()
     data_reader.generate_datasets()
@@ -56,7 +57,7 @@ def pipeline_save_training_model(fileName, logFile):
         l.log_experiment()
 
 def pipeline_save_model(fileName, logFile):
-    clear()
+    print("Pipeline: Will save the model with the best parameters and all of the data.")
     conf = Configurator(fileName)
     data_reader = PlaylistDataReader()
     data_reader.generate_datasets()
@@ -71,7 +72,7 @@ def pipeline_save_model(fileName, logFile):
         #l.log_experiment()
 
 def pipeline_stable(fileName, logFile):
-    clear()
+    print("Pipeline: Will predict recommendations using current parameters and URM test")
     conf = Configurator(fileName)
     data_reader = PlaylistDataReader()
     data_reader.generate_datasets()
@@ -86,7 +87,7 @@ def pipeline_stable(fileName, logFile):
         l.log_experiment()
 
 def pipeline_best(fileName, logFile):
-    clear()
+    print("Pipeline: Will predict recommendations using best parameters and URM test")
     conf = Configurator(fileName)
     data_reader = PlaylistDataReader()
     data_reader.generate_datasets()
@@ -103,7 +104,7 @@ def pipeline_best(fileName, logFile):
 
 
 def pipeline_submission_hybrid(fileName, logFile):
-    clear()
+    print("Pipeline: Will save the recommendations using best parameters and all of the data")
     conf = Configurator(fileName)
     data_reader = PlaylistDataReader()
     data_reader.generate_datasets()
