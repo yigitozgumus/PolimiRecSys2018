@@ -32,12 +32,13 @@ class PyramidRecommender_offline(RecommenderSystem):
         return "Pyramid 3 Level Hybrid Offline Recommender"
 
     def fit(self,
-            alpha=0.36595766622100967,
-            beta=0.9996482062853596,
-            gamma=0.0500226666668111,
-            chi = 0.8765434567,
-            psi=0.22879224932897924,
-            omega=0.5940982982110466,
+            alpha=0.80849266253816,
+            beta=0.7286503831547066,
+            gamma=0.02895704968752022,
+            chi = 1.8070865821028037,
+            psi=4.256005405227253,
+            omega=5.096018341419944,
+            coeff = 39.966898886531645,
             normalize=False,
             save_model=False,
             submission=False,
@@ -53,6 +54,7 @@ class PyramidRecommender_offline(RecommenderSystem):
             self.chi = chi
             self.psi = psi
             self.omega = omega
+            self.coeff = coeff
 
         self.normalize = normalize
         self.submission = not submission
@@ -89,15 +91,11 @@ class PyramidRecommender_offline(RecommenderSystem):
         self.W_sparse_beta = check_matrix(self.m_beta.W_sparse, "csr", dtype=np.float32)
         self.W_sparse_elastic = check_matrix(self.m_slim_elastic.W_sparse, "csr", dtype=np.float32)
         # Precomputations
-        self.matrix_alpha_beta = self.alpha * self.W_sparse_alpha + (1 - self.alpha) * self.W_sparse_beta
-        self.matrix_slim = self.beta * self.W_sparse_Slim + (1 - self.beta) * self.W_sparse_elastic
-        normalizer = self.chi + self.psi + self.omega
-        self.chi = self.chi / normalizer
-        self.psi = self.psi / normalizer
-        self.omega = self.omega / normalizer
+        self.matrix_alpha_beta = self.alpha * self.W_sparse_alpha + (3 - self.alpha) * self.W_sparse_beta
+        self.matrix_slim = self.beta * self.W_sparse_Slim + ((3 - self.beta) * self.W_sparse_elastic * self.coeff)
 
-        self.parameters = "alpha={}, beta={}, gamma={}, chi={}, psi={}, omega={}".format(self.alpha, self.beta, self.gamma,
-                                                                                   self.chi, self.psi, self.omega)
+        self.parameters = "alpha={}, beta={}, gamma={}, chi={}, psi={}, omega={}, coeff={}".format(self.alpha, self.beta, self.gamma,
+                                                                                   self.chi, self.psi, self.omega, self.coeff)
         if save_model:
             self.saveModel("saved_models/submission/", file_name=self.RECOMMENDER_NAME)
 
@@ -114,7 +112,7 @@ class PyramidRecommender_offline(RecommenderSystem):
 
         scores_users = self.W_sparse_URM[playlist_id_array].dot(self.URM_train).toarray()
         scores_items = self.URM_train[playlist_id_array].dot(self.W_sparse_URM_T).toarray()
-        scores_knn = self.gamma * scores_users + (1-self.gamma) * scores_items
+        scores_knn = self.gamma * scores_users + (3-self.gamma) * scores_items
         scores_ab = self.URM_train[playlist_id_array].dot(self.matrix_alpha_beta).toarray()
         scores_slim = self.URM_train[playlist_id_array].dot(self.matrix_slim).toarray()
         scores = self.chi * scores_knn + self.psi * scores_ab + self.omega * scores_slim

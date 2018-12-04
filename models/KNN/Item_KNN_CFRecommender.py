@@ -34,7 +34,7 @@ class ItemKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
             m = OfflineDataLoader()
             folder_path_icf, file_name_icf = m.get_parameter(self.RECOMMENDER_NAME)
             self.loadModel(folder_path=folder_path_icf,file_name=file_name_icf)
-            if self.feature_weighting == "none":
+            if feature_weighting == "none":
                 similarity = Compute_Similarity(self.URM_train, **similarity_args)
             else:
                 if self.feature_weighting == "BM25":

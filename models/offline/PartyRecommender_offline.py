@@ -32,12 +32,12 @@ class PartyRecommender_offline(RecommenderSystem):
         return "Party 3 Level Hybrid Offline Recommender"
 
     def fit(self,
-            alpha=0.36595766622100967,
-            beta=0.9996482062853596,
-            gamma=0.0500226666668111,
-            theta=0.22879224932897924,
-            omega=0.5940982982110466,
-            coeff = 10,
+            alpha=0.0029711141561171717,
+            beta=0.9694720669481413,
+            gamma=0.9635187725527589,
+            theta=0.09930388487311004,
+            omega=0.766047309541692,
+            coeff = 5.4055892529064735,
             normalize=False,
             save_model=False,
             submission=False,
@@ -93,8 +93,8 @@ class PartyRecommender_offline(RecommenderSystem):
         self.matrix_alpha_beta = self.alpha * self.W_sparse_alpha + (1 - self.alpha) * self.W_sparse_beta
         self.matrix_level1 = self.beta * self.W_sparse_Slim + (1 - self.beta) * self.W_sparse_URM_T
 
-        self.parameters = "alpha={}, beta={}, gamma={}, omega={}, theta={}".format(self.alpha, self.beta, self.gamma,
-                                                                                   self.omega, self.theta)
+        self.parameters = "alpha={}, beta={}, gamma={}, theta={}, omega={}, coeff={}".format(self.alpha, self.beta, self.gamma,
+                                                                                   self.theta, self.omega, self.coeff)
         if save_model:
             self.saveModel("saved_models/submission/", file_name=self.RECOMMENDER_NAME)
 
