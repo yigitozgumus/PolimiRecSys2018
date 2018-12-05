@@ -31,26 +31,22 @@ class ItemKNNCBFRecommender(RecommenderSystem, RecommenderSystem_SM):
         representation = "Item KNN Content Based Filtering "
         return representation
 
-    def fit(self, topK=25, shrink=0, similarity='cosine', normalize=True, feature_weighting="BM25",save_model=False,best_parameters = False,
+    def fit(self, topK=600, shrink=1000, similarity='asymmetric', normalize=True, feature_weighting="BM25",save_model=False,best_parameters = False,
             **similarity_args):
-        if feature_weighting not in self.FEATURE_WEIGHTING_VALUES:
-            raise ValueError(
-                "Value for 'feature_weighting' not recognized. Acceptable values are {}, provided was '{}'".format(
-                    self.FEATURE_WEIGHTING_VALUES, feature_weighting))
-
-        if feature_weighting == "BM25":
-            self.ICM = self.ICM.astype(np.float32)
-            self.ICM = to_okapi(self.ICM)
-
-        elif feature_weighting == "TF-IDF":
-            self.ICM = self.ICM.astype(np.float32)
-            self.ICM = to_tfidf(self.ICM)
-
+        similarity_args = {'asymmetric_alpha': 0.40273209903969387}
         if best_parameters:
             m = OfflineDataLoader()
             folder_path_icbf, file_name_icbf = m.get_parameter(self.RECOMMENDER_NAME)
             self.loadModel(folder_path=folder_path_icbf,file_name=file_name_icbf)
-            similarity = Compute_Similarity(self.ICM.T, **similarity_args)
+            if feature_weighting == "BM25":
+                self.ICM = self.ICM.astype(np.float32)
+                self.ICM = to_okapi(self.ICM)
+
+            elif feature_weighting == "TF-IDF":
+                self.ICM = self.ICM.astype(np.float32)
+                self.ICM = to_tfidf(self.ICM)
+            similarity = Compute_Similarity(self.ICM.T, shrink=shrink, topK=topK, normalize=normalize,
+                                            similarity=similarity, **similarity_args)
         else:
             self.topK = topK
             self.shrink = shrink

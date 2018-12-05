@@ -1,4 +1,3 @@
-
 """
 Author : Semsi Yigit Ozgumus
 """
@@ -17,25 +16,30 @@ from models.Slim_mark2.Cython.Slim_BPR_Cython import Slim_BPR_Recommender_Cython
 from models.Slim_ElasticNet.SlimElasticNetRecommender import SLIMElasticNetRecommender
 from models.graph.P3AlphaRecommender import P3alphaRecommender
 from models.graph.RP3BetaRecommender import RP3betaRecommender
+from models.Slim_mark1.Cython.Slim_BPR_Cython import Slim_BPR_Recommender_Cython as Slim_mark1
+from models.KNN.Item_KNN_CBFRecommender import ItemKNNCBFRecommender
 
 
-class PyramidRecommender_offline(RecommenderSystem):
-    RECOMMENDER_NAME = "PyramidRecommender_offline"
+class PyramidItemTreeRecommender_offline(RecommenderSystem):
+    RECOMMENDER_NAME = "PyramidItemTreeRecommender_offline"
 
-    def __init__(self, URM_train):
-        super(PyramidRecommender_offline, self).__init__()
+    def __init__(self, URM_train,ICM):
+        super(PyramidItemTreeRecommender_offline, self).__init__()
         self.URM_train = check_matrix(URM_train, "csr", dtype=np.float32)
+        self.ICM = check_matrix(ICM,"csr",dtype=np.float32)
         self.parameters = None
         self.dataset = None
         self.normalize = False
 
     def __repr__(self):
-        return "Pyramid 3 Level Hybrid Offline Recommender"
+        return "Pyramid Item Tree 4 Level Hybrid Offline Recommender"
 
     def fit(self,
             alpha=0.80849266253816,
             beta=0.7286503831547066,
             gamma=0.02895704968752022,
+            sigma= 0.453342,
+            tau = 0.542421,
             chi = 1.8070865821028037,
             psi=4.256005405227253,
             omega=5.096018341419944,
@@ -44,7 +48,7 @@ class PyramidRecommender_offline(RecommenderSystem):
             save_model=False,
             submission=False,
             best_parameters=False,
-            offline=True,
+            offline=False,
             location="submission"):
         if offline:
             m = OfflineDataLoader()
@@ -59,6 +63,8 @@ class PyramidRecommender_offline(RecommenderSystem):
                 self.alpha = alpha
                 self.beta = beta
                 self.gamma = gamma
+                self.sigma = sigma
+                self.tau = tau
                 self.chi = chi
                 self.psi = psi
                 self.omega = omega
@@ -74,6 +80,14 @@ class PyramidRecommender_offline(RecommenderSystem):
             self.m_item_knn_cf = ItemKNNCFRecommender(self.URM_train)
             folder_path_icf, file_name_icf = m.get_model(ItemKNNCFRecommender.RECOMMENDER_NAME, training=self.submission)
             self.m_item_knn_cf.loadModel(folder_path=folder_path_icf, file_name=file_name_icf)
+
+            self.m_item_knn_cbf = ItemKNNCBFRecommender(self.URM_train,self.ICM)
+            folder_path_icf, file_name_icf = m.get_model(ItemKNNCBFRecommender.RECOMMENDER_NAME, training=self.submission)
+            self.m_item_knn_cbf.loadModel(folder_path=folder_path_icf, file_name=file_name_icf)
+
+            self.m_slim_mark1 = Slim_mark1(self.URM_train)
+            folder_path_slim, file_name_slim = m.get_model(Slim_mark1.RECOMMENDER_NAME, training=self.submission)
+            self.m_slim_mark1.loadModel(folder_path=folder_path_slim, file_name=file_name_slim)
 
             self.m_slim_mark2 = Slim_mark2(self.URM_train)
             folder_path_slim, file_name_slim = m.get_model(Slim_mark2.RECOMMENDER_NAME, training=self.submission)
@@ -93,16 +107,28 @@ class PyramidRecommender_offline(RecommenderSystem):
             self.m_slim_elastic.loadModel(folder_path=folder_path_elastic, file_name=file_name_elastic)
 
             self.W_sparse_URM = check_matrix(self.m_user_knn_cf.W_sparse, "csr", dtype=np.float32)
+            #print(self.W_sparse_URM.getrow(0).data)
             self.W_sparse_URM_T = check_matrix(self.m_item_knn_cf.W_sparse, "csr", dtype=np.float32)
-            self.W_sparse_Slim = check_matrix(self.m_slim_mark2.W_sparse, "csr", dtype=np.float32)
+            #print(self.W_sparse_URM_T.getrow(0).data)
+            self.W_sparse_ICM = check_matrix(self.m_item_knn_cbf.W_sparse,"csr",dtype=np.float32)
+            #print(self.W_sparse_ICM.getrow(0).data)
+            self.W_sparse_Slim1 = check_matrix(self.m_slim_mark1.W,"csr",dtype=np.float32)
+            #print(self.W_sparse_Slim1.getrow(0).data)
+            self.W_sparse_Slim2 = check_matrix(self.m_slim_mark2.W_sparse, "csr", dtype=np.float32)
+            #print(self.W_sparse_Slim2.getrow(0).data)
             self.W_sparse_alpha = check_matrix(self.m_alpha.W_sparse, "csr", dtype=np.float32)
+            #print(self.W_sparse_alpha.getrow(0).data)
             self.W_sparse_beta = check_matrix(self.m_beta.W_sparse, "csr", dtype=np.float32)
+            #print(self.W_sparse_beta.getrow(0).data)
             self.W_sparse_elastic = check_matrix(self.m_slim_elastic.W_sparse, "csr", dtype=np.float32)
+            #print(self.W_sparse_elastic.getrow(0).data)
             # Precomputations
-            self.matrix_alpha_beta = self.alpha * self.W_sparse_alpha + (1 - self.alpha) * self.W_sparse_beta
-            self.matrix_slim = self.beta * self.W_sparse_Slim + ((1 - self.beta) * self.W_sparse_elastic * self.coeff)
+            #TODO
+            self.matrix_alpha_beta = self.alpha * self.W_sparse_alpha + (5 - self.alpha) * self.W_sparse_beta
+            self.matrix_slim = self.beta * self.W_sparse_Slim2 + ((5 - self.beta) * self.W_sparse_elastic * self.coeff) + self.sigma * self.W_sparse_Slim1
 
-            self.parameters = "alpha={}, beta={}, gamma={}, chi={}, psi={}, omega={}, coeff={}".format(self.alpha, self.beta, self.gamma, self.chi, self.psi, self.omega, self.coeff)
+
+            self.parameters = "alpha={}, beta={}, gamma={},sigma={}, tau={}, chi={}, psi={}, omega={}, coeff={}".format(self.alpha, self.beta, self.gamma,self.sigma, self.tau,self.chi, self.psi, self.omega, self.coeff)
         if save_model:
             self.saveModel("saved_models/"+location+"/", file_name=self.RECOMMENDER_NAME)
 
@@ -118,8 +144,9 @@ class PyramidRecommender_offline(RecommenderSystem):
             cutoff = self.URM_train.shape[1] - 1
 
         scores_users = self.W_sparse_URM[playlist_id_array].dot(self.URM_train).toarray()
-        scores_items = self.URM_train[playlist_id_array].dot(self.W_sparse_URM_T).toarray()
-        scores_knn = self.gamma * scores_users + (1-self.gamma) * scores_items
+        scores_items_cf = self.URM_train[playlist_id_array].dot(self.W_sparse_URM_T).toarray()
+        scores_items_cbf = self.URM_train[playlist_id_array].dot(self.W_sparse_ICM).toarray()
+        scores_knn = self.gamma * scores_users + (5-self.gamma) * scores_items_cf + self.tau * scores_items_cbf
         scores_ab = self.URM_train[playlist_id_array].dot(self.matrix_alpha_beta).toarray()
         scores_slim = self.URM_train[playlist_id_array].dot(self.matrix_slim).toarray()
         scores = self.chi * scores_knn + self.psi * scores_ab + self.omega * scores_slim
@@ -174,7 +201,9 @@ class PyramidRecommender_offline(RecommenderSystem):
         print("{}: Saving model in file '{}'".format(self.RECOMMENDER_NAME, folder_path + file_name))
         dictionary_to_save = {"W_sparse_URM": self.W_sparse_URM,
                               "W_sparse_URM_T": self.W_sparse_URM_T,
-                              "W_sparse_Slim": self.W_sparse_Slim,
+                              "W_sparse_ICM":self.W_sparse_ICM,
+                              "W_sparse_Slim1": self.W_sparse_Slim1,
+                              "W_sparse_Slim2": self.W_sparse_Slim2,
                               "W_sparse_alpha": self.W_sparse_alpha,
                               "W_sparse_beta": self.W_sparse_beta,
                               "W_sparse_elastic": self.W_sparse_elastic,
@@ -183,6 +212,8 @@ class PyramidRecommender_offline(RecommenderSystem):
                               "alpha": self.alpha,
                               "beta": self.beta,
                               "gamma": self.gamma,
+                              "sigma": self.sigma,
+                              "tau":self.tau,
                               "chi": self.chi,
                               "psi": self.psi,
                               "omega": self.omega}

@@ -1,3 +1,4 @@
+
 # URM train is swapped with tfidfed version
 import numpy as np
 from sklearn.preprocessing.data import normalize
@@ -35,7 +36,7 @@ class UserKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
         return representation
 
     # after the tuning k=200, shrink = 0
-    def fit(self, topK=200, shrink=0, similarity="jaccard",normalize=False, feature_weighting="none", save_model=False,best_parameters=False, **similarity_args):
+    def fit(self, topK=200, shrink=0, similarity="jaccard",normalize=False, feature_weighting="BM25", save_model=False,best_parameters=False, **similarity_args):
 
 
         if best_parameters:
@@ -45,14 +46,14 @@ class UserKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
             if feature_weighting == "none":
                 similarity = Compute_Similarity(self.URM_train.T, **similarity_args)
             else:
-                if self.feature_weighting == "BM25":
+                if feature_weighting == "BM25":
                     self.URM_train_copy = self.URM_train.astype(np.float32)
                     self.URM_train_copy = to_okapi(self.URM_train)
 
-                elif self.feature_weighting == "TF-IDF":
+                elif feature_weighting == "TF-IDF":
                     self.URM_train_copy = self.URM_train.astype(np.float32)
                     self.URM_train_copy = to_tfidf(self.URM_train)
-
+                similarity_args = {'asymmetric_alpha': 0.010828193413721543, 'normalize': True, 'shrink': 1000, 'similarity': 'asymmetric', 'topK': 300}
                 similarity = Compute_Similarity(self.URM_train_copy.T, **similarity_args)
         else:
             self.topK = topK
