@@ -12,6 +12,7 @@ from models.hybrid.TwoLevel_Hybrid_Recommender import TwoLevelHybridRecommender
 from models.hybrid.ItemTreeRecommender import ItemTreeRecommender
 from models.hybrid.SchrodingerRecommender import ScrodingerRecommender
 from models.hybrid.UserItemAverage_Recommender import UserItemAvgRecommender
+
 # Slim
 from models.Slim_mark1.Slim import Slim
 from models.Slim_mark2.Cython.Slim_BPR_Cython import Slim_BPR_Recommender_Cython as Slim_mark2
@@ -35,6 +36,8 @@ from models.MF_mark2.Cython.MatrixFactorization_Cython import MatrixFactorizatio
 from models.offline.ItemTreeRecommender_offline import ItemTreeRecommender_offline
 from models.offline.PartyRecommender_offline import PartyRecommender_offline
 from models.offline.PyramidRecommender_offline import PyramidRecommender_offline
+from models.offline.PyramidItemTreeRecommender_offline import PyramidItemTreeRecommender_offline 
+from modes.offline.HybridEightRecommender_offline import HybridEightRecommender_offline
 
 
 def clear():
@@ -219,6 +222,10 @@ class Configurator(object):
                 recsys.append(PartyRecommender_offline(data))
             elif model["model_name"] == "pyramid":
                 recsys.append(PyramidRecommender_offline(data))
+            elif model["model_name"] == "pyramid_item_tree":
+                recsys.append(PyramidItemTreeRecommender_offline(data,dataReader.get_ICM()))
+             elif model["model_name"] == "hybrid_eight":
+                    recsys.append(HybridEightRecommender_offline(data,dataReader.get_ICM()))
         print("Configurator: Models are extracted")
 
         return recsys
