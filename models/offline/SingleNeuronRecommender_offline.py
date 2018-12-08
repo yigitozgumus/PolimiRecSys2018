@@ -20,11 +20,11 @@ from models.Slim_mark1.Cython.Slim_BPR_Cython import Slim_BPR_Recommender_Cython
 from models.KNN.Item_KNN_CBFRecommender import ItemKNNCBFRecommender
 
 
-class PyramidItemTreeRecommender_offline(RecommenderSystem):
-    RECOMMENDER_NAME = "PyramidItemTreeRecommender_offline"
+class SingleNeuronRecommender_offline(RecommenderSystem):
+    RECOMMENDER_NAME = "SingleNeuronRecommender_offline"
 
     def __init__(self, URM_train,ICM):
-        super(PyramidItemTreeRecommender_offline, self).__init__()
+        super(SingleNeuronRecommender_offline, self).__init__()
         self.URM_train = check_matrix(URM_train, "csr", dtype=np.float32)
         self.ICM = check_matrix(ICM,"csr",dtype=np.float32)
         self.parameters = None
@@ -32,18 +32,17 @@ class PyramidItemTreeRecommender_offline(RecommenderSystem):
         self.normalize = False
 
     def __repr__(self):
-        return "Pyramid Item Tree 4 Level Hybrid Offline Recommender"
+        return "Single Neuron Hybrid Offline Recommender"
 
     def fit(self,
-            alpha=0.80849266253816,
-            beta=0.7286503831547066,
-            gamma=0.02895704968752022,
-            sigma= 0.453342,
-            tau = 0.542421,
-            chi = 1.8070865821028037,
-            psi=4.256005405227253,
-            omega=5.096018341419944,
-            coeff = 39.966898886531645,
+            alpha=1.3167219260598073,
+            beta=15.939928536132701,
+            gamma=0.6048873602128846,
+            delta= 1.0527588765188267,
+            epsilon = 2.08444591782293,
+            zeta = 1.2588273098979674,
+            eta=18.41012777389885,
+            theta=18.000293943452448,
             normalize=False,
             save_model=False,
             submission=False,
@@ -63,12 +62,11 @@ class PyramidItemTreeRecommender_offline(RecommenderSystem):
                 self.alpha = alpha
                 self.beta = beta
                 self.gamma = gamma
-                self.sigma = sigma
-                self.tau = tau
-                self.chi = chi
-                self.psi = psi
-                self.omega = omega
-                self.coeff = coeff
+                self.delta = delta
+                self.epsilon = epsilon
+                self.zeta = zeta
+                self.eta = eta
+                self.theta = theta
 
             self.normalize = normalize
             self.submission = not submission
@@ -123,12 +121,16 @@ class PyramidItemTreeRecommender_offline(RecommenderSystem):
             self.W_sparse_elastic = check_matrix(self.m_slim_elastic.W_sparse, "csr", dtype=np.float32)
             #print(self.W_sparse_elastic.getrow(0).data)
             # Precomputations
-            #TODO
-            self.matrix_alpha_beta = self.alpha * self.W_sparse_alpha + (1 - self.alpha) * self.W_sparse_beta
-            self.matrix_slim = self.beta * self.W_sparse_Slim2 + ((1 - self.beta) * self.W_sparse_elastic * self.coeff) + self.sigma * self.W_sparse_Slim1
+            self.matrix_wo_user = self.alpha * self.W_sparse_URM_T +\
+                                  self.beta * self.W_sparse_ICM +\
+                                  self.gamma * self.W_sparse_Slim1 +\
+                                  self.delta * self.W_sparse_Slim2 +\
+                                  self.epsilon * self.W_sparse_alpha +\
+                                  self.zeta * self.W_sparse_beta + \
+                                  self.eta * self.W_sparse_elastic
 
 
-            self.parameters = "alpha={}, beta={}, gamma={},sigma={}, tau={}, chi={}, psi={}, omega={}, coeff={}".format(self.alpha, self.beta, self.gamma,self.sigma, self.tau,self.chi, self.psi, self.omega, self.coeff)
+            self.parameters = "alpha={}, beta={}, gamma={},delta={}, epsilon={}, zeta={}, eta={}, theta={}".format(self.alpha, self.beta, self.gamma,self.delta, self.epsilon,self.zeta, self.eta, self.theta)
         if save_model:
             self.saveModel("saved_models/"+location+"/", file_name=self.RECOMMENDER_NAME)
 
@@ -144,12 +146,8 @@ class PyramidItemTreeRecommender_offline(RecommenderSystem):
             cutoff = self.URM_train.shape[1] - 1
 
         scores_users = self.W_sparse_URM[playlist_id_array].dot(self.URM_train).toarray()
-        scores_items_cf = self.URM_train[playlist_id_array].dot(self.W_sparse_URM_T).toarray()
-        scores_items_cbf = self.URM_train[playlist_id_array].dot(self.W_sparse_ICM).toarray()
-        scores_knn = self.gamma * scores_users + (1-self.gamma) * scores_items_cf + self.tau * scores_items_cbf
-        scores_ab = self.URM_train[playlist_id_array].dot(self.matrix_alpha_beta).toarray()
-        scores_slim = self.URM_train[playlist_id_array].dot(self.matrix_slim).toarray()
-        scores = self.chi * scores_knn + self.psi * scores_ab + self.omega * scores_slim
+        scores_wo_user = self.URM_train[playlist_id_array].dot(self.matrix_wo_user).toarray()
+        scores = scores_users + scores_wo_user
 
         if self.normalize:
             # normalization will keep the scores in the same range
@@ -207,17 +205,15 @@ class PyramidItemTreeRecommender_offline(RecommenderSystem):
                               "W_sparse_alpha": self.W_sparse_alpha,
                               "W_sparse_beta": self.W_sparse_beta,
                               "W_sparse_elastic": self.W_sparse_elastic,
-                              "matrix_slim": self.matrix_slim,
-                              "matrix_alpha_beta": self.matrix_alpha_beta,
+                              "matrix_wo_user": self.matrix_wo_user,
                               "alpha": self.alpha,
                               "beta": self.beta,
                               "gamma": self.gamma,
-                              "sigma": self.sigma,
-                              "tau":self.tau,
-                              "chi": self.chi,
-                              "psi": self.psi,
-                              "omega": self.omega,
-                              "coeff": self.coeff}
+                              "delta": self.delta,
+                              "epsilon":self.epsilon,
+                              "zeta": self.zeta,
+                              "eta": self.eta,
+                              "theta": self.theta}
 
         pickle.dump(dictionary_to_save,
                     open(folder_path + file_name, "wb"),

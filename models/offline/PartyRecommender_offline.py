@@ -41,7 +41,8 @@ class PartyRecommender_offline(RecommenderSystem):
             normalize=False,
             save_model=False,
             submission=False,
-            best_parameters=False):
+            best_parameters=False,
+            location="submission"):
         if best_parameters:
             m = OfflineDataLoader()
             folder_path, file_name = m.get_parameter(self.RECOMMENDER_NAME)
@@ -96,7 +97,7 @@ class PartyRecommender_offline(RecommenderSystem):
         self.parameters = "alpha={}, beta={}, gamma={}, theta={}, omega={}, coeff={}".format(self.alpha, self.beta, self.gamma,
                                                                                    self.theta, self.omega, self.coeff)
         if save_model:
-            self.saveModel("saved_models/submission/", file_name=self.RECOMMENDER_NAME)
+            self.saveModel("saved_models/"+location+"/", file_name=self.RECOMMENDER_NAME)
 
     def recommend(self, playlist_id_array, cutoff=None, remove_seen_flag=True, remove_top_pop_flag=False,
                   remove_CustomItems_flag=False, export=False):

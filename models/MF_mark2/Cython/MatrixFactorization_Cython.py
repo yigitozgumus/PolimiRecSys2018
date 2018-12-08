@@ -1,16 +1,17 @@
 from base.BaseRecommender import RecommenderSystem
 
 from base.Incremental_Training_Early_Stopping import Incremental_Training_Early_Stopping
-
+from base.RecommenderUtils import check_matrix
 import subprocess
 import os, sys
 import numpy as np
+import scipy.sparse as sps
 
 
 class MatrixFactorization_Cython(RecommenderSystem, Incremental_Training_Early_Stopping):
     RECOMMENDER_NAME = "MatrixFactorization_Cython_Recommender"
 
-    def __init__(self, URM_train, positive_threshold=4, URM_validation=None, recompile_cython=False,
+    def __init__(self, URM_train, positive_threshold=1, URM_validation=None, recompile_cython=True,
                  algorithm="MF_BPR"):
         super(MatrixFactorization_Cython, self).__init__()
         self.URM_train = URM_train
@@ -31,27 +32,26 @@ class MatrixFactorization_Cython(RecommenderSystem, Incremental_Training_Early_S
             print("Compilation Complete")
 
     def compute_score_MF(self, user_id):
-
         scores_array = np.dot(self.W[user_id], self.H.T)
         return scores_array
 
-    def recommend(self, playlist_id, n=None, exclude_seen=True, filterTopPop=False, filterCustomItems=False,
-                  export=False):
-        if n == None:
-            n = self.URM_train.shape[1] - 1
+    def recommend(self, playlist_id_array, cutoff=None, remove_seen_flag=True, remove_top_pop_flag=False,
+                  remove_CustomItems_flag=False, export=False):
+        if cutoff == None:
+            cutoff = self.URM_train.shape[1] - 1
 
-        scores_array = self.compute_score_MF(playlist_id)
+        scores_array = self.compute_score_MF(playlist_id_array)
 
         if self.normalize:
             raise ValueError("Not implemented")
-        if exclude_seen:
-            scores = self._remove_seen_on_scores(playlist_id, scores_array)
-        if filterTopPop:
+        if remove_seen_flag:
+            scores = self._remove_seen_on_scores(playlist_id_array, scores_array)
+        if remove_top_pop_flag:
             scores = self._filter_TopPop_on_scores(scores_array)
-        if filterCustomItems:
+        if remove_CustomItems_flag:
             scores = self._filterCustomItems_on_scores(scores_array)
 
-        relevant_items_partition = (-scores_array).argpartition(n)[0:n]
+        relevant_items_partition = (-scores_array).argpartition(n)[0:cutoff]
         relevant_items_partition_sorting = np.argsort(-scores_array[relevant_items_partition])
         ranking = relevant_items_partition[relevant_items_partition_sorting]
         if not export:
@@ -59,7 +59,7 @@ class MatrixFactorization_Cython(RecommenderSystem, Incremental_Training_Early_S
         elif export:
             return str(ranking).strip("[]")
 
-    def fit(self, epochs=300, batch_size=1000, num_factors=50,
+    def fit(self, epochs=3, batch_size=1000, num_factors=50,
             learning_rate=0.001, sgd_mode='sgd', user_reg=0.0, positive_reg=0.0, negative_reg=0.0,
             stop_on_validation=False, lower_validatons_allowed=5, validation_metric="MAP",
             evaluator_object=None, validation_every_n=5):
@@ -124,8 +124,8 @@ class MatrixFactorization_Cython(RecommenderSystem, Incremental_Training_Early_S
                                         validation_metric, lower_validatons_allowed, evaluator_object,
                                         algorithm_name=self.algorithm)
 
-        self.W = self.W_best
-        self.H = self.H_best
+        self.W = sps.csr_matrix(self.W_best)
+        self.H = sps.csr_matrix(self.H_best)
 
         sys.stdout.flush()
 

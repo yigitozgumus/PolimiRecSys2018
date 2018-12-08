@@ -44,7 +44,7 @@ class PyramidRecommender_offline(RecommenderSystem):
             save_model=False,
             submission=False,
             best_parameters=False,
-            offline=True,
+            offline=False,
             location="submission"):
         if offline:
             m = OfflineDataLoader()
