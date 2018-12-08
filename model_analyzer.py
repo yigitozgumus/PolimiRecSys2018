@@ -78,10 +78,10 @@ def printOutMapValues(modelList, URM, ICM, modelsSoFar):
             mod.loadModel(folder_path=folder, file_name=file, verbose=False)
             map_dict[model[0]][model[2]] = mod.MAP
            # print(model[0], model[2], mod.MAP)
-        # elif model[0] == "ItemKNNCBFRecommender":
-        #     mod = ItemKNNCBFRecommender(URM, UCM)
-        #     mod.loadModel(folder_path=folder, file_name=file, verbose=False)
-        #     map_dict[model[0]][model[2]] = mod.MAP
+        elif model[0] == "ItemKNNCBFRecommender":
+             mod = ItemKNNCBFRecommender(URM, ICM)
+             mod.loadModel(folder_path=folder, file_name=file, verbose=False)
+             map_dict[model[0]][model[2]] = mod.MAP
            # print(model[0], model[2], mod.MAP)
         elif model[0] == "SLIM_BPR_Recommender_mark1":
             mod = Slim_mark1(URM)
