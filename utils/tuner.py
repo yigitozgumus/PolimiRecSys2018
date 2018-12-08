@@ -15,6 +15,8 @@ from models.offline.PartyRecommender_offline import PartyRecommender_offline
 from models.offline.PyramidRecommender_offline import PyramidRecommender_offline
 from models.offline.PyramidItemTreeRecommender_offline import PyramidItemTreeRecommender_offline
 from models.offline.HybridEightRecommender_offline import HybridEightRecommender_offline
+from models.offline.ComboRecommender_offline import ComboRecommender_offline
+from models.offline.SingleNeuronRecommender_offline import SingleNeuronRecommender_offline
 from parameter_tuning.BayesianSearch import BayesianSearch
 from parameter_tuning.AbstractClassSearch import DictionaryKeys
 import traceback, pickle
@@ -370,22 +372,61 @@ def runParameterSearch_Collaborative(recommender_class, URM_train,ICM,metric_to_
                                      DictionaryKeys.FIT_RANGE_KEYWORD_ARGS: hyperparamethers_range_dictionary}
 
         #########################################################################################################
-         if recommender_class is HybridEightRecommender_offline:
-                hyperparamethers_range_dictionary = {}
-
-            hyperparamethers_range_dictionary["alpha"] = range(0,1)
-            hyperparamethers_range_dictionary["beta"] = range(0,1)
-            hyperparamethers_range_dictionary["gamma"] = range(0,1)
-            hyperparamethers_range_dictionary["delta"] = range(0,1)
-            hyperparamethers_range_dictionary["epsilon"] = range(0,1)
-            hyperparamethers_range_dictionary["zeta"] = range(0,1)
-            hyperparamethers_range_dictionary["eta"] = range(0,0)
-            hyperparamethers_range_dictionary["coeff"] = range(1,40)
-            hyperparamethers_range_dictionary["chi"] = range(0,5)
-            hyperparamethers_range_dictionary["psi"] = range(0,5)
-            hyperparamethers_range_dictionary["omega"] = range(0,5)
+        if recommender_class is HybridEightRecommender_offline:
+    
+            hyperparamethers_range_dictionary = {}
+            hyperparamethers_range_dictionary["alpha"] = range(0, 4)
+            hyperparamethers_range_dictionary["beta"] = range(0, 4)
+            hyperparamethers_range_dictionary["gamma"] = range(0, 4)
+            hyperparamethers_range_dictionary["delta"] = range(0, 4)
+            hyperparamethers_range_dictionary["epsilon"] = range(0, 4)
+            hyperparamethers_range_dictionary["zeta"] = range(0, 4)
+            hyperparamethers_range_dictionary["eta"] = range(0, 4)
+            hyperparamethers_range_dictionary["theta"] = range(0,4)
+            hyperparamethers_range_dictionary["coeff"] = range(1, 50)
+            hyperparamethers_range_dictionary["chi"] = range(0, 10)
+            hyperparamethers_range_dictionary["psi"] = range(0, 10)
+            hyperparamethers_range_dictionary["omega"] = range(0, 10)
 
             recommenderDictionary = {DictionaryKeys.CONSTRUCTOR_POSITIONAL_ARGS: [URM_train,ICM],
+                                     DictionaryKeys.CONSTRUCTOR_KEYWORD_ARGS: dict(),
+                                     DictionaryKeys.FIT_POSITIONAL_ARGS: dict(),
+                                     DictionaryKeys.FIT_KEYWORD_ARGS: dict(),
+                                     DictionaryKeys.FIT_RANGE_KEYWORD_ARGS: hyperparamethers_range_dictionary}
+
+        #########################################################################################################
+
+        if recommender_class is SingleNeuronRecommender_offline:
+        
+            hyperparamethers_range_dictionary = {}
+            hyperparamethers_range_dictionary["alpha"] = range(0, 20)
+            hyperparamethers_range_dictionary["beta"] = range(0, 20)
+            hyperparamethers_range_dictionary["gamma"] = range(0, 20)
+            hyperparamethers_range_dictionary["delta"] = range(0, 20)
+            hyperparamethers_range_dictionary["epsilon"] = range(0, 20)
+            hyperparamethers_range_dictionary["zeta"] = range(0, 20)
+            hyperparamethers_range_dictionary["eta"] = range(0, 20)
+            hyperparamethers_range_dictionary["theta"] = range(0,20)
+
+            recommenderDictionary = {DictionaryKeys.CONSTRUCTOR_POSITIONAL_ARGS: [URM_train,ICM],
+                                     DictionaryKeys.CONSTRUCTOR_KEYWORD_ARGS: dict(),
+                                     DictionaryKeys.FIT_POSITIONAL_ARGS: dict(),
+                                     DictionaryKeys.FIT_KEYWORD_ARGS: dict(),
+                                     DictionaryKeys.FIT_RANGE_KEYWORD_ARGS: hyperparamethers_range_dictionary}
+
+        #########################################################################################################
+
+
+        if recommender_class is ComboRecommender_offline:
+            hyperparamethers_range_dictionary = {}
+            hyperparamethers_range_dictionary["alpha"] = range(0, 20)
+            hyperparamethers_range_dictionary["beta"] = range(0, 20)
+            hyperparamethers_range_dictionary["gamma"] = range(0, 20)
+            hyperparamethers_range_dictionary["theta"] = range(0, 20)
+            hyperparamethers_range_dictionary["delta"] = range(0, 20)
+
+
+            recommenderDictionary = {DictionaryKeys.CONSTRUCTOR_POSITIONAL_ARGS: [URM_train, ICM],
                                      DictionaryKeys.CONSTRUCTOR_KEYWORD_ARGS: dict(),
                                      DictionaryKeys.FIT_POSITIONAL_ARGS: dict(),
                                      DictionaryKeys.FIT_KEYWORD_ARGS: dict(),
@@ -512,7 +553,10 @@ def read_data_split_and_search():
        # PartyRecommender_offline
        # PyramidRecommender_offline
          #ItemKNNCBFRecommender
-        PyramidItemTreeRecommender_offline
+       # PyramidItemTreeRecommender_offline
+        #HybridEightRecommender_offline
+        ComboRecommender_offline
+        #SingleNeuronRecommender_offline
     ]
 
     from parameter_tuning.AbstractClassSearch import EvaluatorWrapper

@@ -25,8 +25,6 @@ class PlaylistDataReader(object):
         self.ICM = None
         self.UCM = None
         self.adjust = adjustSequentials
-        if verbose:
-            print("PlaylistDataReader: Data is loading. . .")
         self.dataSubfolder = "./data/"
         self.trainData = pd.read_csv(self.dataSubfolder + "train.csv")
         self.trackData = pd.read_csv(self.dataSubfolder + "tracks.csv")
@@ -73,37 +71,37 @@ class PlaylistDataReader(object):
 
     def get_URM_train(self):
         if self.URM_train is None:
-            raise TypeError("URM_train is not built")
+            raise TypeError("PlaylistDataReader: URM_train is not built")
         else:
             return self.URM_train
 
     def get_URM_test(self):
         if self.URM_test is None:
-            raise TypeError("URM_test is not built")
+            raise TypeError("PlaylistDataReader: URM_test is not built")
         else:
             return self.URM_test
     def get_URM_all(self):
         if self.URM_all is None:
-            raise TypeError("URM is not built")
+            raise TypeError("PlaylistDataReader: URM is not built")
         else:
             return self.URM_all
 
     def get_ICM(self):
         if self.ICM is None:
-            raise TypeError("ICM is not built")
+            raise TypeError("PlaylistDataReader: ICM is not built")
         else:
             return self.ICM
 
             
     def get_UCM(self):
         if self.UCM is None:
-            raise TypeError("UCM is not built")
+            raise TypeError("PlaylistDataReader: UCM is not built")
         else:
             return self.UCM
 
     def get_URM_train_tfidf(self):
         if self.URM_train is None:
-            raise TypeError("URM train is not build")
+            raise TypeError("PlaylistDataReader: URM train is not build")
         else:
             self.URM_train_t = self.URM_train.T
             URM_tfidf_T = feature_extraction.text.TfidfTransformer().fit_transform(self.URM_train_t)
@@ -113,7 +111,7 @@ class PlaylistDataReader(object):
 
     def get_URM_train_okapi(self):
         if self.URM_train is None:
-            raise TypeError("URM train is not build")
+            raise TypeError("PlaylistDataReader: URM train is not build")
         else:
             self.URM_train_okapi = to_okapi(self.URM_train)
             return self.URM_train_okapi
@@ -121,7 +119,7 @@ class PlaylistDataReader(object):
 
     def get_UCM_tfidf(self):
         if self.UCM is None:
-            raise TypeError("UCM is not built")
+            raise TypeError("PlaylistDataReader: UCM is not built")
         else:
             self.UCM_t = self.UCM.T
             UCM_tfidf_t = feature_extraction.text.TfidfTransformer().fit_transform(self.UCM_t)
@@ -130,11 +128,19 @@ class PlaylistDataReader(object):
 
     def build_URM(self):
         #print("PlaylistDataReader: URM Matrix is being built...")
-        grouped = self.trainData.groupby('playlist_id', as_index=True).apply(lambda x: list(x['track_id']))
-        matrix = MultiLabelBinarizer(classes=self.get_tracks(), sparse_output=True).fit_transform(grouped)
-        self.URM_all = matrix.tocsr()
-        print("PlaylistDataReader: URM matrix built completed")
-        print("PlaylistDataReader: shape is {}".format(self.URM_all.shape))
+        if self.loadPredefined:
+            try:
+                self.URM_all = sps.load_npz(self.dataSubfolder + "URM_all.npz")
+                print("PlaylistDataReader: URM is imported from the saved data.")
+                return
+            except FileNotFoundError:
+                print("PlaylistDataReader: URM is not.Found. Building new one")
+                grouped = self.trainData.groupby('playlist_id', as_index=True).apply(lambda x: list(x['track_id']))
+                matrix = MultiLabelBinarizer(classes=self.get_tracks(), sparse_output=True).fit_transform(grouped)
+                self.URM_all = matrix.tocsr()
+                sps.save_npz(self.dataSubfolder + "URM_all.npz", self.URM_all)
+                print("PlaylistDataReader: URM matrix built completed")
+                print("PlaylistDataReader: shape is {}".format(self.URM_all.shape))
         return
     # UCM matrix + tfidf
     def build_UCM(self):
@@ -149,29 +155,37 @@ class PlaylistDataReader(object):
         return
 
     def build_ICM(self):
-        #print("PlaylistDataReader: ICM Matrix is being built...")
-        # artists
-        df_artists = self.trackData.reindex(columns=["track_id", "artist_id"])
-        df_artists.sort_values(by="track_id", inplace=True)
-        artist_list = [[a] for a in df_artists["artist_id"]]
-        icm_artists = MultiLabelBinarizer(
-            classes=self.get_artists(), sparse_output=True).fit_transform(artist_list)
-        icm_artists_csr = icm_artists.tocsr()
-        # albums
-        df_albums = self.trackData.reindex(columns=["track_id", "album_id"])
-        df_albums.sort_values(by="track_id", inplace=True)
-        album_list = [[b] for b in df_albums["album_id"]]
-        icm_albums = MultiLabelBinarizer(
-            classes=self.get_albums(), sparse_output=True).fit_transform(album_list)
-        icm_albums_csr = icm_albums.tocsr()
-        ICM = sps.hstack((icm_artists_csr, icm_albums_csr))
-        # ICM_tfidf_T = feature_extraction.text.TfidfTransformer().fit_transform(ICM.T)
-        # ICM_tfidf = ICM_tfidf_T.T
-        # ICM_tfidf = normalize(ICM_tfidf, axis=0, norm='l2')
-        # self.ICM = ICM_tfidf.tocsr()
-        self.ICM = ICM
-        print("PlaylistDataReader: ICM matrix built completed")
-        print("PlaylistDataReader: shape is {}".format(self.ICM.shape))
+        if self.loadPredefined:
+            try:
+                self.ICM = sps.load_npz(self.dataSubfolder + "ICM.npz")
+                print("PlaylistDataReader: ICM is imported from the saved data.")
+                return
+            except FileNotFoundError:
+                print("PlaylistDataReader: ICM is not.Found. Building new one")
+                # artists
+                df_artists = self.trackData.reindex(columns=["track_id", "artist_id"])
+                df_artists.sort_values(by="track_id", inplace=True)
+                artist_list = [[a] for a in df_artists["artist_id"]]
+                icm_artists = MultiLabelBinarizer(
+                    classes=self.get_artists(), sparse_output=True).fit_transform(artist_list)
+                icm_artists_csr = icm_artists.tocsr()
+                # albums
+                df_albums = self.trackData.reindex(columns=["track_id", "album_id"])
+                df_albums.sort_values(by="track_id", inplace=True)
+                album_list = [[b] for b in df_albums["album_id"]]
+                icm_albums = MultiLabelBinarizer(
+                    classes=self.get_albums(), sparse_output=True).fit_transform(album_list)
+                icm_albums_csr = icm_albums.tocsr()
+                ICM = sps.hstack((icm_artists_csr, icm_albums_csr))
+                # ICM_tfidf_T = feature_extraction.text.TfidfTransformer().fit_transform(ICM.T)
+                # ICM_tfidf = ICM_tfidf_T.T
+                # ICM_tfidf = normalize(ICM_tfidf, axis=0, norm='l2')
+                # self.ICM = ICM_tfidf.tocsr()
+                self.ICM = ICM
+                sps.save_npz(self.dataSubfolder + "ICM.npz", self.ICM)
+                print("PlaylistDataReader: ICM matrix built completed")
+                print("PlaylistDataReader: shape is {}".format(self.ICM.shape))
+            
         return
 
     def split(self,divide_two=False):
@@ -179,7 +193,7 @@ class PlaylistDataReader(object):
             try:
                 self.URM_train = sps.load_npz(self.dataSubfolder + "URM_train.npz")
                 self.URM_test = sps.load_npz(self.dataSubfolder + "URM_test.npz")
-                print("URM's are imported from the saved data.")
+                print("PlaylistDataReader: URM train and test splits are imported from the saved data.")
                 return
             except FileNotFoundError:
                 print("PlaylistDataReader: URM_train or URM_test not.Found. Building new ones")
@@ -240,6 +254,7 @@ class PlaylistDataReader(object):
             sps.save_npz(self.dataSubfolder + "URM_train.npz", self.URM_train)
             sps.save_npz(self.dataSubfolder + "URM_test.npz", self.URM_test)
         return
+
     def save_dataset(self):
         print("PlaylistDataReader: saving URM_train and URM_test")
         sps.save_npz(self.dataSubfolder + "URM_train.npz", self.URM_train)
@@ -247,6 +262,5 @@ class PlaylistDataReader(object):
 
     def generate_datasets(self):
         self.build_URM()
-        if not self.loadPredefined:
-            self.build_ICM()
+        self.build_ICM()
         self.split()

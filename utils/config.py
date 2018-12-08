@@ -37,7 +37,9 @@ from models.offline.ItemTreeRecommender_offline import ItemTreeRecommender_offli
 from models.offline.PartyRecommender_offline import PartyRecommender_offline
 from models.offline.PyramidRecommender_offline import PyramidRecommender_offline
 from models.offline.PyramidItemTreeRecommender_offline import PyramidItemTreeRecommender_offline 
-from modes.offline.HybridEightRecommender_offline import HybridEightRecommender_offline
+from models.offline.HybridEightRecommender_offline import HybridEightRecommender_offline
+from models.offline.ComboRecommender_offline import ComboRecommender_offline
+from models.offline.SingleNeuronRecommender_offline import SingleNeuronRecommender_offline
 
 
 def clear():
@@ -129,7 +131,8 @@ class Configurator(object):
                 recsys.append(MF_BPR_Cython(data,
                                             recompile_cython=model["recompile_cython"]))
             elif model["model_name"] == "mf_cython":
-                recsys.append(MatrixFactorization_Cython(
+                recsys.append(
+                Factorization_Cython(
                     data,
                     positive_threshold= model["positive_threshold"],
                     URM_validation=dataReader.get_URM_test(),
@@ -190,21 +193,6 @@ class Configurator(object):
                     data,
                 dataReader.get_ICM()))
 
-            elif model["model_name"] == "seqrand_mark2":
-                recsys.append(ScrodingerRecommender(
-                    data,
-                    dataReader.get_URM_train_tfidf(),
-                    dataReader.get_UCM(),
-                    dataReader.get_ICM(),
-                    dataReader.get_target_playlists_seq(),
-                    sparse_weights=model["sparse_weights"],
-                    verbose=model["verbose"],
-                    similarity_mode=model["similarity_mode"],
-                    normalize=model["normalize"],
-                    alpha=model["alpha"],
-                    beta=model["beta"],
-                    gamma = model["gamma"],
-                    omega = model["omega"]))
             elif model["model_name"] == "slim":
                 recsys.append(Slim(
                     data,
@@ -224,8 +212,12 @@ class Configurator(object):
                 recsys.append(PyramidRecommender_offline(data))
             elif model["model_name"] == "pyramid_item_tree":
                 recsys.append(PyramidItemTreeRecommender_offline(data,dataReader.get_ICM()))
-             elif model["model_name"] == "hybrid_eight":
-                    recsys.append(HybridEightRecommender_offline(data,dataReader.get_ICM()))
+            elif model["model_name"] == "hybrid_eight":
+                recsys.append(HybridEightRecommender_offline(data,dataReader.get_ICM()))
+            elif model["model_name"] == "combo":
+                recsys.append(ComboRecommender_offline(data,dataReader.get_ICM()))
+            elif model["model_name"] == "neuron":
+                recsys.append(SingleNeuronRecommender_offline(data,dataReader.get_ICM()))
         print("Configurator: Models are extracted")
 
         return recsys

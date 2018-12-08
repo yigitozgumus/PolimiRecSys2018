@@ -1,4 +1,5 @@
 
+
 from data.PlaylistDataReader import PlaylistDataReader
 from utils.logger import Logger
 from utils.config import clear, Configurator
@@ -29,16 +30,22 @@ def main():
         logFile = args.logFile
     if mode == 1:
         pipeline_stable(file_name, logFile)
+
     elif mode == 2:
-        pipeline_best(file_name, logFile)
-    elif mode == 3:
-        read_data_split_and_search()
-    elif mode == 4:
         pipeline_save_training_model(file_name,logFile)
-    elif mode == 5:
+
+    elif mode == 3:
+        pipeline_best_model(file_name, logFile)
+
+    elif mode == 4:
         pipeline_submission_hybrid(file_name, logFile)
+
+    elif mode == 5:
+        pipeline_save_best_model(file_name,logFile)
+
     elif mode == 6:
-        pipeline_save_model(file_name,logFile)
+        read_data_split_and_search()
+    
 
 
 def pipeline_save_training_model(fileName, logFile):
@@ -50,13 +57,13 @@ def pipeline_save_training_model(fileName, logFile):
     rec_sys = conf.extract_models(data_reader)
     evaluator = SequentialEvaluator(data_reader.get_URM_test(), [10], exclude_seen=True)
     for model in rec_sys:
-        model.fit(save_model=True,best_parameters=False)
+        model.fit(save_model=True,best_parameters=True,location="training")
         results_run, results_run_string = evaluator.evaluateRecommender(model)
         print("Algorithm: {}, results: \n{}".format(str(model), results_run_string))
         l.export_experiments(model, results_run_string)
         l.log_experiment()
 
-def pipeline_save_model(fileName, logFile):
+def pipeline_save_best_model(fileName, logFile):
     print("Pipeline: Will save the model with the best parameters and all of the data.")
     conf = Configurator(fileName)
     data_reader = PlaylistDataReader()
@@ -65,7 +72,7 @@ def pipeline_save_model(fileName, logFile):
     rec_sys = conf.extract_models(data_reader)
     evaluator = SequentialEvaluator(data_reader.get_URM_all(), [10], exclude_seen=True)
     for model in rec_sys:
-        model.fit(save_model=True,best_parameters=True)
+        model.fit(save_model=True,best_parameters=True,submission=True)
         #results_run, results_run_string = evaluator.evaluateRecommender(model)
         #print("Algorithm: {}, results: \n{}".format(str(model), results_run_string))
         #l.export_experiments(model, results_run_string)
@@ -86,7 +93,7 @@ def pipeline_stable(fileName, logFile):
         l.export_experiments(model,results_run_string)
         l.log_experiment()
 
-def pipeline_best(fileName, logFile):
+def pipeline_best_model(fileName, logFile):
     print("Pipeline: Will predict recommendations using best parameters and URM test")
     conf = Configurator(fileName)
     data_reader = PlaylistDataReader()
