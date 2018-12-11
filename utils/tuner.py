@@ -17,10 +17,12 @@ from models.offline.PyramidItemTreeRecommender_offline import PyramidItemTreeRec
 from models.offline.HybridEightRecommender_offline import HybridEightRecommender_offline
 from models.offline.ComboRecommender_offline import ComboRecommender_offline
 from models.offline.SingleNeuronRecommender_offline import SingleNeuronRecommender_offline
+from models.FW_Similarity.CFWBoostingRecommender import CFWBoostingRecommender
 from parameter_tuning.BayesianSearch import BayesianSearch
 from parameter_tuning.AbstractClassSearch import DictionaryKeys
 import traceback, pickle
 from utils.PoolWithSubprocess import PoolWithSubprocess
+from utils.OfflineDataLoader import OfflineDataLoader
 import numpy as np
 
 
@@ -126,7 +128,7 @@ def runParameterSearch_Content(recommender_class, URM_train, ICM_object, ICM_nam
             run_KNNCBFRecommender_on_similarity_type_partial(similarity_type)
 
 
-def runParameterSearch_Collaborative(recommender_class, URM_train,ICM,metric_to_optimize="PRECISION",
+def runParameterSearch_Collaborative(recommender_class, URM_train,ICM,W_sparse_CF,metric_to_optimize="PRECISION",
                                      evaluator_validation=None, evaluator_test=None,
                                      evaluator_validation_earlystopping=None,
                                      output_root_path="tuned_parameters", parallelizeKNN=True, n_cases=30):
@@ -226,6 +228,21 @@ def runParameterSearch_Collaborative(recommender_class, URM_train,ICM,metric_to_
                                      DictionaryKeys.FIT_RANGE_KEYWORD_ARGS: hyperparamethers_range_dictionary}
 
         ##########################################################################################################
+        if recommender_class is CFWBoostingRecommender:
+            hyperparamethers_range_dictionary = {}
+            hyperparamethers_range_dictionary["topK"] = [5, 10, 20, 50, 100, 150, 200, 300, 400, 500, 600, 700, 800]
+            hyperparamethers_range_dictionary["add_zeros_quota"] = range(0,1)
+            hyperparamethers_range_dictionary["normalize_similarity"] = [True, False]
+
+
+
+            recommenderDictionary = {DictionaryKeys.CONSTRUCTOR_POSITIONAL_ARGS: [URM_train, ICM, Slim_mark2],
+                                    DictionaryKeys.CONSTRUCTOR_KEYWORD_ARGS: {},
+                                    DictionaryKeys.FIT_POSITIONAL_ARGS: dict(),
+                                    DictionaryKeys.FIT_KEYWORD_ARGS: dict(),
+                                    DictionaryKeys.FIT_RANGE_KEYWORD_ARGS: hyperparamethers_range_dictionary}                            
+
+        ##########################################################################################################
 
         if recommender_class is RP3betaRecommender:
             hyperparamethers_range_dictionary = {}
@@ -268,9 +285,9 @@ def runParameterSearch_Collaborative(recommender_class, URM_train,ICM,metric_to_
             # hyperparamethers_range_dictionary["epochs"] = [1, 5, 10, 20, 30, 50, 70, 90, 110]
             hyperparamethers_range_dictionary["num_factors"] = [1, 5, 10, 20, 30, 50, 70, 90, 110]
             hyperparamethers_range_dictionary["batch_size"] = [1]
-            hyperparamethers_range_dictionary["positive_reg"] = [0.0, 1e-3, 1e-6, 1e-9]
-            hyperparamethers_range_dictionary["negative_reg"] = [0.0, 1e-3, 1e-6, 1e-9]
-            hyperparamethers_range_dictionary["learning_rate"] = [1e-2, 1e-3, 1e-4, 1e-5]
+            hyperparamethers_range_dictionary["positive_reg"] = [0.0,1e-1,1e-2, 1e-3,1e-4,1e-5, 1e-6, 1e-9]
+            hyperparamethers_range_dictionary["negative_reg"] = [0.0,1e-1,1e-2, 1e-3,1e-4,1e-5, 1e-6, 1e-9]
+            hyperparamethers_range_dictionary["learning_rate"] = [1e-2,2e-2,3e-2,4e-2,5e-2, 1e-3,2e-3,3e-3,4e-3,5e-3, 1e-4,2e-4,3e-4,4e-4,5e-4, 1e-5]
 
             recommenderDictionary = {DictionaryKeys.CONSTRUCTOR_POSITIONAL_ARGS: [URM_train],
                                      DictionaryKeys.CONSTRUCTOR_KEYWORD_ARGS: {'positive_threshold': 1},
@@ -399,14 +416,16 @@ def runParameterSearch_Collaborative(recommender_class, URM_train,ICM,metric_to_
         if recommender_class is SingleNeuronRecommender_offline:
         
             hyperparamethers_range_dictionary = {}
-            hyperparamethers_range_dictionary["alpha"] = range(0, 20)
-            hyperparamethers_range_dictionary["beta"] = range(0, 20)
-            hyperparamethers_range_dictionary["gamma"] = range(0, 20)
-            hyperparamethers_range_dictionary["delta"] = range(0, 20)
-            hyperparamethers_range_dictionary["epsilon"] = range(0, 20)
-            hyperparamethers_range_dictionary["zeta"] = range(0, 20)
-            hyperparamethers_range_dictionary["eta"] = range(0, 20)
-            hyperparamethers_range_dictionary["theta"] = range(0,20)
+            hyperparamethers_range_dictionary["alpha"] = range(0, 30)
+            hyperparamethers_range_dictionary["beta"] = range(0, 30)
+            hyperparamethers_range_dictionary["gamma"] = range(0, 30)
+            hyperparamethers_range_dictionary["delta"] = range(0, 30)
+            hyperparamethers_range_dictionary["epsilon"] = range(0, 30)
+            hyperparamethers_range_dictionary["zeta"] = range(0, 30)
+            hyperparamethers_range_dictionary["eta"] = range(0, 30)
+            hyperparamethers_range_dictionary["theta"] = range(0,30)
+            hyperparamethers_range_dictionary["psi"] = range(0,20)
+
 
             recommenderDictionary = {DictionaryKeys.CONSTRUCTOR_POSITIONAL_ARGS: [URM_train,ICM],
                                      DictionaryKeys.CONSTRUCTOR_KEYWORD_ARGS: dict(),
@@ -477,20 +496,6 @@ def runParameterSearch_Collaborative(recommender_class, URM_train,ICM,metric_to_
 
         ##########################################################################################################
 
-        # if recommender_class is SLIMElasticNetRecommender:
-        #
-        #     hyperparamethers_range_dictionary = {}
-        #     hyperparamethers_range_dictionary["topK"] = [5, 10, 20, 50, 100, 150, 200, 300, 400, 500, 600, 700, 800]
-        #     hyperparamethers_range_dictionary["l1_penalty"] = [1.0, 0.0, 1e-2, 1e-4, 1e-6]
-        #     hyperparamethers_range_dictionary["l2_penalty"] = [100.0, 1.0, 0.0, 1e-2, 1e-4, 1e-6]
-        #
-        #     recommenderDictionary = {DictionaryKeys.CONSTRUCTOR_POSITIONAL_ARGS: [URM_train],
-        #                              DictionaryKeys.CONSTRUCTOR_KEYWORD_ARGS: {},
-        #                              DictionaryKeys.FIT_POSITIONAL_ARGS: dict(),
-        #                              DictionaryKeys.FIT_KEYWORD_ARGS: dict(),
-        #                              DictionaryKeys.FIT_RANGE_KEYWORD_ARGS: hyperparamethers_range_dictionary}
-
-        #########################################################################################################
 
         ## Final step, after the hyperparameter range has been defined for each type of algorithm
         best_parameters = parameterSearch.search(recommenderDictionary,
@@ -533,6 +538,11 @@ def read_data_split_and_search():
     URM_test = dataReader.get_URM_test()
     ICM = dataReader.get_ICM()
     output_root_path = "tuned_parameters"
+    m = OfflineDataLoader()
+    fold,fil = m.get_model(ItemKNNCFRecommender.RECOMMENDER_NAME,training=True)
+    m1 = ItemKNNCFRecommender(URM_train,ICM)
+    m1.loadModel(folder_path=fold,file_name=fil)
+    W_sparse_CF = m1.W_sparse
 
     # If directory does not exist, create
     if not os.path.exists(output_root_path):
@@ -541,7 +551,7 @@ def read_data_split_and_search():
     collaborative_algorithm_list = [
         #P3alphaRecommender,
         #RP3betaRecommender,
-       # ItemKNNCFRecommender,
+        #ItemKNNCFRecommender,
         #UserKNNCFRecommender
         # MatrixFactorization_BPR_Cython,
         # MatrixFactorization_FunkSVD_Cython,
@@ -555,8 +565,10 @@ def read_data_split_and_search():
          #ItemKNNCBFRecommender
        # PyramidItemTreeRecommender_offline
         #HybridEightRecommender_offline
-        ComboRecommender_offline
+       # ComboRecommender_offline
         #SingleNeuronRecommender_offline
+      CFWBoostingRecommender
+
     ]
 
     from parameter_tuning.AbstractClassSearch import EvaluatorWrapper
@@ -571,6 +583,7 @@ def read_data_split_and_search():
     runParameterSearch_Collaborative_partial = partial(runParameterSearch_Collaborative,
                                                        URM_train=URM_train,
                                                        ICM = ICM,
+                                                       W_sparse_CF = W_sparse_CF,
                                                        metric_to_optimize="MAP",
                                                        evaluator_validation_earlystopping=evaluator_validation_earlystopping,
                                                        evaluator_validation=evaluator_validation,

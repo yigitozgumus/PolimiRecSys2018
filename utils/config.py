@@ -3,6 +3,8 @@ from bunch import Bunch
 import os
 from subprocess import call
 
+from utils.OfflineDataLoader import OfflineDataLoader
+
 # Graph Based
 from models.graph.RP3BetaRecommender import RP3betaRecommender
 from models.graph.P3AlphaRecommender import P3alphaRecommender
@@ -40,6 +42,7 @@ from models.offline.PyramidItemTreeRecommender_offline import PyramidItemTreeRec
 from models.offline.HybridEightRecommender_offline import HybridEightRecommender_offline
 from models.offline.ComboRecommender_offline import ComboRecommender_offline
 from models.offline.SingleNeuronRecommender_offline import SingleNeuronRecommender_offline
+from models.FW_Similarity.CFWBoostingRecommender import CFWBoostingRecommender
 
 
 def clear():
@@ -131,8 +134,7 @@ class Configurator(object):
                 recsys.append(MF_BPR_Cython(data,
                                             recompile_cython=model["recompile_cython"]))
             elif model["model_name"] == "mf_cython":
-                recsys.append(
-                Factorization_Cython(
+                recsys.append(MatrixFactorization_Cython(
                     data,
                     positive_threshold= model["positive_threshold"],
                     URM_validation=dataReader.get_URM_test(),
@@ -218,6 +220,12 @@ class Configurator(object):
                 recsys.append(ComboRecommender_offline(data,dataReader.get_ICM()))
             elif model["model_name"] == "neuron":
                 recsys.append(SingleNeuronRecommender_offline(data,dataReader.get_ICM()))
+            elif model["model_name"] == "cfw":
+                m = OfflineDataLoader()
+                fold,file = m.get_model(Slim_mark2.RECOMMENDER_NAME,training=True)
+                m1 = Slim_mark2(data)
+                m1.loadModel(folder_path=fold,file_name=file)
+                recsys.append(CFWBoostingRecommender(data, dataReader.get_ICM(), Slim_mark2))
         print("Configurator: Models are extracted")
 
         return recsys

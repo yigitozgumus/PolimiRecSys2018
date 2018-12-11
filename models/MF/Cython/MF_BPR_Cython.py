@@ -24,7 +24,7 @@ class MF_BPR_Cython(RecommenderSystem):
             print("Compilation Complete")
 
 
-    def fit(self, epochs=30,
+    def fit(self, epochs=100,
              URM_test=None,
             filterTopPop = False,
             filterCustomItems = np.array([], dtype=np.int),
@@ -34,11 +34,11 @@ class MF_BPR_Cython(RecommenderSystem):
             start_validation_after_N_epochs = 0,
             num_factors=100,
             positive_threshold=1,
-            learning_rate = 0.005,
+            learning_rate = 0.0025,
             sgd_mode='adagrad',
             user_reg = 0.0,
-            positive_reg = 0.0,
-            negative_reg = 0.0):
+            positive_reg = 0.005,
+            negative_reg = 0.0025):
 
 
         self.num_factors = num_factors
@@ -157,23 +157,45 @@ class MF_BPR_Cython(RecommenderSystem):
             ranking[row_index] = relevant_items_partition[relevant_items_partition_sorting]
         return ranking
 
-    def recommend(self, playlist_id, n=None, exclude_seen=True, filterTopPop = False, filterCustomItems = False,export = False):
-        if n==None:
-            n=self.URM_train.shape[1]-1
-        scores_array = np.dot(self.W[playlist_id], self.H.T)
-        if self.normalize:
-            raise ValueError("Not implemented")
-        if exclude_seen:
-            scores = self._remove_seen_on_scores(playlist_id, scores_array)
-        if filterTopPop:
-            scores = self._filter_TopPop_on_scores(scores_array)
-        if filterCustomItems:
-            scores = self._filterCustomItems_on_scores(scores_array)
+    def recommend(self, playlist_id_array, cutoff=None, remove_seen_flag=True,remove_top_pop_flag=False,remove_CustomItems_flag=False, export=False):
 
-        relevant_items_partition = (-scores_array).argpartition(n)[0:n]
-        relevant_items_partition_sorting = np.argsort(-scores_array[relevant_items_partition])
-        ranking = relevant_items_partition[relevant_items_partition_sorting]
+        #If is a scalar transform it in a 1-cell array
+        if np.isscalar(playlist_id_array):
+            playlist_id_array = np.atleast_1d(playlist_id_array)
+            single_user = True
+        else:
+            single_user = False
+
+
+        if cutoff==None:
+            cutoff=self.URM_train.shape[1]-1
+        scores = np.dot(self.W[playlist_id_array], self.H.T)
+
+        for user_index in range(len(playlist_id_array)):
+            user_id = playlist_id_array[user_index]
+            if remove_seen_flag:
+                scores[user_index, :] = self._remove_seen_on_scores(user_id, scores[user_index, :])
+
+        relevant_items_partition = (-scores).argpartition(cutoff, axis=1)[:, 0:cutoff]
+        # Get original value and sort it
+        # [:, None] adds 1 dimension to the array, from (block_size,) to (block_size,1)
+        # This is done to correctly get scores_batch value as [row, relevant_items_partition[row,:]]
+        relevant_items_partition_original_value = scores[
+            np.arange(scores.shape[0])[:, None], relevant_items_partition]
+        relevant_items_partition_sorting = np.argsort(-relevant_items_partition_original_value, axis=1)
+        ranking = relevant_items_partition[
+            np.arange(relevant_items_partition.shape[0])[:, None], relevant_items_partition_sorting]
+
+        ranking_list = ranking.tolist()
+
+        # Return single list for one user, instead of list of lists
+        if single_user:
+            if not export:
+                return ranking_list
+            elif export:
+                return str(ranking_list[0]).strip("[,]")
+
         if not export:
-            return ranking
+            return ranking_list
         elif export:
-            return str(ranking).strip("[]")
+            return str(ranking_list).strip("[,]")

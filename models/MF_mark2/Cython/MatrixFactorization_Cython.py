@@ -6,12 +6,12 @@ import subprocess
 import os, sys
 import numpy as np
 import scipy.sparse as sps
-
+import pickle
 
 class MatrixFactorization_Cython(RecommenderSystem, Incremental_Training_Early_Stopping):
     RECOMMENDER_NAME = "MatrixFactorization_Cython_Recommender"
 
-    def __init__(self, URM_train, positive_threshold=1, URM_validation=None, recompile_cython=True,
+    def __init__(self, URM_train, positive_threshold=1, URM_validation=None, recompile_cython=False,
                  algorithm="MF_BPR"):
         super(MatrixFactorization_Cython, self).__init__()
         self.URM_train = URM_train
@@ -35,31 +35,54 @@ class MatrixFactorization_Cython(RecommenderSystem, Incremental_Training_Early_S
         scores_array = np.dot(self.W[user_id], self.H.T)
         return scores_array
 
-    def recommend(self, playlist_id_array, cutoff=None, remove_seen_flag=True, remove_top_pop_flag=False,
-                  remove_CustomItems_flag=False, export=False):
-        if cutoff == None:
+    def recommend(self, playlist_id_array, cutoff=None, remove_seen_flag=True, remove_top_pop_flag=False,remove_CustomItems_flag=False, export=False):
+
+         # If is a scalar transform it in a 1-cell array
+        if np.isscalar(playlist_id_array):
+            playlist_id_array = np.atleast_1d(playlist_id_array)
+            single_user = True
+        else:
+            single_user = False
+
+        if cutoff is None:
             cutoff = self.URM_train.shape[1] - 1
 
-        scores_array = self.compute_score_MF(playlist_id_array)
+        # Compute the scores using the model-specific function
+        # Vectorize over all users in user_id_a
+        scores_batch = self.compute_score_MF(playlist_id_array)
+        for user_index in range(len(playlist_id_array)):
 
-        if self.normalize:
-            raise ValueError("Not implemented")
-        if remove_seen_flag:
-            scores = self._remove_seen_on_scores(playlist_id_array, scores_array)
-        if remove_top_pop_flag:
-            scores = self._filter_TopPop_on_scores(scores_array)
-        if remove_CustomItems_flag:
-            scores = self._filterCustomItems_on_scores(scores_array)
+            user_id = playlist_id_array[user_index]
+            if remove_seen_flag:
+                scores_batch[user_index, :] = self._remove_seen_on_scores(user_id, scores_batch[user_index, :])
 
-        relevant_items_partition = (-scores_array).argpartition(n)[0:cutoff]
-        relevant_items_partition_sorting = np.argsort(-scores_array[relevant_items_partition])
-        ranking = relevant_items_partition[relevant_items_partition_sorting]
+        # relevant_items_partition is block_size x cutoff
+        relevant_items_partition = (-scores_batch).argpartition(cutoff, axis=1)[:, 0:cutoff]
+
+        # Get original value and sort it
+        # [:, None] adds 1 dimension to the array, from (block_size,) to (block_size,1)
+        # This is done to correctly get scores_batch value as [row, relevant_items_partition[row,:]]
+        relevant_items_partition_original_value = scores_batch[
+            np.arange(scores_batch.shape[0])[:, None], relevant_items_partition]
+        relevant_items_partition_sorting = np.argsort(-relevant_items_partition_original_value, axis=1)
+        ranking = relevant_items_partition[
+            np.arange(relevant_items_partition.shape[0])[:, None], relevant_items_partition_sorting]
+
+        ranking_list = ranking.tolist()
+
+        # Return single list for one user, instead of list of lists
+        if single_user:
+            if not export:
+                return ranking_list
+            elif export:
+                return str(ranking_list[0]).strip("[,]")
+
         if not export:
-            return ranking
+            return ranking_list
         elif export:
-            return str(ranking).strip("[]")
+            return str(ranking_list).strip("[,]")
 
-    def fit(self, epochs=3, batch_size=1000, num_factors=50,
+    def fit(self, epochs=300, batch_size=1000, num_factors=100,
             learning_rate=0.001, sgd_mode='sgd', user_reg=0.0, positive_reg=0.0, negative_reg=0.0,
             stop_on_validation=False, lower_validatons_allowed=5, validation_metric="MAP",
             evaluator_object=None, validation_every_n=5):
@@ -124,8 +147,10 @@ class MatrixFactorization_Cython(RecommenderSystem, Incremental_Training_Early_S
                                         validation_metric, lower_validatons_allowed, evaluator_object,
                                         algorithm_name=self.algorithm)
 
-        self.W = sps.csr_matrix(self.W_best)
-        self.H = sps.csr_matrix(self.H_best)
+        #self.W = sps.csr_matrix(self.W_best)
+        #self.H = sps.csr_matrix(self.H_best)
+        self.W = self.W_best
+        self.H = self.H_best
 
         sys.stdout.flush()
 
@@ -189,6 +214,17 @@ class MatrixFactorization_Cython(RecommenderSystem, Incremental_Training_Early_S
 
         # Command to generate html report
         # cython -a MatrixFactorization_Cython_Epoch.pyx
+    def saveModel(self, folder_path, file_name=None):
+        if file_name is None:
+            file_name = self.RECOMMENDER_NAME
+        print("{}: Saving model in file '{}'".format(self.RECOMMENDER_NAME, folder_path + file_name))
+        dictionary_to_save = {"W": self.W,
+                              "H": self.H}
+        pickle.dump(dictionary_to_save,
+                    open(folder_path + file_name, "wb"),
+                    protocol=pickle.HIGHEST_PROTOCOL)
+
+        print("{}: Saving complete".format(self.RECOMMENDER_NAME))
 
 
 class MatrixFactorization_BPR_Cython(MatrixFactorization_Cython):

@@ -29,7 +29,7 @@ class ItemKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
         return representation
 
     def fit(self, topK=20, shrink=0, similarity='tversky',feature_weighting="none", normalize=True,save_model=False,best_parameters=False, offline=False,submission=False,location="submission",**similarity_args):
-        similarity_args = {'tversky_alpha': 0.8047100184165605, 'tversky_beta': 1.9775806370926445}
+        #similarity_args = {'tversky_alpha': 0.8047100184165605, 'tversky_beta': 1.9775806370926445}
         self.feature_weighting = feature_weighting
         if offline:
             m = OfflineDataLoader()
@@ -41,8 +41,8 @@ class ItemKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
                 folder_path_icf, file_name_icf = m.get_parameter(self.RECOMMENDER_NAME)
                 self.loadModel(folder_path=folder_path_icf,file_name=file_name_icf)
                 similarity_args = {'normalize': True, 'shrink': 0, 'similarity': 'tversky', 'topK': 20, 'tversky_alpha': 0.18872151621891953, 'tversky_beta': 1.99102432161935}
-                similarity = Compute_Similarity(self.URM_train, **similarity_args)
-            
+                #similarity_args = { 'normalize': True, 'shrink': 200, 'similarity': 'cosine', 'topK': 400}
+                #similarity = Compute_Similarity(self.URM_train, **similarity_args)            
                 if self.feature_weighting == "BM25":
                     self.URM_train_copy = self.URM_train.astype(np.float32)
                     self.URM_train_copy = to_okapi(self.URM_train)
@@ -50,7 +50,7 @@ class ItemKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
                 elif self.feature_weighting == "TF-IDF":
                     self.URM_train_copy = self.URM_train.astype(np.float32)
                     self.URM_train_copy = to_tfidf(self.URM_train)
-                #similarity = Compute_Similarity(self.URM_train_copy, **similarity_args)
+                similarity = Compute_Similarity(self.URM_train_copy, **similarity_args)
             else:
                 self.topK = topK
                 self.shrink = shrink

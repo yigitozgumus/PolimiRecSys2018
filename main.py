@@ -57,7 +57,7 @@ def pipeline_save_training_model(fileName, logFile):
     rec_sys = conf.extract_models(data_reader)
     evaluator = SequentialEvaluator(data_reader.get_URM_test(), [10], exclude_seen=True)
     for model in rec_sys:
-        model.fit(save_model=True,best_parameters=True,location="training")
+        model.fit(save_model=True,best_parameters=False,location="training")
         results_run, results_run_string = evaluator.evaluateRecommender(model)
         print("Algorithm: {}, results: \n{}".format(str(model), results_run_string))
         l.export_experiments(model, results_run_string)
