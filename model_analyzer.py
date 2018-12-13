@@ -14,7 +14,9 @@ from models.Slim_mark1.Cython.Slim_BPR_Cython import Slim_BPR_Recommender_Cython
 from models.Slim_mark2.Cython.Slim_BPR_Cython import Slim_BPR_Recommender_Cython as Slim_mark2
 from models.offline.ItemTreeRecommender_offline import ItemTreeRecommender_offline
 from models.offline.PartyRecommender_offline import PartyRecommender_offline
+from models.offline.SingleNeuronRecommender_offline import SingleNeuronRecommender_offline
 from utils.config import clear
+
 
 from contextlib import contextmanager
 import os
@@ -113,13 +115,18 @@ def printOutMapValues(modelList, URM, ICM, modelsSoFar):
             mod.loadModel(folder_path=folder, file_name=file, verbose=False)
             map_dict[model[0]][model[2]] = mod.MAP
             #print(model[0], model[2], mod.MAP)
-        elif model[0] == "ItemTreeRecommender_offline":
-            mod = ItemTreeRecommender_offline(URM,ICM)
-            mod.loadModel(folder_path=folder, file_name=file, verbose=False)
-            map_dict[model[0]][model[2]] = mod.MAP
+        # elif model[0] == "ItemTreeRecommender_offline":
+        #     mod = ItemTreeRecommender_offline(URM,ICM)
+        #     mod.loadModel(folder_path=folder, file_name=file, verbose=False)
+        #     map_dict[model[0]][model[2]] = mod.MAP
             #print(model[0], model[2], mod.MAP)
-        elif model[0] == "PartyRecommender_offline":
-            mod = PartyRecommender_offline(URM)
+        # elif model[0] == "PartyRecommender_offline":
+        #     mod = PartyRecommender_offline(URM)
+        #     mod.loadModel(folder_path=folder, file_name=file, verbose=False)
+        #     map_dict[model[0]][model[2]] = mod.MAP
+        #     #print(model[0], model[2], mod.MAP)
+        elif model[0] == "SingleNeuronRecommender_offline":
+            mod = SingleNeuronRecommender_offline(URM,ICM)
             mod.loadModel(folder_path=folder, file_name=file, verbose=False)
             map_dict[model[0]][model[2]] = mod.MAP
             #print(model[0], model[2], mod.MAP)

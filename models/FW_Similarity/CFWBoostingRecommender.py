@@ -37,7 +37,7 @@ class CFWBoostingRecommender(RecommenderSystem, RecommenderSystem_SM):
         self.URM_train = check_matrix(URM_train, 'csr')
         self.ICM = check_matrix(ICM, 'csr')
         m = OfflineDataLoader()
-        fold,file = m.get_model(target_model.RECOMMENDER_NAME,training=True)
+        fold,file = m.get_model(target_model.RECOMMENDER_NAME,training=training)
         m1 = target_model(self.URM_train)
         print(m1.RECOMMENDER_NAME)
         m1.loadModel(folder_path=fold,file_name=file)
@@ -157,10 +157,10 @@ class CFWBoostingRecommender(RecommenderSystem, RecommenderSystem_SM):
                       data_sum, data_sum/data_nnz, collaborative_sum/collaborative_nnz))
 
     def fit(self, show_max_performance = False, loss_tolerance = 1e-6,
-            iteration_limit = 50000, damp_coeff=0.0, topK = 800, add_zeros_quota = 0.9744535193088417, normalize_similarity = False,save_model=False,best_parameters=False,offline=False,location="submission",submission=False):
+            iteration_limit = 50000, damp_coeff=0.0, topK = 800, add_zeros_quota = 0.9744535193088417, normalize_similarity = False,save_model=True,best_parameters=False,offline=False,location="training",submission=False):
         if offline:
             m = OfflineDataLoader()
-            folder_path, file_name = m.get_model(self.RECOMMENDER_NAME)
+            folder_path, file_name = m.get_model(self.RECOMMENDER_NAME,training=not submission)
             self.loadModel(folder_path=folder_path, file_name=file_name)
         else:
             if best_parameters:

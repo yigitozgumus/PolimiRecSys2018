@@ -27,7 +27,7 @@ class P3alphaRecommender(RecommenderSystem,RecommenderSystem_SM):
     def __repr__(self):
         return "P3alpha Recommender"
 
-    def fit(self, topK=100, alpha=1., min_rating=0, implicit=False, normalize_similarity=False,save_model=False,best_parameters=False):
+    def fit(self, topK=100, alpha=1., min_rating=0, implicit=False, normalize_similarity=False,save_model=False,best_parameters=False,location="training"):
         if best_parameters:
             m = OfflineDataLoader()
             folder_alpha, file_alpha = m.get_parameter(self.RECOMMENDER_NAME)
@@ -141,4 +141,4 @@ class P3alphaRecommender(RecommenderSystem,RecommenderSystem_SM):
             self.sparse_weights = True
 
         if save_model:
-            self.saveModel("saved_models/submission/",file_name="P3_Alpha_Recommender_submission_model")
+            self.saveModel("saved_models/" +location+"/",file_name=self.RECOMMENDER_NAME+ "_"+location+"_model")

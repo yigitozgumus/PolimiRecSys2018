@@ -38,11 +38,13 @@ class ItemKNNCBFRecommender(RecommenderSystem, RecommenderSystem_SM):
             m = OfflineDataLoader()
             folder_path_icbf, file_name_icbf = m.get_parameter(self.RECOMMENDER_NAME)
             self.loadModel(folder_path=folder_path_icbf,file_name=file_name_icbf)
-            if feature_weighting == "BM25":
+            if self.feature_weighting == "none":
+                pass
+            if self.feature_weighting == "BM25":
                 self.ICM = self.ICM.astype(np.float32)
                 self.ICM = to_okapi(self.ICM)
 
-            elif feature_weighting == "TF-IDF":
+            elif self.feature_weighting == "TF-IDF":
                 self.ICM = self.ICM.astype(np.float32)
                 self.ICM = to_tfidf(self.ICM)
             similarity = Compute_Similarity(self.ICM.T, shrink=shrink, topK=topK, normalize=normalize,

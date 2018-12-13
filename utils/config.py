@@ -4,7 +4,6 @@ import os
 from subprocess import call
 
 from utils.OfflineDataLoader import OfflineDataLoader
-
 # Graph Based
 from models.graph.RP3BetaRecommender import RP3betaRecommender
 from models.graph.P3AlphaRecommender import P3alphaRecommender
@@ -222,9 +221,9 @@ class Configurator(object):
                 recsys.append(SingleNeuronRecommender_offline(data,dataReader.get_ICM()))
             elif model["model_name"] == "cfw":
                 m = OfflineDataLoader()
-                fold,file = m.get_model(Slim_mark2.RECOMMENDER_NAME,training=True)
+                #fold,file = m.get_model(Slim_mark2.RECOMMENDER_NAME,training=True)
                 m1 = Slim_mark2(data)
-                m1.loadModel(folder_path=fold,file_name=file)
+                #m1.loadModel(folder_path=fold,file_name=file)
                 recsys.append(CFWBoostingRecommender(data, dataReader.get_ICM(), Slim_mark2))
         print("Configurator: Models are extracted")
 

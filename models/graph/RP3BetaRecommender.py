@@ -27,7 +27,7 @@ class RP3betaRecommender(RecommenderSystem_SM, RecommenderSystem):
     def __repr__(self):
         return "RP3Beta Recommender"
 
-    def fit(self, alpha=1., beta=0.6, min_rating=0, topK=100, implicit=False, normalize_similarity=True,save_model=False,best_parameters=False):
+    def fit(self, alpha=1., beta=0.6, min_rating=0, topK=100, implicit=False, normalize_similarity=True,save_model=False,best_parameters=False,location="training"):
 
         if best_parameters:
             m = OfflineDataLoader()
@@ -154,4 +154,4 @@ class RP3betaRecommender(RecommenderSystem_SM, RecommenderSystem):
             self.sparse_weights = True
 
         if save_model:
-            self.saveModel("saved_models/submission/",file_name="RP3_Beta_Recommender_submission_model")
+            self.saveModel("saved_models/" +location+"/",file_name=self.RECOMMENDER_NAME+ "_"+location+"_model")

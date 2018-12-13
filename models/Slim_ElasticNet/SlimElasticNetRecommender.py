@@ -9,7 +9,7 @@ from base.BaseRecommender import RecommenderSystem
 from base.BaseRecommender_SM import RecommenderSystem_SM
 from base.RecommenderUtils import check_matrix
 from sklearn.linear_model import ElasticNet
-
+from tqdm import tqdm
 import time, sys
 
 
@@ -39,7 +39,7 @@ class SLIMElasticNetRecommender(RecommenderSystem_SM, RecommenderSystem):
     def __repr__(self):
         return "Slim ElasticNet Recommender"
 
-    def fit(self, l1_ratio=0.1, positive_only=True, topK = 400,save_model=False,best_parameters=False, offline=True,submission=False):
+    def fit(self, l1_ratio=0.1, positive_only=True, topK = 400,save_model=False,best_parameters=False, offline=False,submission=False):
         self.parameters = "l1_ratio= {}, topK= {},alpha= {},tol= {},max_iter= {}".format(l1_ratio,topK,0.0001,1e-4,100)
         if offline:
             m = OfflineDataLoader()
@@ -77,7 +77,7 @@ class SLIMElasticNetRecommender(RecommenderSystem_SM, RecommenderSystem):
             start_time_printBatch = start_time
 
             # fit each item's factors sequentially (not in parallel)
-            for currentItem in range(n_items):
+            for currentItem in tqdm(range(n_items)):
                 # get the target column
                 y = URM_train[:, currentItem].toarray()
                 # set the j-th column of X to zero

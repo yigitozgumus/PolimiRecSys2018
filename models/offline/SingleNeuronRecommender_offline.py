@@ -20,7 +20,6 @@ from models.Slim_mark1.Cython.Slim_BPR_Cython import Slim_BPR_Recommender_Cython
 from models.KNN.Item_KNN_CBFRecommender import ItemKNNCBFRecommender
 from models.FW_Similarity.CFWBoostingRecommender import CFWBoostingRecommender
 
-
 class SingleNeuronRecommender_offline(RecommenderSystem):
     RECOMMENDER_NAME = "SingleNeuronRecommender_offline"
 
@@ -44,7 +43,7 @@ class SingleNeuronRecommender_offline(RecommenderSystem):
             zeta = 1.2588273098979674,
             eta=18.41012777389885,
             theta=18.000293943452448,
-            psi = 0.1,
+        #    psi = 0.00130805010990942,
             normalize=False,
             save_model=False,
             submission=False,
@@ -69,7 +68,7 @@ class SingleNeuronRecommender_offline(RecommenderSystem):
                 self.zeta = zeta
                 self.eta = eta
                 self.theta = theta
-                self.psi = psi
+         #       self.psi = psi
 
             self.normalize = normalize
             self.submission = not submission
@@ -107,9 +106,9 @@ class SingleNeuronRecommender_offline(RecommenderSystem):
                                                                 training=self.submission)
             self.m_slim_elastic.loadModel(folder_path=folder_path_elastic, file_name=file_name_elastic)
 
-            self.m_cfw = CFWBoostingRecommender(self.URM_train,self.ICM,Slim_mark2,training=self.submission)
-            fold, file = m.get_model(CFWBoostingRecommender.RECOMMENDER_NAME,training= self.submission)
-            self.m_cfw.loadModel(folder_path=fold,file_name=file)
+            # self.m_cfw = CFWBoostingRecommender(self.URM_train,self.ICM,Slim_mark2,training=self.submission)
+            # fold, file = m.get_model(CFWBoostingRecommender.RECOMMENDER_NAME,training= self.submission)
+            # self.m_cfw.loadModel(folder_path=fold,file_name=file)
 
             self.W_sparse_URM = check_matrix(self.m_user_knn_cf.W_sparse, "csr", dtype=np.float32)
             #print(self.W_sparse_URM.getrow(0).data)
@@ -127,7 +126,7 @@ class SingleNeuronRecommender_offline(RecommenderSystem):
             #print(self.W_sparse_beta.getrow(0).data)
             self.W_sparse_elastic = check_matrix(self.m_slim_elastic.W_sparse, "csr", dtype=np.float32)
             #print(self.W_sparse_elastic.getrow(0).data)
-            self.W_sparse_cfw = check_matrix(self.m_cfw.W_sparse,"csr",dtype=np.float32)
+            #self.W_sparse_cfw = check_matrix(self.m_cfw.W_sparse,"csr",dtype=np.float32)
             # Precomputations
             self.matrix_wo_user = self.alpha * self.W_sparse_URM_T +\
                                   self.beta * self.W_sparse_ICM +\
@@ -135,8 +134,8 @@ class SingleNeuronRecommender_offline(RecommenderSystem):
                                   self.delta * self.W_sparse_Slim2 +\
                                   self.epsilon * self.W_sparse_alpha +\
                                   self.zeta * self.W_sparse_beta + \
-                                  self.eta * self.W_sparse_elastic + \
-                                  self.psi * self.W_sparse_cfw
+                                  self.eta * self.W_sparse_elastic #+ \
+                                  #self.psi * self.W_sparse_cfw
 
 
             self.parameters = "alpha={}, beta={}, gamma={},delta={}, epsilon={}, zeta={}, eta={}, theta={}".format(self.alpha, self.beta, self.gamma,self.delta, self.epsilon,self.zeta, self.eta, self.theta)
@@ -156,7 +155,7 @@ class SingleNeuronRecommender_offline(RecommenderSystem):
 
         scores_users = self.W_sparse_URM[playlist_id_array].dot(self.URM_train).toarray()
         scores_wo_user = self.URM_train[playlist_id_array].dot(self.matrix_wo_user).toarray()
-        scores = scores_users + scores_wo_user
+        scores = self.theta *scores_users + scores_wo_user
 
         if self.normalize:
             # normalization will keep the scores in the same range
@@ -214,7 +213,7 @@ class SingleNeuronRecommender_offline(RecommenderSystem):
                               "W_sparse_alpha": self.W_sparse_alpha,
                               "W_sparse_beta": self.W_sparse_beta,
                               "W_sparse_elastic": self.W_sparse_elastic,
-                              "W_sparse_cfw" : self.W_sparse_cfw,
+                            #  "W_sparse_cfw" : self.W_sparse_cfw,
                               "matrix_wo_user": self.matrix_wo_user,
                               "alpha": self.alpha,
                               "beta": self.beta,
@@ -223,8 +222,8 @@ class SingleNeuronRecommender_offline(RecommenderSystem):
                               "epsilon":self.epsilon,
                               "zeta": self.zeta,
                               "eta": self.eta,
-                              "theta": self.theta,
-                              "psi": self.psi}
+                              "theta": self.theta}
+                           #   "psi": self.psi}
 
         pickle.dump(dictionary_to_save,
                     open(folder_path + file_name, "wb"),

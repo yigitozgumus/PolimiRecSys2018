@@ -72,7 +72,7 @@ def pipeline_save_best_model(fileName, logFile):
     rec_sys = conf.extract_models(data_reader)
     evaluator = SequentialEvaluator(data_reader.get_URM_all(), [10], exclude_seen=True)
     for model in rec_sys:
-        model.fit(save_model=True,best_parameters=True,submission=True)
+        model.fit(save_model=True,best_parameters=True,location="submission")
         #results_run, results_run_string = evaluator.evaluateRecommender(model)
         #print("Algorithm: {}, results: \n{}".format(str(model), results_run_string))
         #l.export_experiments(model, results_run_string)

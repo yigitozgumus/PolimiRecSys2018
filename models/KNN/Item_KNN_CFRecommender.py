@@ -28,9 +28,9 @@ class ItemKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
         representation = "Item KNN Collaborative Filtering "
         return representation
 
-    def fit(self, topK=20, shrink=0, similarity='tversky',feature_weighting="none", normalize=True,save_model=False,best_parameters=False, offline=False,submission=False,location="submission",**similarity_args):
+    def fit(self, topK=400, shrink=200, similarity='cosine',feature_weighting="BM25", normalize=True,save_model=False,best_parameters=False, offline=False,submission=False,location="submission",**similarity_args):
         #similarity_args = {'tversky_alpha': 0.8047100184165605, 'tversky_beta': 1.9775806370926445}
-        self.feature_weighting = feature_weighting
+        #self.feature_weighting = feature_weighting
         if offline:
             m = OfflineDataLoader()
             folder_path_icf, file_name_icf = m.get_model(self.RECOMMENDER_NAME,training=(not submission))
@@ -40,9 +40,10 @@ class ItemKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
                 m = OfflineDataLoader()
                 folder_path_icf, file_name_icf = m.get_parameter(self.RECOMMENDER_NAME)
                 self.loadModel(folder_path=folder_path_icf,file_name=file_name_icf)
-                similarity_args = {'normalize': True, 'shrink': 0, 'similarity': 'tversky', 'topK': 20, 'tversky_alpha': 0.18872151621891953, 'tversky_beta': 1.99102432161935}
-                #similarity_args = { 'normalize': True, 'shrink': 200, 'similarity': 'cosine', 'topK': 400}
-                #similarity = Compute_Similarity(self.URM_train, **similarity_args)            
+                #similarity_args = {'normalize': True, 'shrink': 0, 'similarity': 'tversky', 'topK': 20, 'tversky_alpha': 0.18872151621891953, 'tversky_beta': 1.99102432161935}
+                similarity_args = {'feature_weighting': 'BM25', 'normalize': True, 'shrink': 200, 'similarity': 'cosine', 'topK': 400}
+                if self.feature_weighting == "none":
+                    pass             
                 if self.feature_weighting == "BM25":
                     self.URM_train_copy = self.URM_train.astype(np.float32)
                     self.URM_train_copy = to_okapi(self.URM_train)
@@ -76,5 +77,5 @@ class ItemKNNCFRecommender(RecommenderSystem, RecommenderSystem_SM):
                 self.W = similarity.compute_similarity()
                 self.W = self.W.toarray()
         if save_model:
-            self.saveModel("saved_models/"+location+"/",file_name="ItemKNNCFRecommender_submission_model")
+            self.saveModel("saved_models/"+location+"/",file_name=self.RECOMMENDER_NAME+"_"+location+"_model")
 

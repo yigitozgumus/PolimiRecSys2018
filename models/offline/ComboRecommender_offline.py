@@ -15,6 +15,8 @@ from models.offline.PyramidRecommender_offline import PyramidRecommender_offline
 from models.offline.PyramidItemTreeRecommender_offline import PyramidItemTreeRecommender_offline #0.09234
 from models.offline.HybridEightRecommender_offline import HybridEightRecommender_offline #0.09298
 from models.offline.SingleNeuronRecommender_offline import SingleNeuronRecommender_offline #0.09373
+from models.FW_Similarity.CFWBoostingRecommender import CFWBoostingRecommender
+from models.Slim_mark2.Cython.Slim_BPR_Cython import Slim_BPR_Recommender_Cython as Slim_mark2
 
 
 
@@ -38,6 +40,7 @@ class ComboRecommender_offline(RecommenderSystem):
             gamma=0.1,
             theta=0.1,
             delta=0.1,
+            epsilon=0.1,
             normalize=False,
             save_model=False,
             submission=False,
@@ -53,6 +56,7 @@ class ComboRecommender_offline(RecommenderSystem):
             self.gamma = gamma
             self.theta = theta
             self.delta= delta
+            self.epsilon = epsilon
 
         self.normalize = normalize
         self.submission = not submission
@@ -76,6 +80,10 @@ class ComboRecommender_offline(RecommenderSystem):
         self.m_sn = SingleNeuronRecommender_offline(self.URM_train,self.ICM)
         folder_path_alpha, file_name_alpha = m.get_model(SingleNeuronRecommender_offline.RECOMMENDER_NAME, training=self.submission)
         self.m_sn.loadModel(folder_path=folder_path_alpha, file_name=file_name_alpha)
+
+        self.m_cfw = CFWBoostingRecommender(self.URM_train,self.ICM,Slim_mark2,training=self.submission)
+        fold, file = m.get_model(CFWBoostingRecommender.RECOMMENDER_NAME,training= self.submission)
+        self.m_cfw.loadModel(folder_path=fold,file_name=file)
 
         self.parameters = "alpha={}, beta={}, gamma={}, theta={},delta={} ".format(self.alpha, self.beta, self.gamma,
                                                                                    self.theta,self.delta)
@@ -127,8 +135,9 @@ class ComboRecommender_offline(RecommenderSystem):
         scores_users = self.m_sn.W_sparse_URM[playlist_id_array].dot(self.URM_train).toarray()
         scores_wo_user = self.URM_train[playlist_id_array].dot(self.m_sn.matrix_wo_user).toarray()
         scores_sn = scores_users + scores_wo_user
+        scores_cfw = self.URM_train[playlist_id_array].dot(self.m_cfw.W_sparse).toarray()
         # Total prediction
-        scores = self.alpha * scores_party + self.beta * scores_pyramid + self.gamma * scores_pyitem + self.theta * scores_8 + self.delta * scores_sn
+        scores = self.alpha * scores_party + self.beta * scores_pyramid + self.gamma * scores_pyitem + self.theta * scores_8 + self.delta * scores_sn + self.epsilon * scores_cfw
         if self.normalize:
             # normalization will keep the scores in the same range
             # of value of the ratings in dataset
@@ -183,11 +192,13 @@ class ComboRecommender_offline(RecommenderSystem):
                               "m_pyitem" : self.m_pyitem,
                               "m_8": self.m_8,
                               "m_sn": self.m_sn,
+                              "m_cfw": self.m_cfw,
                               "alpha": self.alpha,
                               "beta": self.beta,
                               "gamma": self.gamma,
                               "theta": self.theta,
-                              "delta":self.delta
+                              "delta":self.delta,
+                              "epsilon":self.epsilon
                               }
 
         pickle.dump(dictionary_to_save,

@@ -29,8 +29,8 @@ import numpy as np
 def run_KNNCFRecommender_on_similarity_type(similarity_type, parameterSearch, URM_train, n_cases, output_root_path,
                                             metric_to_optimize):
     hyperparamethers_range_dictionary = {}
-    hyperparamethers_range_dictionary["topK"] = [5, 10, 20, 50, 100, 150, 200, 300, 400, 500, 600, 700, 800]
-    hyperparamethers_range_dictionary["shrink"] = [0, 10, 50, 100, 200, 300, 500, 1000]
+    hyperparamethers_range_dictionary["topK"] = [5, 10,15, 20,25,30,40, 50,60,75,80, 100,125, 150,175, 200,250, 300,350, 400,450, 500,550, 600,650, 700,750, 800]
+    hyperparamethers_range_dictionary["shrink"] = [0, 10,25, 50,75, 100,125,150,175, 200,250, 300,350,400,450, 500,750, 1000]
     hyperparamethers_range_dictionary["similarity"] = [similarity_type]
     hyperparamethers_range_dictionary["normalize"] = [True, False]
 
@@ -204,8 +204,8 @@ def runParameterSearch_Collaborative(recommender_class, URM_train,ICM,W_sparse_C
 
         if recommender_class is P3alphaRecommender:
             hyperparamethers_range_dictionary = {}
-            hyperparamethers_range_dictionary["topK"] = [5, 10, 20, 50, 100, 150, 200, 300, 400, 500, 600, 700, 800]
-            hyperparamethers_range_dictionary["alpha"] = range(0, 2)
+            hyperparamethers_range_dictionary["topK"] = [5, 10,15, 20,25,30,40, 50,60,75,80, 100,125, 150,175, 200,250, 300,350, 400,450, 500,550, 600,650, 700,750, 800]
+            hyperparamethers_range_dictionary["alpha"] = range(0, 3)
             hyperparamethers_range_dictionary["normalize_similarity"] = [True, False]
 
             recommenderDictionary = {DictionaryKeys.CONSTRUCTOR_POSITIONAL_ARGS: [URM_train],
@@ -246,9 +246,9 @@ def runParameterSearch_Collaborative(recommender_class, URM_train,ICM,W_sparse_C
 
         if recommender_class is RP3betaRecommender:
             hyperparamethers_range_dictionary = {}
-            hyperparamethers_range_dictionary["topK"] = [5, 10, 20, 50, 100, 150, 200, 300, 400, 500, 600, 700, 800]
-            hyperparamethers_range_dictionary["alpha"] = range(0, 2)
-            hyperparamethers_range_dictionary["beta"] = range(0, 2)
+            hyperparamethers_range_dictionary["topK"] = [5, 10,15, 20,25,30,40, 50,60,75,80, 100,125, 150,175, 200,250, 300,350, 400,450, 500,550, 600,650, 700,750, 800]
+            hyperparamethers_range_dictionary["alpha"] = range(0, 3)
+            hyperparamethers_range_dictionary["beta"] = range(0, 3)
             hyperparamethers_range_dictionary["normalize_similarity"] = [True, False]
 
             recommenderDictionary = {DictionaryKeys.CONSTRUCTOR_POSITIONAL_ARGS: [URM_train],
@@ -416,15 +416,15 @@ def runParameterSearch_Collaborative(recommender_class, URM_train,ICM,W_sparse_C
         if recommender_class is SingleNeuronRecommender_offline:
         
             hyperparamethers_range_dictionary = {}
-            hyperparamethers_range_dictionary["alpha"] = range(0, 30)
-            hyperparamethers_range_dictionary["beta"] = range(0, 30)
-            hyperparamethers_range_dictionary["gamma"] = range(0, 30)
-            hyperparamethers_range_dictionary["delta"] = range(0, 30)
-            hyperparamethers_range_dictionary["epsilon"] = range(0, 30)
-            hyperparamethers_range_dictionary["zeta"] = range(0, 30)
-            hyperparamethers_range_dictionary["eta"] = range(0, 30)
-            hyperparamethers_range_dictionary["theta"] = range(0,30)
-            hyperparamethers_range_dictionary["psi"] = range(0,20)
+            hyperparamethers_range_dictionary["alpha"] = range(0, 20)
+            hyperparamethers_range_dictionary["beta"] = range(0, 20)
+            hyperparamethers_range_dictionary["gamma"] = range(0, 20)
+            hyperparamethers_range_dictionary["delta"] = range(0, 20)
+            hyperparamethers_range_dictionary["epsilon"] = range(0, 20)
+            hyperparamethers_range_dictionary["zeta"] = range(0, 20)
+            hyperparamethers_range_dictionary["eta"] = range(0, 20)
+            hyperparamethers_range_dictionary["theta"] = range(0,20)
+           
 
 
             recommenderDictionary = {DictionaryKeys.CONSTRUCTOR_POSITIONAL_ARGS: [URM_train,ICM],
@@ -443,6 +443,7 @@ def runParameterSearch_Collaborative(recommender_class, URM_train,ICM,W_sparse_C
             hyperparamethers_range_dictionary["gamma"] = range(0, 20)
             hyperparamethers_range_dictionary["theta"] = range(0, 20)
             hyperparamethers_range_dictionary["delta"] = range(0, 20)
+            hyperparamethers_range_dictionary["epsilon"] = range(0, 20)
 
 
             recommenderDictionary = {DictionaryKeys.CONSTRUCTOR_POSITIONAL_ARGS: [URM_train, ICM],
@@ -552,7 +553,7 @@ def read_data_split_and_search():
         #P3alphaRecommender,
         #RP3betaRecommender,
         #ItemKNNCFRecommender,
-        #UserKNNCFRecommender
+        #UserKNNCFRecommender,
         # MatrixFactorization_BPR_Cython,
         # MatrixFactorization_FunkSVD_Cython,
         # PureSVDRecommender,
@@ -562,12 +563,12 @@ def read_data_split_and_search():
         # SLIMElasticNetRecommender,
        # PartyRecommender_offline
        # PyramidRecommender_offline
-         #ItemKNNCBFRecommender
+       #  ItemKNNCBFRecommender
        # PyramidItemTreeRecommender_offline
         #HybridEightRecommender_offline
-       # ComboRecommender_offline
-        #SingleNeuronRecommender_offline
-      CFWBoostingRecommender
+        #ComboRecommender_offline
+        SingleNeuronRecommender_offline
+     # CFWBoostingRecommender
 
     ]
 
@@ -588,7 +589,7 @@ def read_data_split_and_search():
                                                        evaluator_validation_earlystopping=evaluator_validation_earlystopping,
                                                        evaluator_validation=evaluator_validation,
                                                        evaluator_test=evaluator_test,
-                                                       n_cases=100,
+                                                       n_cases=250,
                                                        output_root_path=output_root_path)
 
     for recommender_class in collaborative_algorithm_list:
