@@ -2,7 +2,7 @@ appnope==0.1.0
 asn1crypto==0.24.0
 autopep8==1.4.1
 backcall==0.1.0
-bleach==3.0.2
+bleach==3.1.1
 blinker==1.4
 boto==2.49.0
 boto3==1.9.29
