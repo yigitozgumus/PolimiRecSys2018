@@ -71,7 +71,7 @@ ptyprocess==0.6.0
 pycodestyle==2.4.0
 pycparser==2.19
 pydaal==2019.0.0.20180713
-Pygments==2.2.0
+Pygments==2.7.4
 PyJWT==1.6.4
 pyOpenSSL==18.0.0
 pyparsing==2.2.2
