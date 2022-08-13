@@ -72,7 +72,7 @@ pycodestyle==2.4.0
 pycparser==2.19
 pydaal==2019.0.0.20180713
 Pygments==2.2.0
-PyJWT==1.6.4
+PyJWT==2.4.0
 pyOpenSSL==18.0.0
 pyparsing==2.2.2
 PySocks==1.6.8
